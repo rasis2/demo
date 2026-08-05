@@ -559,6 +559,7 @@
       <a href="#tips"><span id="navTips">Tips</span></a>
       <a href="#about"><span id="navAbout">Tentang</span></a>
       <a href="#support"><span id="navSupport">Sokong</span></a>
+      <a href="../index.html"><span id="navPortal">Portal Demo</span></a>
     </nav>
     <div class="nav-actions">
       <span class="visitor-count" id="visitorCount" title="Pengunjung:">
@@ -696,6 +697,7 @@
         <p class="footer-tagline" id="footerTag">Alat bunyi penghalau anjing yang selamat & berperikemanusiaan.</p>
       </div>
       <div class="footer-links">
+        <a href="../index.html"><span id="footerLinkPortal">Portal Demo</span></a>
         <a href="#tools"><span id="footerLinkTools">Alat</span></a>
         <a href="#details"><span id="footerLinkDetails">Butiran</span></a>
         <a href="#tips"><span id="footerLinkTips">Tips</span></a>
@@ -742,6 +744,7 @@ const T = {
     navTips:'Tips',
     navAbout:'Tentang',
     navSupport:'Sokong',
+    navPortal:'Portal Demo',
     heroEyebrow:'Alat Bunyi Penghalau Anjing',
     heroTitle:'Lindungi diri, <em>tanpa menyakiti.</em>',
     ctaTry:'Cuba Sekarang',
@@ -819,6 +822,7 @@ const T = {
     navTips:'Tips',
     navAbout:'About',
     navSupport:'Support',
+    navPortal:'Demo Portal',
     heroEyebrow:'Dog Deterrent Sound Tool',
     heroTitle:'Protect yourself, <em>without hurting.</em>',
     ctaTry:'Try It Now',
@@ -896,6 +900,7 @@ const T = {
     navTips:'提示',
     navAbout:'关于',
     navSupport:'支持',
+    navPortal:'演示门户',
     heroEyebrow:'驱狗发声工具',
     heroTitle:'保护自己，<em>无需伤害。</em>',
     ctaTry:'立即试用',
@@ -973,6 +978,7 @@ const T = {
     navTips:'குறிப்புகள்',
     navAbout:'பற்றி',
     navSupport:'ஆதரவு',
+    navPortal:'டெமோ போர்டல்',
     heroEyebrow:'நாய் விரட்டும் ஒலி கருவி',
     heroTitle:'உங்களைப் பாதுகாத்துக் கொள்ளுங்கள், <em>காயப்படுத்தாமல்.</em>',
     ctaTry:'இப்போது முயற்சிக்கவும்',
@@ -1285,6 +1291,7 @@ const navDetailsEl = document.getElementById('navDetails');
 const navTipsEl = document.getElementById('navTips');
 const navAboutEl = document.getElementById('navAbout');
 const navSupportEl = document.getElementById('navSupport');
+const navPortalEl = document.getElementById('navPortal');
 const heroEyebrowEl = document.getElementById('heroEyebrow');
 const heroTitleEl = document.getElementById('heroTitle');
 const ctaTryEl = document.getElementById('ctaTry');
@@ -1296,6 +1303,7 @@ const footerLinkDetailsEl = document.getElementById('footerLinkDetails');
 const footerLinkTipsEl = document.getElementById('footerLinkTips');
 const footerLinkAboutEl = document.getElementById('footerLinkAbout');
 const footerLinkSupportEl = document.getElementById('footerLinkSupport');
+const footerLinkPortalEl = document.getElementById('footerLinkPortal');
 const visitorCountEl = document.getElementById('visitorCount');
 const visitorCountNumEl = document.getElementById('visitorCountNum');
 
@@ -1358,6 +1366,7 @@ function render(){
   navTipsEl.textContent = t('navTips');
   navAboutEl.textContent = t('navAbout');
   navSupportEl.textContent = t('navSupport');
+  navPortalEl.textContent = t('navPortal');
   heroEyebrowEl.textContent = t('heroEyebrow');
   heroTitleEl.innerHTML = t('heroTitle');
   ctaTryEl.textContent = t('ctaTry');
@@ -1396,6 +1405,7 @@ function render(){
   footerLinkTipsEl.textContent = t('navTips');
   footerLinkAboutEl.textContent = t('navAbout');
   footerLinkSupportEl.textContent = t('navSupport');
+  footerLinkPortalEl.textContent = t('navPortal');
   visitorCountEl.title = t('visitors');
   updateStatusText();
   setPlayLabel();
