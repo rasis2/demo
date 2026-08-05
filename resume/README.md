@@ -16,10 +16,11 @@ no database, no account needed. Everything happens in your browser.
   in-browser
 - ATS score checker (9 checks)
 - Export/import your data as JSON, load an example, clear all
-- **Save as PDF**: opens the browser's print dialog to save the resume as an A4
-  PDF. It uses the browser's own print engine, so the PDF always matches the
-  preview exactly and never renders blank (multi-page resumes flow across pages
-  naturally, with selectable text)
+- **Save as PDF**: screenshots the resume preview and auto-downloads it as an
+  A4 PDF named `dear-resume-<nama>.pdf` (uses the profile name you entered).
+  Multi-page resumes split across pages automatically; if the primary capture
+  ever comes out blank the app falls back to a compatible renderer, so you
+  always get a visible file
 - **Auto-save**: your work is kept in `localStorage` on your own device
 - **Donate**: a donation modal (QR + download + tap-to-zoom QR), like the HALAU demo
 - **Language dropdown**: switch between Bahasa Melayu / English / 中文 / தமிழ்
@@ -29,7 +30,7 @@ no database, no account needed. Everything happens in your browser.
 
 ```
 index.html          → the page
-app.js              → built bundle (React + the resume builder + mammoth)
+app.js              → built bundle (React + the resume builder + mammoth + PDF capture libs)
 tailwind.css        → built styles
 qr.jpg              → donation QR code image
 src/
