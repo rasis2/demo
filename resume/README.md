@@ -16,11 +16,12 @@ no database, no account needed. Everything happens in your browser.
   in-browser
 - ATS score checker (9 checks)
 - Export/import your data as JSON, load an example, clear all
-- **Save as PDF**: screenshots the resume preview and auto-downloads it as an
+- **Save as PDF**: screenshots the on-screen preview and auto-downloads it as an
   A4 PDF named `dear-resume-<nama>.pdf` (uses the profile name you entered).
-  Multi-page resumes split across pages automatically; if the primary capture
-  ever comes out blank the app falls back to a compatible renderer, so you
-  always get a visible file
+  Multi-page resumes split across pages automatically. If the silent screenshot
+  ever comes out blank or fails (some GPUs/drivers can't do it), the app falls
+  back to the browser's own **native print preview** — choose *Save as PDF*
+  there to get a pixel-exact file
 - **Auto-save**: your work is kept in `localStorage` on your own device
 - **Donate**: a donation modal (QR + download + tap-to-zoom QR), like the HALAU demo
 - **Language dropdown**: switch between Bahasa Melayu / English / 中文 / தமிழ்
