@@ -67,6 +67,17 @@
     text-decoration:none;
   }
   .brand span{color:var(--text);}
+  .nav-left{
+    display:flex; align-items:center; gap:12px;
+  }
+  .back-arrow{
+    display:flex; align-items:center; justify-content:center;
+    width:36px; height:36px; flex-shrink:0;
+    border:1px solid var(--line); border-radius:8px;
+    color:var(--muted); text-decoration:none;
+    transition:color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .back-arrow:hover{ color:var(--amber); border-color:rgba(232,161,61,0.4); background:var(--amber-dim); }
   .nav-links{
     display:flex; align-items:center; gap:22px;
     list-style:none; margin:0; padding:0;
@@ -552,14 +563,18 @@
 <body>
 <header class="site-nav">
   <div class="nav-inner">
-    <a class="brand" href="#top">HALAU<span>.</span></a>
+    <div class="nav-left">
+      <a class="back-arrow" href="../index.html" id="backArrow" title="Kembali ke Portal Demo" aria-label="Kembali ke Portal Demo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      </a>
+      <a class="brand" href="#top">HALAU<span>.</span></a>
+    </div>
     <nav class="nav-links" aria-label="Navigasi utama">
       <a href="#tools"><span id="navTools">Alat</span></a>
       <a href="#details"><span id="navDetails">Butiran</span></a>
       <a href="#tips"><span id="navTips">Tips</span></a>
       <a href="#about"><span id="navAbout">Tentang</span></a>
       <a href="#support"><span id="navSupport">Sokong</span></a>
-      <a href="../index.html"><span id="navPortal">Portal Demo</span></a>
     </nav>
     <div class="nav-actions">
       <span class="visitor-count" id="visitorCount" title="Pengunjung:">
@@ -745,6 +760,7 @@ const T = {
     navAbout:'Tentang',
     navSupport:'Sokong',
     navPortal:'Portal Demo',
+    backPortal:'Kembali ke Portal Demo',
     heroEyebrow:'Alat Bunyi Penghalau Anjing',
     heroTitle:'Lindungi diri, <em>tanpa menyakiti.</em>',
     ctaTry:'Cuba Sekarang',
@@ -823,6 +839,7 @@ const T = {
     navAbout:'About',
     navSupport:'Support',
     navPortal:'Demo Portal',
+    backPortal:'Back to Demo Portal',
     heroEyebrow:'Dog Deterrent Sound Tool',
     heroTitle:'Protect yourself, <em>without hurting.</em>',
     ctaTry:'Try It Now',
@@ -901,6 +918,7 @@ const T = {
     navAbout:'关于',
     navSupport:'支持',
     navPortal:'演示门户',
+    backPortal:'返回演示门户',
     heroEyebrow:'驱狗发声工具',
     heroTitle:'保护自己，<em>无需伤害。</em>',
     ctaTry:'立即试用',
@@ -979,6 +997,7 @@ const T = {
     navAbout:'பற்றி',
     navSupport:'ஆதரவு',
     navPortal:'டெமோ போர்டல்',
+    backPortal:'டெமோ போர்டலுக்கு திரும்பு',
     heroEyebrow:'நாய் விரட்டும் ஒலி கருவி',
     heroTitle:'உங்களைப் பாதுகாத்துக் கொள்ளுங்கள், <em>காயப்படுத்தாமல்.</em>',
     ctaTry:'இப்போது முயற்சிக்கவும்',
@@ -1291,7 +1310,7 @@ const navDetailsEl = document.getElementById('navDetails');
 const navTipsEl = document.getElementById('navTips');
 const navAboutEl = document.getElementById('navAbout');
 const navSupportEl = document.getElementById('navSupport');
-const navPortalEl = document.getElementById('navPortal');
+const backArrowEl = document.getElementById('backArrow');
 const heroEyebrowEl = document.getElementById('heroEyebrow');
 const heroTitleEl = document.getElementById('heroTitle');
 const ctaTryEl = document.getElementById('ctaTry');
@@ -1366,7 +1385,8 @@ function render(){
   navTipsEl.textContent = t('navTips');
   navAboutEl.textContent = t('navAbout');
   navSupportEl.textContent = t('navSupport');
-  navPortalEl.textContent = t('navPortal');
+  backArrowEl.title = t('backPortal');
+  backArrowEl.setAttribute('aria-label', t('backPortal'));
   heroEyebrowEl.textContent = t('heroEyebrow');
   heroTitleEl.innerHTML = t('heroTitle');
   ctaTryEl.textContent = t('ctaTry');
