@@ -410,6 +410,15 @@
     font-size:12px; color:var(--muted);
     text-align:center;
   }
+  .footer-bar .visitor-count{
+    display:inline-flex; align-items:center; justify-content:center; gap:7px;
+    margin-top:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; color:var(--muted);
+    letter-spacing:0.5px;
+  }
+  .footer-bar .visitor-count svg{ color:var(--teal); }
+  .footer-bar .visitor-count b{ color:var(--amber); font-weight:600; }
 
   /* ---- Reveal on scroll ---- */
   .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
@@ -688,6 +697,11 @@
     </div>
     <div class="footer-bar">
       <span id="footerCopyright">© 2026 HALAU — Dibuat dengan belas kasihan untuk anjing.</span>
+      <span class="visitor-count" id="visitorCount">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span id="visitorCountLabel">Pengunjung:</span>
+        <b id="visitorCountNum">—</b>
+      </span>
     </div>
   </div>
 </footer>
@@ -791,7 +805,8 @@ const T = {
     donateBtn:'Sumbang Sekarang',
     modalTitle:'Sumbang<span>.</span>',
     modalDownload:'Muat Turun QR',
-    modalHint:'Setiap sumbangan membantu projek ini terus hidup.'
+    modalHint:'Setiap sumbangan membantu projek ini terus hidup.',
+    visitors:'Pengunjung:'
   },
   en: {
     title:'HALAU — Dog Repellent Sound Tool',
@@ -867,7 +882,8 @@ const T = {
     donateBtn:'Donate Now',
     modalTitle:'Donate<span>.</span>',
     modalDownload:'Download QR',
-    modalHint:'Every contribution keeps this project alive.'
+    modalHint:'Every contribution keeps this project alive.',
+    visitors:'Visitors:'
   },
   zh: {
     title:'HALAU — 驱狗发声工具',
@@ -943,7 +959,8 @@ const T = {
     donateBtn:'立即捐赠',
     modalTitle:'捐赠<span>.</span>',
     modalDownload:'下载二维码',
-    modalHint:'每一笔捐款都能让这个项目持续运转。'
+    modalHint:'每一笔捐款都能让这个项目持续运转。',
+    visitors:'访问者：'
   },
   ta: {
     title:'HALAU — நாய் விரட்டும் ஒலி கருவி',
@@ -1019,7 +1036,8 @@ const T = {
     donateBtn:'இப்போது நன்கொடை',
     modalTitle:'நன்கொடை<span>.</span>',
     modalDownload:'QR பதிவிறக்கு',
-    modalHint:'ஒவ்வொரு நன்கொடையும் இந்த திட்டத்தை உயிருடன் வைக்கிறது.'
+    modalHint:'ஒவ்வொரு நன்கொடையும் இந்த திட்டத்தை உயிருடன் வைக்கிறது.',
+    visitors:'பார்வையாளர்கள்:'
   }
 };
 
@@ -1275,6 +1293,8 @@ const footerLinkDetailsEl = document.getElementById('footerLinkDetails');
 const footerLinkTipsEl = document.getElementById('footerLinkTips');
 const footerLinkAboutEl = document.getElementById('footerLinkAbout');
 const footerLinkSupportEl = document.getElementById('footerLinkSupport');
+const visitorCountLabelEl = document.getElementById('visitorCountLabel');
+const visitorCountNumEl = document.getElementById('visitorCountNum');
 
 function renderSounds(){
   soundListEl.innerHTML = '';
@@ -1373,6 +1393,7 @@ function render(){
   footerLinkTipsEl.textContent = t('navTips');
   footerLinkAboutEl.textContent = t('navAbout');
   footerLinkSupportEl.textContent = t('navSupport');
+  visitorCountLabelEl.textContent = t('visitors');
   updateStatusText();
   setPlayLabel();
   updateReadout();
@@ -1605,6 +1626,23 @@ function updateNavActive(){
 }
 window.addEventListener('scroll', updateNavActive, { passive:true });
 updateNavActive();
+
+// ---------------- Visitor counter ----------------
+function loadVisitorCount(){
+  const fallback = () => {
+    const n = (parseInt(localStorage.getItem('halau-visits') || '0', 10)) + 1;
+    localStorage.setItem('halau-visits', n);
+    visitorCountNumEl.textContent = n.toLocaleString();
+  };
+  fetch('https://api.countapi.xyz/hit/halau-website/visitors')
+    .then(r => r.json())
+    .then(d => {
+      if(d && typeof d.value === 'number') visitorCountNumEl.textContent = d.value.toLocaleString();
+      else fallback();
+    })
+    .catch(fallback);
+}
+loadVisitorCount();
 
 render();
 </script>
