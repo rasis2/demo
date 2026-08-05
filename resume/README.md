@@ -16,9 +16,11 @@ no database, no account needed. Everything happens in your browser.
   in-browser
 - ATS score checker (9 checks)
 - Export/import your data as JSON, load an example, clear all
-- Save as PDF via the browser print dialog
+- **Save as PDF**: downloads the preview as an A4 PDF automatically (handles
+  multi-page resumes by splitting across pages)
 - **Auto-save**: your work is kept in `localStorage` on your own device
-- **Donate**: a donation modal (QR + download), like the HALAU demo
+- **Donate**: a donation modal (QR + download + tap-to-zoom QR), like the HALAU demo
+- **Language dropdown**: switch between Bahasa Melayu / English / 中文 / தமிழ்
 
 ## Files
 
