@@ -1647,13 +1647,25 @@ function loadVisitorCount(){
     localStorage.setItem('halau-visits', n);
     visitorCountNumEl.textContent = n.toLocaleString();
   };
-  fetch('https://api.countapi.xyz/hit/halau-website/visitors')
-    .then(r => r.json())
-    .then(d => {
-      if(d && typeof d.value === 'number') visitorCountNumEl.textContent = d.value.toLocaleString();
-      else fallback();
-    })
-    .catch(fallback);
+  const cbName = 'BusuanziCallback_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+  let settled = false;
+  const finish = (fn) => {
+    if(settled) return;
+    settled = true;
+    delete window[cbName];
+    fn();
+  };
+  window[cbName] = (d) => {
+    if(d && typeof d.site_pv === 'number') finish(() => { visitorCountNumEl.textContent = d.site_pv.toLocaleString(); });
+    else finish(fallback);
+  };
+  const s = document.createElement('script');
+  s.async = true;
+  s.referrerPolicy = 'no-referrer-when-downgrade';
+  s.src = 'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=' + cbName;
+  s.onerror = () => finish(fallback);
+  document.head.appendChild(s);
+  setTimeout(() => finish(fallback), 4000);
 }
 loadVisitorCount();
 
