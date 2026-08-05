@@ -410,15 +410,17 @@
     font-size:12px; color:var(--muted);
     text-align:center;
   }
-  .footer-bar .visitor-count{
-    display:inline-flex; align-items:center; justify-content:center; gap:7px;
-    margin-top:10px;
+  .nav-actions{
+    display:flex; align-items:center; gap:14px;
+  }
+  .visitor-count{
+    display:inline-flex; align-items:center; gap:6px;
     font-family:'JetBrains Mono', monospace;
     font-size:12px; color:var(--muted);
-    letter-spacing:0.5px;
+    letter-spacing:0.5px; cursor:default;
   }
-  .footer-bar .visitor-count svg{ color:var(--teal); }
-  .footer-bar .visitor-count b{ color:var(--amber); font-weight:600; }
+  .visitor-count svg{ color:var(--teal); }
+  .visitor-count b{ color:var(--amber); font-weight:600; }
 
   /* ---- Reveal on scroll ---- */
   .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
@@ -558,12 +560,18 @@
       <a href="#about"><span id="navAbout">Tentang</span></a>
       <a href="#support"><span id="navSupport">Sokong</span></a>
     </nav>
-    <select class="lang-select" id="langSelect" aria-label="Bahasa">
-      <option value="ms">Melayu</option>
-      <option value="en">English</option>
-      <option value="zh">中文</option>
-      <option value="ta">தமிழ்</option>
-    </select>
+    <div class="nav-actions">
+      <span class="visitor-count" id="visitorCount" title="Pengunjung:">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <b id="visitorCountNum">—</b>
+      </span>
+      <select class="lang-select" id="langSelect" aria-label="Bahasa">
+        <option value="ms">Melayu</option>
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="ta">தமிழ்</option>
+      </select>
+    </div>
   </div>
 </header>
 
@@ -681,7 +689,7 @@
     <div class="warn">
       <b id="warnTitle">Guna dengan bertanggungjawab:</b> <span id="warnBody">alat ini direka untuk melindungi diri anda daripada anjing liar/agresif yang mendekati secara mengancam — bukan untuk menyakiti atau menyeksa haiwan. Elakkan memainkan bunyi terus ke arah anjing pada jarak dekat atau untuk tempoh panjang berterusan. Keberkesanan bunyi ultrasonik berbeza mengikut anjing (sesetengah anjing tidak terjejas, anjing pekak tidak terjejas langsung), jadi jangan bergantung sepenuhnya kepadanya sebagai satu-satunya langkah keselamatan.</span>
     </div>
-    <p class="footer-note" id="footerNote">Mod "Letupan 2s" dengan tempoh sejuk (cooldown) disediakan secara lalai untuk mengelakkan penyalahgunaan berterusan terhadap haiwan yang sama.</p>
+    <p class="footer-note" id="footerNote">Mod "Letupan 2s" dengan tempoh bertenang disediakan secara lalai untuk mengelakkan penyalahgunaan berterusan terhadap haiwan yang sama.</p>
     <div class="footer-grid">
       <div>
         <div class="footer-brand">HALAU<span>.</span></div>
@@ -697,11 +705,6 @@
     </div>
     <div class="footer-bar">
       <span id="footerCopyright">© 2026 HALAU — Dibuat dengan belas kasihan untuk anjing.</span>
-      <span class="visitor-count" id="visitorCount">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span id="visitorCountLabel">Pengunjung:</span>
-        <b id="visitorCountNum">—</b>
-      </span>
     </div>
   </div>
 </footer>
@@ -748,12 +751,12 @@ const T = {
     scopeLabel:'OSILOSKOP AUDIO',
     statusReady:'SEDIA',
     statusPlaying:'MEMAINKAN',
-    statusCool:'SEJUK',
+    statusCool:'TEMPOH BERTENANG',
     readActive:'BUNYI AKTIF:',
     readFreq:'FREKUENSI:',
     playBtn:'▶ MAINKAN',
     stopBtn:'■ HENTIKAN',
-    coolBtn:'SEJUK... {s}s',
+    coolBtn:'TEMPOH BERTENANG... {s}s',
     selectSound:'Pilih Jenis Bunyi',
     controls:'Kawalan',
     volume:'Kelantangan',
@@ -764,7 +767,7 @@ const T = {
     sectionTips:'Tips Halau Anjing Dengan Selamat',
     warnTitle:'Guna dengan bertanggungjawab:',
     warnBody:'alat ini direka untuk melindungi diri anda daripada anjing liar/agresif yang mendekati secara mengancam — bukan untuk menyakiti atau menyeksa haiwan. Elakkan memainkan bunyi terus ke arah anjing pada jarak dekat atau untuk tempoh panjang berterusan. Keberkesanan bunyi ultrasonik berbeza mengikut anjing (sesetengah anjing tidak terjejas, anjing pekak tidak terjejas langsung), jadi jangan bergantung sepenuhnya kepadanya sebagai satu-satunya langkah keselamatan.',
-    footerNote:'Mod "Letupan 2s" dengan tempoh sejuk (cooldown) disediakan secara lalai untuk mengelakkan penyalahgunaan berterusan terhadap haiwan yang sama.',
+    footerNote:'Mod "Letupan 2s" dengan tempoh bertenang disediakan secara lalai untuk mengelakkan penyalahgunaan berterusan terhadap haiwan yang sama.',
     snd_ultra_name:'Ultrasonik Tinggi',
     snd_ultra_freq:'≈17,500 Hz',
     snd_ultra_desc:'Nada sinus frekuensi tinggi berterusan. Sesetengah anjing (bergantung umur & pendengaran) sensitif kepada julat ini; tidak selalu kedengaran jelas oleh telinga manusia dewasa.',
@@ -1293,7 +1296,7 @@ const footerLinkDetailsEl = document.getElementById('footerLinkDetails');
 const footerLinkTipsEl = document.getElementById('footerLinkTips');
 const footerLinkAboutEl = document.getElementById('footerLinkAbout');
 const footerLinkSupportEl = document.getElementById('footerLinkSupport');
-const visitorCountLabelEl = document.getElementById('visitorCountLabel');
+const visitorCountEl = document.getElementById('visitorCount');
 const visitorCountNumEl = document.getElementById('visitorCountNum');
 
 function renderSounds(){
@@ -1393,7 +1396,7 @@ function render(){
   footerLinkTipsEl.textContent = t('navTips');
   footerLinkAboutEl.textContent = t('navAbout');
   footerLinkSupportEl.textContent = t('navSupport');
-  visitorCountLabelEl.textContent = t('visitors');
+  visitorCountEl.title = t('visitors');
   updateStatusText();
   setPlayLabel();
   updateReadout();
