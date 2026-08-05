@@ -69,7 +69,34 @@
   .nav-links a:hover{ color:var(--text); }
   .nav-links a.active{ color:var(--amber); }
   .nav-links a.active::after{ transform:scaleX(1); }
-  @media (max-width:640px){ .nav-links{ display:none; } }
+  .nav-toggle{
+    display:none;
+    background:none; border:1px solid var(--line); border-radius:8px;
+    color:var(--text); width:40px; height:40px; cursor:pointer;
+    align-items:center; justify-content:center;
+    font-size:18px; line-height:1;
+  }
+  .nav-toggle:hover{ border-color:var(--amber); color:var(--amber); }
+  .nav-mobile{
+    display:none;
+    position:fixed; top:62px; left:0; right:0; z-index:99;
+    background:rgba(18,22,28,0.97);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+    padding:8px 20px 12px;
+  }
+  .nav-mobile.open{ display:block; }
+  .nav-mobile a{
+    display:block; color:var(--muted); text-decoration:none;
+    padding:13px 6px; font-size:15px; font-weight:500;
+    border-bottom:1px solid rgba(42,50,61,0.5);
+  }
+  .nav-mobile a:last-child{ border-bottom:none; }
+  .nav-mobile a:hover{ color:var(--amber); }
+  @media (max-width:640px){
+    .nav-links{ display:none; }
+    .nav-toggle{ display:inline-flex; }
+  }
 
   /* ---- Hero ---- */
   .hero{
@@ -187,6 +214,8 @@
   }
   .badge.live{ background:rgba(73,194,184,0.15); color:var(--teal); border:1px solid rgba(73,194,184,0.3); }
   .badge.soon{ background:rgba(154,164,177,0.12); color:var(--muted); border:1px solid var(--line); }
+  .badge.new{ background:rgba(232,161,61,0.18); color:var(--amber); border:1px solid rgba(232,161,61,0.4); }
+  .proj-badges{ display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
   .proj-card h3{
     font-family:'Big Shoulders Display', 'Arial Black', sans-serif;
     font-weight:800; font-size:24px; letter-spacing:0.4px;
@@ -204,8 +233,10 @@
     font-size:11.5px; letter-spacing:1px; text-transform:uppercase;
     color:var(--amber); text-decoration:none;
     display:inline-flex; align-items:center; gap:6px;
+    transition:transform .15s ease, color .15s ease;
   }
   .proj-link:hover{ color:#f0b04d; }
+  .proj-card:hover .proj-link{ transform:translateX(4px); }
 
   /* ---- Features ---- */
   .feat-grid{
@@ -309,6 +340,24 @@
   @media (prefers-reduced-motion: reduce){
     .reveal{ opacity:1; transform:none; transition:none; }
   }
+
+  /* ---- Back to top ---- */
+  .btn-top{
+    position:fixed; right:18px; bottom:18px; z-index:90;
+    width:46px; height:46px; border-radius:10px;
+    background:var(--panel); border:1px solid var(--line);
+    color:var(--amber); font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transform:translateY(10px); pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease, border-color .15s ease;
+  }
+  .btn-top.show{ opacity:1; transform:none; pointer-events:auto; }
+  .btn-top:hover{ border-color:var(--amber); background:var(--amber-dim); }
+
+  /* ---- Focus / accessibility ---- */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--amber); outline-offset:2px; border-radius:4px;
+  }
 </style>
 </head>
 <body>
@@ -322,7 +371,14 @@
       <a href="#tentang"><span>Tentang</span></a>
       <a href="#hubungi"><span>Hubungi</span></a>
     </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="navMobile">☰</button>
   </div>
+  <nav class="nav-mobile" id="navMobile" aria-label="Navigasi mudah alih">
+    <a href="#projek">Projek</a>
+    <a href="#ciri">Ciri</a>
+    <a href="#tentang">Tentang</a>
+    <a href="#hubungi">Hubungi</a>
+  </nav>
 </header>
 
 <div class="wrap" id="top">
@@ -333,8 +389,8 @@
     <h1 class="hero-title">Terokai Demo. <em>Beri Maklum Balas.</em></h1>
     <p class="hero-sub">Selamat datang ke portal rasmi untuk semua demo projek kami. Setiap demo berjalan terus dalam pelayar anda — tanpa muat turun, tanpa pemasangan. Cuba, terokai, dan kongsikan idea anda.</p>
     <div class="hero-cta">
-      <a class="btn-cta" href="#projek">Lihat Projek</a>
-      <a class="btn-cta ghost" href="#hubungi">Hubungi Kami</a>
+      <a class="btn-cta" href="resume/index.html">Cuba Demo Terkini</a>
+      <a class="btn-cta ghost" href="#projek">Lihat Semua Projek</a>
     </div>
     <div class="hero-stats">
       <div class="stat"><b>2</b><span>Demo Aktif</span></div>
@@ -352,7 +408,10 @@
       <a class="proj-card live" href="resume/index.html">
         <div class="proj-top">
           <div class="proj-icon">📄</div>
-          <span class="badge live">Live</span>
+          <div class="proj-badges">
+            <span class="badge new">Terbaru</span>
+            <span class="badge live">Live</span>
+          </div>
         </div>
         <h3>Dear Resume</h3>
         <p>Pembina resume percuma yang berfungsi sepenuhnya dalam pelayar anda. Pilih layout & tema, auto-isi dari resume lama, semak skor ATS, dan simpan sebagai PDF — tanpa pendaftaran.</p>
@@ -480,6 +539,8 @@
   </div>
 </footer>
 
+<button class="btn-top" id="btnTop" aria-label="Kembali ke atas">↑</button>
+
 <script>
 // Reveal on scroll
 const revealObserver = new IntersectionObserver((entries) => {
@@ -491,6 +552,30 @@ const revealObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Mobile nav
+const navToggle = document.getElementById('navToggle');
+const navMobile = document.getElementById('navMobile');
+function closeNav(){
+  navMobile.classList.remove('open');
+  navToggle.textContent = '☰';
+  navToggle.setAttribute('aria-expanded', 'false');
+  navToggle.setAttribute('aria-label', 'Buka menu');
+}
+navToggle.addEventListener('click', () => {
+  const open = navMobile.classList.toggle('open');
+  navToggle.textContent = open ? '✕' : '☰';
+  navToggle.setAttribute('aria-expanded', String(open));
+  navToggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+});
+navMobile.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+
+// Back to top
+const btnTop = document.getElementById('btnTop');
+window.addEventListener('scroll', () => {
+  btnTop.classList.toggle('show', window.scrollY > 400);
+}, { passive:true });
+btnTop.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
 
 // Scrollspy
 const sectionMap = {};
