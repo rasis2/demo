@@ -1,0 +1,698 @@
+[
+  {
+    "isp": "unifi",
+    "name": "Unifi Home 30",
+    "speed": 30,
+    "price": 69,
+    "features": [
+      "Serat optik",
+      "Sesuai 1-2 orang",
+      "WiFi 6 router"
+    ],
+    "value": true
+  },
+  {
+    "isp": "unifi",
+    "name": "Unifi Home 100",
+    "speed": 100,
+    "price": 89,
+    "features": [
+      "Serat optik",
+      "Sesuai untuk keluarga",
+      "WiFi 6 router"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "unifi",
+    "name": "Unifi Home 300",
+    "speed": 300,
+    "price": 129,
+    "features": [
+      "Laju untuk semua",
+      "Gaming & streaming 4K",
+      "Router premium"
+    ]
+  },
+  {
+    "isp": "unifi",
+    "name": "Unifi Home 500",
+    "speed": 500,
+    "price": 149,
+    "features": [
+      "500 Mbps stabil",
+      "Multi-device heavy use",
+      "3 bulan percuma"
+    ]
+  },
+  {
+    "isp": "unifi",
+    "name": "Unifi Home 800",
+    "speed": 800,
+    "price": 199,
+    "features": [
+      "Ultra speed",
+      "Sesuai untuk office",
+      "Dedicated support"
+    ]
+  },
+  {
+    "isp": "unifi",
+    "name": "Unifi Home 1G",
+    "speed": 1000,
+    "price": 249,
+    "features": [
+      "1 Gigabit speed",
+      "Future-proof",
+      "4K/8K streaming"
+    ]
+  },
+  {
+    "isp": "unifi",
+    "name": "Unifi Home 2G",
+    "speed": 2000,
+    "price": 319,
+    "features": [
+      "2 Gigabit aggregated",
+      "Power user & home studio",
+      "Paling laju"
+    ]
+  },
+  {
+    "isp": "time",
+    "name": "TIME Fibre 100",
+    "speed": 100,
+    "price": 89,
+    "upload": 100,
+    "features": [
+      "Pure fibre 100%",
+      "Upload simetri 100 Mbps",
+      "Unlimited data"
+    ]
+  },
+  {
+    "isp": "time",
+    "name": "TIME Fibre 200",
+    "speed": 200,
+    "price": 99,
+    "upload": 200,
+    "features": [
+      "200/200 Mbps",
+      "Unlimited data",
+      "Tiada throttle"
+    ]
+  },
+  {
+    "isp": "time",
+    "name": "TIME Fibre 500",
+    "speed": 500,
+    "price": 99,
+    "upload": 500,
+    "features": [
+      "Nilai terbaik per Mbps",
+      "Upload simetri",
+      "Best untuk WFH"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "time",
+    "name": "TIME Fibre 600",
+    "speed": 600,
+    "price": 139,
+    "upload": 600,
+    "features": [
+      "600/500 Mbps",
+      "RM99 6 bulan pertama",
+      "No data cap"
+    ]
+  },
+  {
+    "isp": "time",
+    "name": "TIME Fibre 1G",
+    "speed": 1000,
+    "price": 139,
+    "upload": 1000,
+    "features": [
+      "Gigabit termurah di MY",
+      "Upload 500 Mbps",
+      "Enterprise grade"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "time",
+    "name": "TIME Fibre 2G",
+    "speed": 2000,
+    "price": 199,
+    "upload": 2000,
+    "features": [
+      "2 Gigabit true",
+      "Paling rendah latency",
+      "Future-proof"
+    ]
+  },
+  {
+    "isp": "time",
+    "name": "TIME Fibre 5G",
+    "speed": 5000,
+    "price": 389,
+    "upload": 5000,
+    "features": [
+      "5 Gigabit",
+      "Power user / bisnes",
+      "10G PON"
+    ]
+  },
+  {
+    "isp": "maxis",
+    "name": "Maxis Home 100",
+    "speed": 100,
+    "price": 89,
+    "base": 99,
+    "rebate": 10,
+    "upload": 50,
+    "install": 0,
+    "contract": 24,
+    "desc": "Browsing ringan & beli-belah dalam talian; 2–3 peranti. Data tanpa had.",
+    "includes": [
+      "PERCUMA Router WiFi 6"
+    ],
+    "special": [
+      "Pengguna Baharu",
+      "Tukar kepada Maxis",
+      "Pelanggan Postpaid Sedia Ada"
+    ],
+    "addons": [
+      {
+        "label": "Add On RM43 untuk 55\" 4K UHD Google TV",
+        "price": 43
+      }
+    ],
+    "features": [
+      "Fiber to home",
+      "Bundle MaxisONE",
+      "WiFi 6 router"
+    ],
+    "value": true
+  },
+  {
+    "isp": "maxis",
+    "name": "Maxis Home 300",
+    "speed": 300,
+    "price": 129,
+    "features": [
+      "300 Mbps stabil",
+      "IPTV included",
+      "4K streaming ready"
+    ]
+  },
+  {
+    "isp": "maxis",
+    "name": "Maxis Home 500",
+    "speed": 500,
+    "price": 179,
+    "features": [
+      "500 Mbps",
+      "Bundle mobile",
+      "Priority support"
+    ]
+  },
+  {
+    "isp": "maxis",
+    "name": "Maxis Home 1G",
+    "speed": 1000,
+    "price": 239,
+    "features": [
+      "1 Gigabit",
+      "MaxisONE bundle",
+      "Premium router"
+    ]
+  },
+  {
+    "isp": "maxis",
+    "name": "Maxis Home 2G",
+    "speed": 2000,
+    "price": 319,
+    "features": [
+      "2 Gigabit",
+      "Ultra power user",
+      "Best for gaming"
+    ]
+  },
+  {
+    "isp": "celcom",
+    "name": "CelcomDigi Home 100",
+    "speed": 100,
+    "price": 89,
+    "features": [
+      "Fiber to home",
+      "Bundle postpaid",
+      "Nationwide coverage"
+    ],
+    "value": true
+  },
+  {
+    "isp": "celcom",
+    "name": "CelcomDigi Home 300",
+    "speed": 300,
+    "price": 129,
+    "features": [
+      "300 Mbps",
+      "Deal rebat postpaid",
+      "WiFi 6 router"
+    ]
+  },
+  {
+    "isp": "celcom",
+    "name": "CelcomDigi Home 500",
+    "speed": 500,
+    "price": 159,
+    "features": [
+      "500 Mbps",
+      "Bundle CelcomDigi",
+      "Home WiFi mesh"
+    ]
+  },
+  {
+    "isp": "celcom",
+    "name": "CelcomDigi Home 1G",
+    "speed": 1000,
+    "price": 249,
+    "features": [
+      "1 Gigabit",
+      "Premium WiFi 7 router",
+      "Nilai bagus untuk gigabit"
+    ]
+  },
+  {
+    "isp": "celcom",
+    "name": "CelcomDigi Home 2G",
+    "speed": 2000,
+    "price": 319,
+    "features": [
+      "2 Gigabit",
+      "Premium WiFi 7 + mesh",
+      "Best untuk heavy use"
+    ]
+  },
+  {
+    "isp": "yes",
+    "name": "Yes 5G Basic",
+    "speed": 100,
+    "price": 79,
+    "features": [
+      "5G wireless",
+      "Tanpa kontrak",
+      "Plug & play"
+    ],
+    "value": true
+  },
+  {
+    "isp": "yes",
+    "name": "Yes 5G Unlimited",
+    "speed": 300,
+    "price": 99,
+    "features": [
+      "5G unlimited",
+      "Terbaik untuk penyewa",
+      "No drilling"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "yes",
+    "name": "Yes 5G Pro",
+    "speed": 500,
+    "price": 149,
+    "features": [
+      "5G ultra-fast",
+      "Sesuai keluarga",
+      "Nationwide 5G"
+    ]
+  },
+  {
+    "isp": "yes",
+    "name": "Yes 5G Turbo 1G",
+    "speed": 1000,
+    "price": 99,
+    "features": [
+      "Uncapped 5G sehingga 1Gbps",
+      "5G router percuma",
+      "Kontrak 12/24 bulan"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "astro",
+    "name": "Astro Fibre 100",
+    "speed": 100,
+    "price": 99,
+    "features": [
+      "Fibre on TM network",
+      "Boleh bundle Astro",
+      "WiFi 6 router"
+    ]
+  },
+  {
+    "isp": "astro",
+    "name": "Astro Fibre 500",
+    "speed": 500,
+    "price": 149,
+    "features": [
+      "500 Mbps",
+      "Bundle Astro content",
+      "4K streaming"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "astro",
+    "name": "Astro Fibre 800",
+    "speed": 800,
+    "price": 189,
+    "features": [
+      "800 Mbps",
+      "Content + internet",
+      "Family bundle"
+    ]
+  },
+  {
+    "isp": "umobile",
+    "name": "U Mobile Fibre 100",
+    "speed": 100,
+    "price": 129,
+    "features": [
+      "Fibre via TIME/ALLO",
+      "Unlimited data",
+      "No contract"
+    ]
+  },
+  {
+    "isp": "umobile",
+    "name": "U Mobile Fibre 500",
+    "speed": 500,
+    "price": 199,
+    "features": [
+      "500 Mbps",
+      "No data cap",
+      "Gaming ready"
+    ]
+  },
+  {
+    "isp": "umobile",
+    "name": "U Mobile Fibre 1G",
+    "speed": 1000,
+    "price": 299,
+    "features": [
+      "1 Gigabit",
+      "Future-proof",
+      "Best value gigabit"
+    ]
+  },
+  {
+    "isp": "allo",
+    "name": "Allo Fibre 100",
+    "speed": 100,
+    "price": 99,
+    "upload": 100,
+    "features": [
+      "100/100 Mbps simetri",
+      "Free WiFi 6 router",
+      "Unlimited data"
+    ],
+    "value": true
+  },
+  {
+    "isp": "allo",
+    "name": "Allo Fibre 300",
+    "speed": 300,
+    "price": 129,
+    "upload": 300,
+    "features": [
+      "300/300 Mbps simetri",
+      "Free WiFi 6 router",
+      "Unlimited data"
+    ]
+  },
+  {
+    "isp": "allo",
+    "name": "Allo Fibre 500",
+    "speed": 500,
+    "price": 139,
+    "upload": 500,
+    "features": [
+      "500/500 Mbps simetri",
+      "Family preferred",
+      "Unlimited data"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "allo",
+    "name": "Allo Fibre 1G",
+    "speed": 1000,
+    "price": 199,
+    "upload": 1000,
+    "features": [
+      "1 Gbps download",
+      "Gamer preferred",
+      "Unlimited data"
+    ]
+  },
+  {
+    "isp": "perfect",
+    "name": "Perfect 50Mbps",
+    "speed": 50,
+    "price": 50,
+    "features": [
+      "High-rise fibre",
+      "WiFi 6 router percuma",
+      "Pemasangan percuma"
+    ],
+    "value": true
+  },
+  {
+    "isp": "perfect",
+    "name": "Perfect 150Mbps",
+    "speed": 150,
+    "price": 70,
+    "features": [
+      "150/50 Mbps",
+      "WiFi 6 router percuma",
+      "Tiada yuran tersembunyi"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "perfect",
+    "name": "Perfect 300Mbps",
+    "speed": 300,
+    "price": 80,
+    "features": [
+      "300/100 Mbps",
+      "Sesuai 5-7 peranti",
+      "WiFi 6 router percuma"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "perfect",
+    "name": "Perfect 600Mbps",
+    "speed": 600,
+    "price": 100,
+    "features": [
+      "600/100 Mbps",
+      "Sesuai 8-12 peranti",
+      "Paling popular"
+    ],
+    "value": true
+  },
+  {
+    "isp": "starlink",
+    "name": "Starlink Residential 100",
+    "speed": 100,
+    "price": 135,
+    "features": [
+      "Satelit (LEO)",
+      "Sesuai kawasan tiada fiber",
+      "Kit Mini RM930 / Standard V4 RM1,600"
+    ],
+    "value": true
+  },
+  {
+    "isp": "starlink",
+    "name": "Starlink Residential",
+    "speed": 400,
+    "price": 235,
+    "features": [
+      "Sehingga 400 Mbps",
+      "Data tanpa had",
+      "Sesuai kawasan pedalaman"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "starlink",
+    "name": "Starlink Business",
+    "speed": 400,
+    "price": 217,
+    "features": [
+      "Trafik keutamaan",
+      "SME & ladang",
+      "Lencongan laut darat"
+    ]
+  },
+  {
+    "isp": "viewqwest",
+    "name": "ViewQwest 300Mbps",
+    "speed": 300,
+    "price": 108,
+    "features": [
+      "WiFi 7 router",
+      "Klang Valley & JB sahaja",
+      "Tanpa kontrak"
+    ],
+    "value": true
+  },
+  {
+    "isp": "viewqwest",
+    "name": "ViewQwest 500Mbps",
+    "speed": 500,
+    "price": 138,
+    "features": [
+      "500 Mbps stabil",
+      "WiFi 7 router",
+      "Latensi rendah"
+    ]
+  },
+  {
+    "isp": "viewqwest",
+    "name": "ViewQwest 1Gbps",
+    "speed": 1000,
+    "price": 188,
+    "features": [
+      "1 Gigabit",
+      "WiFi 7 premium",
+      "Terbaik untuk gaming"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "redone",
+    "name": "redONE 5G Home",
+    "speed": 300,
+    "price": 78,
+    "features": [
+      "1000GB 5G/4G",
+      "RM78 tahun pertama",
+      "5G modem bundle"
+    ],
+    "value": true
+  },
+  {
+    "isp": "redone",
+    "name": "redONE 5G Home 88",
+    "speed": 300,
+    "price": 88,
+    "features": [
+      "1000GB data",
+      "RM88 selepas bulan 12",
+      "Kontrak 24 bulan"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "redone",
+    "name": "redONE Prepaid 5G",
+    "speed": 100,
+    "price": 25,
+    "features": [
+      "100GB 5G/4G",
+      "Tiada kontrak",
+      "Hotspot 10GB"
+    ],
+    "value": true
+  },
+  {
+    "isp": "ifibre",
+    "name": "iFibre Home 50",
+    "speed": 50,
+    "price": 79,
+    "features": [
+      "Serat optik",
+      "Sesuai 1-2 orang",
+      "WiFi 6 router"
+    ]
+  },
+  {
+    "isp": "ifibre",
+    "name": "iFibre Home 100",
+    "speed": 100,
+    "price": 89,
+    "features": [
+      "Fibre on TM network",
+      "WiFi 6 router",
+      "Pemasangan percuma"
+    ],
+    "value": true
+  },
+  {
+    "isp": "ifibre",
+    "name": "iFibre Home 300",
+    "speed": 300,
+    "price": 119,
+    "features": [
+      "300 Mbps stabil",
+      "Sesuai untuk keluarga",
+      "WiFi 6 router"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "ifibre",
+    "name": "iFibre Home 500",
+    "speed": 500,
+    "price": 149,
+    "features": [
+      "500 Mbps",
+      "Multi-device heavy use",
+      "24/7 sokongan"
+    ]
+  },
+  {
+    "isp": "freshtel",
+    "name": "FreshTel 100",
+    "speed": 100,
+    "price": 89,
+    "features": [
+      "Fibre on TM network",
+      "WiFi 6 router",
+      "Sesuai 1-2 orang"
+    ],
+    "value": true
+  },
+  {
+    "isp": "freshtel",
+    "name": "FreshTel 300",
+    "speed": 300,
+    "price": 119,
+    "features": [
+      "300 Mbps",
+      "Family preferred",
+      "WiFi 6 router"
+    ],
+    "bestValue": true
+  },
+  {
+    "isp": "freshtel",
+    "name": "FreshTel 500",
+    "speed": 500,
+    "price": 149,
+    "features": [
+      "500 Mbps",
+      "4K streaming ready",
+      "24/7 sokongan"
+    ]
+  }
+]
