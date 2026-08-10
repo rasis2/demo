@@ -37,19 +37,24 @@ App tidak berfungsi sehingga ia disambungkan ke projek Supabase anda:
 | 🚗 **Kenderaan** | Daftar kenderaan & lot parkir per unit |
 | 📄 **Dokumen** | Minuta, borang, laporan (pautan) |
 | 👥 **Penduduk** | Direktori 475 unit dengan carian (admin) |
+| 🏠 **Penyewa (Tenant)** | Urus penyewa sewa unit + akaun login mereka (admin) |
 | ⚙️ **Tetapan** | Info bangunan, caj bulanan, PIN, ujian sambungan Supabase |
 
 ---
 
-## 🔐 Akses
+## 🔐 Akses (username + password)
 
-| Peranan | Cara |
-|---------|------|
-| **Pemilik** | Unit `4-1` → email `unit4-1@kesuma.my` (atau telefon yang dipaparkan) |
-| **Pentadbir / Guard / Dispatcher** | PIN `1125` (boleh tukar di Tetapan) |
-| **Pelawat** | Daftar sendiri → QR + kod rujukan |
+Semua peranan log masuk dengan **username & password** (jadual `users`):
 
-> Semua PIN & caj disimpan dalam jadual `settings` (Supabase).
+| Peranan | Username | Password |
+|---------|----------|----------|
+| Pentadbir (Admin) | `admin` | `admin123` |
+| Keselamatan (Guard) | `guard` | `guard123` |
+| Dispatcher | `dispatcher` | `dispatcher123` |
+| Pemilik (cth. unit 4-1) | `4-1` | `kesuma123` |
+| Penyewa / Tenant (cth.) | `t-4-1` | `kesuma123` |
+
+> Semua 475 unit ada akaun pemilik (username = unit, password `kesuma123`). Tenant diurus oleh admin dalam modul **Penyewa (Tenants)** — bila tambah tenant, akaun login mereka turut dicipta.
 
 ---
 
