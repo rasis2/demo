@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTube — Kanak-Kanak</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ═══════════ TOP BAR ═══════════ -->
+    <header class="top-bar">
+        <div class="brand">
+            <a href="../index.html" class="portal-btn" title="Portal Demo" aria-label="Portal Demo">↩</a>
+            <div class="brand-logo">▶️</div>
+            <div class="brand-text">
+                <span class="brand-title">UTube</span>
+                <span class="brand-sub" data-i18n="brandSub">Kanak-Kanak</span>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <button id="langBtn" class="lang-btn">BM</button>
+            <button id="nightBtn" class="night-btn" title="Gelap/Terang" aria-label="Gelap">🌙</button>
+        </div>
+    </header>
+
+    <!-- ═══════════ SEARCH ═══════════ -->
+    <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" data-i18n-ph="searchPh" placeholder="Cari video..." aria-label="Cari" />
+    </div>
+
+    <!-- ═══════════ CHANNEL TABS ═══════════ -->
+    <nav class="channel-tabs" id="channelTabs">
+        <button class="ch-tab active" data-channel="all"><span class="ch-icon">✨</span><span data-i18n="tabAll">Semua</span></button>
+        <button class="ch-tab" data-channel="monsta"><span class="ch-icon">⚡</span><span>MONSTA</span></button>
+        <button class="ch-tab" data-channel="durioo"><span class="ch-icon">🌙</span><span>Durioo+</span></button>
+    </nav>
+
+    <!-- ═══════════ CONTENT ═══════════ -->
+    <main class="content">
+        <!-- Hero / featured -->
+        <section class="hero-section" id="heroSection">
+            <div class="hero-video" id="heroVideo"></div>
+            <div class="hero-info">
+                <span class="hero-badge" data-i18n="featured">TAMPILAN</span>
+                <h2 class="hero-title" id="heroTitle">—</h2>
+                <p class="hero-desc" id="heroDesc">—</p>
+                <button class="btn-play" id="heroPlayBtn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                    <span data-i18n="watch">Tonton</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Video grid -->
+        <section class="video-section">
+            <h3 class="section-title" id="sectionTitle" data-i18n="recent">Video</h3>
+            <div class="video-grid" id="videoGrid">
+                <!-- video cards injected by JS -->
+            </div>
+            <div class="empty-state" id="emptyState" hidden>
+                <div class="empty-icon">🔍</div>
+                <p data-i18n="noResults">Tiada video dijumpai. Cuba cari perkataan lain.</p>
+            </div>
+        </section>
+
+        <div class="ad-note" id="adNote">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span data-i18n="adNote">Tanpa iklan — hanya video rasmi dari saluran Monsta & Durioo+.</span>
+        </div>
+    </main>
+
+    <!-- ═══════════ PLAYER MODAL ═══════════ -->
+    <div class="player-modal" id="playerModal">
+        <div class="player-shell">
+            <div class="player-top">
+                <h3 class="player-title" id="playerTitle">—</h3>
+                <button class="close-btn" id="closeBtn" aria-label="Tutup">✕</button>
+            </div>
+            <div class="player-frame">
+                <iframe id="playerFrame" src="" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div class="player-meta">
+                <span class="player-channel" id="playerChannel">—</span>
+                <span class="player-desc" id="playerDesc">—</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
