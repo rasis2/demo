@@ -84,6 +84,7 @@ const LANGS = [
 const I18N = {
     ms: {
         brandTitle: "ZOO RADIO",
+        portal: "Portal Demo",
         brandSub: "Safari Radio Network",
         tagline: "Selamat datang ke Zoo Radio — Alam Bebas, Muzik Bebas —",
         nowPlaying: "NOW PLAYING",
@@ -150,6 +151,7 @@ const I18N = {
     },
     en: {
         brandTitle: "ZOO RADIO",
+        portal: "Demo Portal",
         brandSub: "Safari Radio Network",
         tagline: "Welcome to Zoo Radio — Free Nature, Free Music —",
         nowPlaying: "NOW PLAYING",
@@ -216,6 +218,7 @@ const I18N = {
     },
     zh: {
         brandTitle: "动物园电台",
+        portal: "演示门户",
         brandSub: "野生动物电台网络",
         tagline: "欢迎来到动物园电台 — 自由自然，自由音乐 —",
         nowPlaying: "正在播放",
@@ -282,6 +285,7 @@ const I18N = {
     },
     ta: {
         brandTitle: "ஜூ ரேடியோ",
+        portal: "டெமோ போர்டல்",
         brandSub: "சஃபாரி ரேடியோ நெட்வொர்க்",
         tagline: "ஜூ ரேடியோவிற்கு வரவேற்கிறோம் — இயற்கை சுதந்திரம், இசை சுதந்திரம் —",
         nowPlaying: "இப்போது இயங்குகிறது",

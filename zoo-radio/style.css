@@ -81,7 +81,8 @@ canvas {
 }
 
 .lang-btn,
-.night-btn {
+.night-btn,
+.portal-btn {
     height: 34px;
     min-width: 34px;
     padding: 0 10px;
@@ -96,9 +97,18 @@ canvas {
 }
 
 .lang-btn:hover,
-.night-btn:hover {
+.night-btn:hover,
+.portal-btn:hover {
     border-color: var(--border-active);
     color: var(--green-light);
+}
+
+.portal-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-decoration: none;
 }
 
 .night-btn { font-size: 14px; padding: 0; }
