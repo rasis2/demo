@@ -24,6 +24,15 @@ create table if not exists public.owners (
   created_at timestamptz not null default now()
 );
 
+-- If the owners table already existed (e.g. from the older version),
+-- add any missing columns without touching existing data.
+alter table public.owners add column if not exists name text not null default '';
+alter table public.owners add column if not exists ic_no text default '';
+alter table public.owners add column if not exists vehicle_plate text default '';
+alter table public.owners add column if not exists vehicle_model text default '';
+alter table public.owners add column if not exists parking_lot text default '';
+alter table public.owners add column if not exists created_at timestamptz not null default now();
+
 -- ─────────────────────────────────────────────
 --  PARCELS
 -- ─────────────────────────────────────────────
@@ -179,20 +188,25 @@ begin
   end if;
 end $$;
 
-insert into public.facilities (id, name, icon, capacity, cost) values
-  (gen_random_uuid(), 'Dewan Serbaguna', '🏛️', 100, 80),
-  (gen_random_uuid(), 'Gimnasium', '🏋️', 20, 0),
-  (gen_random_uuid(), 'Kolam Renang', '🏊', 40, 0),
-  (gen_random_uuid(), 'Tapak BBQ', '🍢', 30, 40),
-  (gen_random_uuid(), 'Taman Permainan', '🛝', 50, 0),
-  (gen_random_uuid(), 'Bilik Bacaan', '📚', 15, 0)
-on conflict do nothing;
+insert into public.facilities (id, name, icon, capacity, cost)
+select gen_random_uuid(), f.name, f.icon, f.capacity, f.cost
+from (values
+  ('Dewan Serbaguna', '🏛️', 100, 80),
+  ('Gimnasium', '🏋️', 20, 0),
+  ('Kolam Renang', '🏊', 40, 0),
+  ('Tapak BBQ', '🍢', 30, 40),
+  ('Taman Permainan', '🛝', 50, 0),
+  ('Bilik Bacaan', '📚', 15, 0)
+) as f(name, icon, capacity, cost)
+where not exists (select 1 from public.facilities);
 
-insert into public.announcements (title, category, body, pinned, author) values
+insert into public.announcements (title, category, body, pinned, author)
+select * from (values
   ('Mesyuarat Agung Tahunan (AGM) 2026', 'AGM', 'Mesyuarat Agung Tahunan akan diadakan pada 15 Mac 2026, jam 10:00 pagi di Dewan Serbaguna. Semua pemilik dijemput hadir.', true, 'JMB Kesuma'),
   ('Kempen Kitar Semula', 'Kemudahan', 'Kempen kitar semula diadakan setiap Ahad pertama bulan. Sila asingkan bahan kitar semula anda.', false, 'JMB Kesuma'),
   ('Servis Lif Berkala', 'Penyelenggaraan', 'Servis lif A dan B pada 20 Februari 2026, 9:00 pagi – 5:00 petang.', false, 'JMB Kesuma')
-on conflict do nothing;
+) as a(title, category, body, pinned, author)
+where not exists (select 1 from public.announcements);
 
 -- ─────────────────────────────────────────────
 --  ROW LEVEL SECURITY (demo-friendly: anon full access)

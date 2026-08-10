@@ -20,7 +20,11 @@ function kjResetClient() { _sb = null }
 async function kjTestConnection() {
   try {
     const { data, error } = await kjSb().from('settings').select('key').limit(1)
-    if (error) return { ok: false, error: error.message }
+    if (error) {
+      // PGRST205 → relation does not exist → schema.sql not run yet
+      const needsSchema = /PGRST205|could not find the table/i.test(error.message)
+      return { ok: false, error: error.message, needsSchema }
+    }
     return { ok: true }
   } catch (e) {
     if (e.message === 'NOT_CONFIGURED') return { ok: false, error: 'NOT_CONFIGURED' }

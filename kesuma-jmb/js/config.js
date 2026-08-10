@@ -9,8 +9,8 @@
 const KJ_CONFIG = {
   appName: 'Kesuma JMB',
   appTagline: 'Sistem Pengurusan Harta',
-  supabaseUrl: '',   // e.g. 'https://YOUR-PROJECT.supabase.co'
-  supabaseAnon: '',  // e.g. 'eyJhbGciOi...'
+  supabaseUrl: 'https://zoxrgkiuamxaxysmcgby.supabase.co',
+  supabaseAnon: 'sb_publishable_mKtVCxB2ltjwsnZaK7UuCA_tf12Xdg4',
 }
 
 // Runtime config: localStorage override wins, else defaults.

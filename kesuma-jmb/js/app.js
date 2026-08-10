@@ -259,7 +259,11 @@ function showSetup() {
     const r = await kjTestConnection()
     $('setupBtn').textContent = t('setup_save'); $('setupBtn').disabled = false
     if (r.ok) { ov.classList.remove('show'); toast(t('setup_ok'), 'success'); renderView() }
-    else { err.textContent = t('setup_fail') + (r.error && r.error !== 'NOT_CONFIGURED' ? ' (' + r.error + ')' : '') }
+    else if (r.needsSchema) {
+      err.innerHTML = '⚠️ ' + t('setup_need_schema')
+    } else {
+      err.textContent = t('setup_fail') + (r.error && r.error !== 'NOT_CONFIGURED' ? ' (' + r.error + ')' : '')
+    }
   }
 }
 
