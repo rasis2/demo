@@ -3,28 +3,27 @@
    Kids-safe video browser: only official videos
    from popular Malay kids channels. No ads, no
    related-video rabbit holes (rel=0), no comments.
+   Settings panel lets you add your own channels
+   (validated via the YouTube Data API v3).
 ═══════════════════════════════════════════ */
 
 /* ────────────────────────────────────────
-   VIDEO DATABASE
-   Every ID below is a real, official upload
-   from the channel indicated (Monsta or the
-   Omar & Hana / Durioo+ family of channels).
-   Add or remove entries freely — thumbnails
-   and embeds are derived from the YouTube ID.
+   BUILT-IN CHANNELS
 ──────────────────────────────────────── */
 const CHANNELS = {
-    monsta:    { label: 'MONSTA',       cls: 'ch-monsta',    color: '#e63946' },
-    papazola:  { label: 'Papa Zola',    cls: 'ch-papazola',  color: '#f97316' },
-    upinipin:  { label: 'Upin & Ipin',  cls: 'ch-upinipin',  color: '#10b981' },
-    ejenali:   { label: 'Ejen Ali',     cls: 'ch-ejenali',   color: '#2563eb' },
-    didi:      { label: 'Didi & Friends', cls: 'ch-didi',    color: '#f59e0b' },
-    durioo:    { label: 'Durioo+',      cls: 'ch-durioo',    color: '#6d28d9' },
-    msrachel:  { label: 'Ms Rachel',    cls: 'ch-msrachel',  color: '#ec4899' },
-    alifsofia: { label: 'Alif & Sofia', cls: 'ch-alifsofia', color: '#ec4899' },
-    omarhana:  { label: 'Omar & Hana',  cls: 'ch-omarhana',  color: '#16a34a' },
-    learnwithzakaria: { label: 'Learn with Zakaria', cls: 'ch-zakaria', color: '#0891b2' },
+    monsta:    { label: 'MONSTA',       cls: 'ch-monsta',    color: '#e63946', icon: '⚡' },
+    papazola:  { label: 'Papa Zola',    cls: 'ch-papazola',  color: '#f97316', icon: '🍕' },
+    upinipin:  { label: 'Upin & Ipin',  cls: 'ch-upinipin',  color: '#10b981', icon: '🌙' },
+    ejenali:   { label: 'Ejen Ali',     cls: 'ch-ejenali',   color: '#2563eb', icon: '🕵️' },
+    didi:      { label: 'Didi & Friends', cls: 'ch-didi',    color: '#f59e0b', icon: '🐤' },
+    durioo:    { label: 'Durioo+',      cls: 'ch-durioo',    color: '#6d28d9', icon: '🕌' },
+    msrachel:  { label: 'Ms Rachel',    cls: 'ch-msrachel',  color: '#ec4899', icon: '🎓' },
+    alifsofia: { label: 'Alif & Sofia', cls: 'ch-alifsofia', color: '#ec4899', icon: '🌸' },
+    omarhana:  { label: 'Omar & Hana',  cls: 'ch-omarhana',  color: '#16a34a', icon: '🌙' },
+    learnwithzakaria: { label: 'Learn with Zakaria', cls: 'ch-zakaria', color: '#0891b2', icon: '🎨' },
 };
+
+const CUSTOM_ICONS = ['📺', '🌟', '🎈', '🦄', '🍬', '🐼', '🦋', '🚀', '🎪', '🧸'];
 
 const VIDEOS = [
     // MONSTA
@@ -586,6 +585,65 @@ const VIDEOS = [
 ];
 
 /* ────────────────────────────────────────
+   CUSTOM CHANNELS (user-added, localStorage)
+──────────────────────────────────────── */
+const CUSTOM_KEY = 'utube-custom-channels';
+const API_KEY_STORE = 'utube-ytkey';
+const YT_API_BASE = 'https://www.googleapis.com/youtube/v3';
+
+function getCustomChannels() {
+    try {
+        const raw = localStorage.getItem(CUSTOM_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveCustomChannels(list) {
+    localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
+}
+
+function getApiKey() {
+    return (localStorage.getItem(API_KEY_STORE) || '').trim();
+}
+
+function setApiKey(key) {
+    localStorage.setItem(API_KEY_STORE, (key || '').trim());
+}
+
+function allChannels() {
+    const chs = Object.assign({}, CHANNELS);
+    const customs = getCustomChannels();
+    customs.forEach((c, i) => {
+        chs[c.key] = {
+            label: c.label,
+            cls: 'ch-cx' + (i % 8),
+            color: '#f59e0b',
+            icon: CUSTOM_ICONS[i % CUSTOM_ICONS.length],
+            custom: true,
+            handle: c.handle,
+        };
+    });
+    return chs;
+}
+
+function allVideos() {
+    const vids = VIDEOS.slice();
+    getCustomChannels().forEach((c) => {
+        (c.videos || []).forEach((v) => {
+            vids.push({ id: v.id, ch: c.key, title: v.title });
+        });
+    });
+    return vids;
+}
+
+function findVideoById(id) {
+    return allVideos().find((v) => v.id === id) || null;
+}
+
+/* ────────────────────────────────────────
    I18N — Bahasa Melayu / English / 中文 / தமிழ்
 ──────────────────────────────────────── */
 const LANGS = [
@@ -607,6 +665,30 @@ const I18N = {
         adNote: 'Tanpa iklan — hanya video rasmi dari saluran kanak-kanak tempatan & antarabangsa.',
         close: 'Tutup',
         next: 'Tonton Seterusnya',
+        settings: 'Tetapan',
+        settingsTitle: 'Tetapan',
+        apiKeyLabel: 'Kunci API YouTube',
+        apiKeyPh: 'Paste kunci API di sini...',
+        apiKeyHelp: 'Diperlukan untuk mengesahkan saluran. Dapatkan secara percuma di Google Cloud Console (dayakan "YouTube Data API v3").',
+        saveBtn: 'Simpan',
+        linkedChannels: 'Saluran Terhubung',
+        builtinBadge: 'Asal',
+        addChannelTitle: 'Tambah Saluran',
+        channelPh: '@handle, pautan atau ID saluran...',
+        addBtn: 'Tambah',
+        remove: 'Buang',
+        removeConfirm: 'Buang saluran ini?',
+        checking: 'Menyemak saluran...',
+        added: 'Saluran berjaya ditambah!',
+        errEmpty: 'Sila masukkan nama saluran, @handle, pautan atau ID saluran.',
+        errNoKey: 'Sila tetapkan Kunci API YouTube dahulu di bahagian Tetapan.',
+        errInvalid: 'Format tidak sah. Guna pautan youtube.com/@handle, @handle atau ID saluran (UC...).',
+        errNotFound: 'Saluran tidak dijumpai. Semak nama pengguna atau pautan.',
+        errQuota: 'Kuota API habis. Cuba lagi kemudian.',
+        errNetwork: 'Ralat rangkaian. Cuba lagi.',
+        errNoVideos: 'Saluran ini tiada video boleh dimainkan.',
+        errDuplicate: 'Saluran ini sudah pun tersedia.',
+        keySaved: 'Kunci API disimpan.',
     },
     en: {
         brandSub: 'Kids',
@@ -619,6 +701,30 @@ const I18N = {
         adNote: 'No ads — only official videos from local & international kids channels.',
         close: 'Close',
         next: 'Watch Next',
+        settings: 'Settings',
+        settingsTitle: 'Settings',
+        apiKeyLabel: 'YouTube API Key',
+        apiKeyPh: 'Paste your API key here...',
+        apiKeyHelp: 'Required to verify channels. Get it free at Google Cloud Console (enable "YouTube Data API v3").',
+        saveBtn: 'Save',
+        linkedChannels: 'Linked Channels',
+        builtinBadge: 'Built-in',
+        addChannelTitle: 'Add Channel',
+        channelPh: '@handle, link or channel ID...',
+        addBtn: 'Add',
+        remove: 'Remove',
+        removeConfirm: 'Remove this channel?',
+        checking: 'Checking channel...',
+        added: 'Channel added successfully!',
+        errEmpty: 'Please enter a channel name, @handle, link or channel ID.',
+        errNoKey: 'Please set your YouTube API Key first in Settings.',
+        errInvalid: 'Invalid format. Use a youtube.com/@handle link, @handle or channel ID (UC...).',
+        errNotFound: 'Channel not found. Check the username or link.',
+        errQuota: 'API quota exceeded. Try again later.',
+        errNetwork: 'Network error. Try again.',
+        errNoVideos: 'This channel has no playable videos.',
+        errDuplicate: 'This channel is already available.',
+        keySaved: 'API key saved.',
     },
     zh: {
         brandSub: '儿童',
@@ -631,6 +737,30 @@ const I18N = {
         adNote: '无广告 — 仅来自本地和国际儿童频道的官方视频。',
         close: '关闭',
         next: '接下来观看',
+        settings: '设置',
+        settingsTitle: '设置',
+        apiKeyLabel: 'YouTube API 密钥',
+        apiKeyPh: '在此粘贴 API 密钥...',
+        apiKeyHelp: '用于验证频道。可在 Google Cloud Console 免费获取（启用 "YouTube Data API v3"）。',
+        saveBtn: '保存',
+        linkedChannels: '已连接频道',
+        builtinBadge: '内置',
+        addChannelTitle: '添加频道',
+        channelPh: '@handle、链接或频道 ID...',
+        addBtn: '添加',
+        remove: '移除',
+        removeConfirm: '移除这个频道？',
+        checking: '正在检查频道...',
+        added: '频道添加成功！',
+        errEmpty: '请输入频道名称、@handle、链接或频道 ID。',
+        errNoKey: '请先在设置中设置 YouTube API 密钥。',
+        errInvalid: '格式无效。请使用 youtube.com/@handle 链接、@handle 或频道 ID（UC...）。',
+        errNotFound: '未找到频道。请检查用户名或链接。',
+        errQuota: 'API 配额已用尽，请稍后再试。',
+        errNetwork: '网络错误，请重试。',
+        errNoVideos: '此频道没有可播放的视频。',
+        errDuplicate: '此频道已经存在。',
+        keySaved: 'API 密钥已保存。',
     },
     ta: {
         brandSub: 'குழந்தைகள்',
@@ -643,6 +773,30 @@ const I18N = {
         adNote: 'விளம்பரம் இல்லை — உள்நாட்டு & சர்வதேச குழந்தைகள் சேனல்களின் அதிகாரப்பூர்வ வீடியோக்கள் மட்டும்.',
         close: 'மூடு',
         next: 'அடுத்து பார்க்க',
+        settings: 'அமைப்புகள்',
+        settingsTitle: 'அமைப்புகள்',
+        apiKeyLabel: 'YouTube API விசை',
+        apiKeyPh: 'API விசையை இங்கே ஒட்டவும்...',
+        apiKeyHelp: 'சேனல்களைச் சரிபார்க்க தேவை. Google Cloud Console இல் இலவசமாகப் பெறலாம் ("YouTube Data API v3" ஐ இயக்கவும்).',
+        saveBtn: 'சேமி',
+        linkedChannels: 'இணைக்கப்பட்ட சேனல்கள்',
+        builtinBadge: 'உள்ளமை',
+        addChannelTitle: 'சேனல் சேர்',
+        channelPh: '@handle, இணைப்பு அல்லது சேனல் ID...',
+        addBtn: 'சேர்',
+        remove: 'நீக்கு',
+        removeConfirm: 'இந்த சேனலை நீக்கவா?',
+        checking: 'சேனல் சரிபார்க்கிறது...',
+        added: 'சேனல் வெற்றிகரமாக சேர்க்கப்பட்டது!',
+        errEmpty: 'சேனல் பெயர், @handle, இணைப்பு அல்லது சேனல் ID ஐ உள்ளிடவும்.',
+        errNoKey: 'முதலில் அமைப்புகளில் YouTube API விசையை அமைக்கவும்.',
+        errInvalid: 'தவறான வடிவம். youtube.com/@handle இணைப்பு, @handle அல்லது சேனல் ID (UC...) பயன்படுத்தவும்.',
+        errNotFound: 'சேனல் கிடைக்கவில்லை. பயனர் பெயர் அல்லது இணைப்பைச் சரிபார்க்கவும்.',
+        errQuota: 'API ஒதுக்கீடு முடிந்தது. பின்னர் மீண்டும் முயற்சிக்கவும்.',
+        errNetwork: 'நெட்வொர்க் பிழை. மீண்டும் முயற்சிக்கவும்.',
+        errNoVideos: 'இந்த சேனலில் இயக்கக்கூடிய வீடியோக்கள் இல்லை.',
+        errDuplicate: 'இந்த சேனல் ஏற்கனவே உள்ளது.',
+        keySaved: 'API விசை சேமிக்கப்பட்டது.',
     },
 };
 
@@ -672,9 +826,11 @@ function watchUrl(v) { return `https://www.youtube.com/watch?v=${v.id}`; }
 
 function filterVideos() {
     const q = query.toLowerCase().trim();
-    return VIDEOS.filter((v) => {
+    return allVideos().filter((v) => {
         const chOk = activeChannel === 'all' || v.ch === activeChannel;
-        const qOk = !q || v.title.toLowerCase().includes(q) || v.ch.toLowerCase().includes(q);
+        const chMeta = allChannels()[v.ch] || {};
+        const chLabel = (chMeta.label || v.ch).toLowerCase();
+        const qOk = !q || v.title.toLowerCase().includes(q) || chLabel.includes(q);
         return chOk && qOk;
     });
 }
@@ -682,6 +838,21 @@ function filterVideos() {
 /* ────────────────────────────────────────
    RENDER
 ──────────────────────────────────────── */
+function renderTabs() {
+    const nav = $('#channelTabs');
+    const chs = allChannels();
+    let html = `<button class="ch-tab" data-channel="all"><span class="ch-icon">✨</span><span>${t('tabAll')}</span></button>`;
+    Object.keys(chs).forEach((key) => {
+        const c = chs[key];
+        html += `<button class="ch-tab" data-channel="${key}"><span class="ch-icon">${c.icon}</span><span>${c.label}</span></button>`;
+    });
+    nav.innerHTML = html;
+    const ok = activeChannel === 'all' || chs[activeChannel];
+    if (!ok) activeChannel = 'all';
+    nav.querySelectorAll('.ch-tab').forEach((b) => {
+        b.classList.toggle('active', b.dataset.channel === activeChannel);
+    });
+}
 function renderHero() {
     const list = filterVideos();
     const hero = list[0];
@@ -692,7 +863,7 @@ function renderHero() {
     $('#heroSection').style.display = '';
     $('#heroVideo').innerHTML = `<img src="${thumb(hero)}" alt="${hero.title}" loading="lazy">`;
     $('#heroTitle').textContent = hero.title;
-    $('#heroDesc').textContent = `${CHANNELS[hero.ch].label} • youtube.com`;
+    $('#heroDesc').textContent = `${(allChannels()[hero.ch] || {}).label || hero.ch} • youtube.com`;
     $('#heroPlayBtn').dataset.id = hero.id;
     $('#heroVideo').dataset.id = hero.id;
 }
@@ -706,14 +877,15 @@ function renderGrid() {
         const card = document.createElement('div');
         card.className = 'video-card';
         card.style.animationDelay = `${Math.min(i * 0.04, 0.4)}s`;
+        const chMeta = allChannels()[v.ch] || { label: v.ch, cls: 'ch-cx0' };
         card.innerHTML = `
             <div class="card-thumb">
-                <span class="card-channel-badge ${CHANNELS[v.ch].cls}">${CHANNELS[v.ch].label}</span>
+                <span class="card-channel-badge ${chMeta.cls}">${chMeta.label}</span>
                 <img src="${thumb(v)}" alt="${v.title}" loading="lazy">
             </div>
             <div class="card-info">
                 <div class="card-title">${v.title}</div>
-                <div class="card-channel">${CHANNELS[v.ch].label}</div>
+                <div class="card-channel">${chMeta.label}</div>
             </div>`;
         card.addEventListener('click', () => openPlayer(v));
         grid.appendChild(card);
@@ -721,7 +893,7 @@ function renderGrid() {
 
     $('#emptyState').hidden = list.length > 0;
     $('#sectionTitle').textContent =
-        t('recent') + (activeChannel === 'all' ? '' : ` — ${CHANNELS[activeChannel].label}`);
+        t('recent') + (activeChannel === 'all' ? '' : ` — ${(allChannels()[activeChannel] || {}).label || activeChannel}`);
 }
 
 /* ────────────────────────────────────────
@@ -738,7 +910,7 @@ function shuffle(arr) {
 
 function renderSuggestions(current) {
     const box = $('#suggestBox');
-    const pool = VIDEOS.filter((v) => v.id !== current.id);
+    const pool = allVideos().filter((v) => v.id !== current.id);
     const byChannel = {};
     pool.forEach((v) => { (byChannel[v.ch] = byChannel[v.ch] || []).push(v); });
     const picked = [];
@@ -759,7 +931,7 @@ function renderSuggestions(current) {
             <img src="${thumb(v)}" alt="${v.title}" loading="lazy">
             <div class="sug-info">
                 <div class="sug-title">${v.title}</div>
-                <div class="sug-channel">${CHANNELS[v.ch].label}</div>
+                <div class="sug-channel">${(allChannels()[v.ch] || {}).label || v.ch}</div>
             </div>`;
         item.addEventListener('click', () => loadVideo(v));
         box.appendChild(item);
@@ -768,7 +940,7 @@ function renderSuggestions(current) {
 
 function loadVideo(v) {
     $('#playerTitle').textContent = v.title;
-    $('#playerChannel').textContent = CHANNELS[v.ch].label;
+    $('#playerChannel').textContent = (allChannels()[v.ch] || {}).label || v.ch;
     $('#playerDesc').textContent = `https://youtu.be/${v.id}`;
     const frame = $('#playerFrame');
     frame.src = embedUrl(v, true);
@@ -804,6 +976,8 @@ function applyI18n() {
         el.title = t(el.dataset.i18nTitle);
     });
     // Re-render dynamic text
+    renderTabs();
+    renderChannelList();
     renderHero();
     renderGrid();
 }
@@ -821,6 +995,173 @@ function initTheme() {
 }
 
 /* ────────────────────────────────────────
+   SETTINGS — linked channels & add channel
+──────────────────────────────────────── */
+function openSettings() {
+    $('#apiKeyInput').value = getApiKey();
+    renderChannelList();
+    hideFeedback();
+    $('#settingsModal').classList.add('open');
+}
+
+function closeSettings() {
+    $('#settingsModal').classList.remove('open');
+    hideFeedback();
+}
+
+function showFeedback(msg, ok = false) {
+    const fb = $('#settingsFeedback');
+    fb.textContent = msg;
+    fb.hidden = false;
+    fb.className = 'settings-feedback' + (ok ? ' ok' : ' err');
+}
+
+function hideFeedback() {
+    const fb = $('#settingsFeedback');
+    fb.hidden = true;
+    fb.textContent = '';
+    fb.className = 'settings-feedback';
+}
+
+function renderChannelList() {
+    const box = $('#channelList');
+    const chs = allChannels();
+    const order = Object.keys(CHANNELS).concat(getCustomChannels().map((c) => c.key));
+    box.innerHTML = '';
+    order.forEach((key) => {
+        const c = chs[key];
+        if (!c) return;
+        const item = document.createElement('div');
+        item.className = 'channel-list-item';
+        const dot = `<span class="ch-dot ${c.cls}"></span>`;
+        const info = `
+            <div class="ch-info">
+                <div class="ch-name">${c.label}</div>
+                <div class="ch-handle">${c.handle || ''}</div>
+            </div>`;
+        const action = c.custom
+            ? `<button class="ch-remove" data-key="${key}" title="${t('remove')}" aria-label="${t('remove')}">✕</button>`
+            : `<span class="ch-badge-builtin">${t('builtinBadge')}</span>`;
+        item.innerHTML = dot + info + action;
+        box.appendChild(item);
+    });
+    box.querySelectorAll('.ch-remove').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            if (confirm(t('removeConfirm'))) removeCustomChannel(btn.dataset.key);
+        });
+    });
+}
+
+function removeCustomChannel(key) {
+    const list = getCustomChannels().filter((c) => c.key !== key);
+    saveCustomChannels(list);
+    if (activeChannel === key) activeChannel = 'all';
+    renderTabs();
+    renderChannelList();
+    renderHero();
+    renderGrid();
+}
+
+function parseChannelInput(input) {
+    const s = input.trim();
+    if (!s) return null;
+    if (/^(https?:\/\/)?(www\.|m\.)?(youtube\.com|youtu\.be)/i.test(s)) {
+        const m = s.match(/(?:youtube\.com|youtu\.be)\/(?:@|channel\/|c\/|user\/)?([^\/?#\s]+)/i);
+        if (m) {
+            const part = m[1].replace(/\/+$/, '');
+            if (/^UC[\w-]{22}$/.test(part)) return { handle: null, id: part };
+            return { handle: part.startsWith('@') ? part : '@' + part, id: null };
+        }
+    }
+    if (/^UC[\w-]{22}$/.test(s)) return { handle: null, id: s };
+    return { handle: s.startsWith('@') ? s : '@' + s, id: null };
+}
+
+async function resolveChannel(channelId, handle, key) {
+    let url = `${YT_API_BASE}/channels?part=snippet,statistics&key=${encodeURIComponent(key)}`;
+    url += channelId ? `&id=${encodeURIComponent(channelId)}` : `&forHandle=${encodeURIComponent(handle)}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if (data.error) {
+        if (data.error.code === 403) return { error: 'quota' };
+        if (data.error.code === 404 || data.error.code === 400) return { error: 'notfound' };
+        return { error: 'network' };
+    }
+    if (!data.items || data.items.length === 0) return { error: 'notfound' };
+    const ch = data.items[0];
+    return {
+        channelId: ch.id,
+        title: ch.snippet.title,
+        handle: ch.snippet.customUrl || handle,
+        videoCount: parseInt(ch.statistics.videoCount || '0', 10),
+    };
+}
+
+async function fetchChannelVideos(channelId, key) {
+    const url = `${YT_API_BASE}/search?part=snippet&channelId=${encodeURIComponent(channelId)}&type=video&order=viewCount&maxResults=30&key=${encodeURIComponent(key)}`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if (data.error) return [];
+    return (data.items || [])
+        .filter((it) => it.id && it.id.videoId)
+        .map((it) => ({ id: it.id.videoId, title: it.snippet.title }));
+}
+
+async function addChannel() {
+    const input = $('#customChannelInput').value.trim();
+    if (!input) { showFeedback(t('errEmpty'), false); return; }
+    const key = getApiKey();
+    if (!key) { showFeedback(t('errNoKey'), false); return; }
+    const parsed = parseChannelInput(input);
+    if (!parsed) { showFeedback(t('errInvalid'), false); return; }
+
+    const btn = $('#addChannelBtn');
+    const oldText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = t('checking');
+    try {
+        const resolved = await resolveChannel(parsed.id, parsed.handle, key);
+        if (resolved.error) {
+            showFeedback(t('err' + resolved.error.charAt(0).toUpperCase() + resolved.error.slice(1)), false);
+            return;
+        }
+        if (CHANNELS[resolved.channelId] || getCustomChannels().some((c) => c.key === resolved.channelId)) {
+            showFeedback(t('errDuplicate'), false);
+            return;
+        }
+        const videos = await fetchChannelVideos(resolved.channelId, key);
+        if (videos.length === 0) {
+            showFeedback(t('errNoVideos'), false);
+            return;
+        }
+        const list = getCustomChannels();
+        list.push({
+            key: resolved.channelId,
+            label: resolved.title,
+            handle: resolved.handle || '',
+            videos,
+        });
+        saveCustomChannels(list);
+        $('#customChannelInput').value = '';
+        renderTabs();
+        renderChannelList();
+        renderHero();
+        renderGrid();
+        showFeedback(t('added'), true);
+    } catch (e) {
+        showFeedback(t('errNetwork'), false);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = oldText;
+    }
+}
+
+function initSettings() {
+    $('#apiKeyInput').value = getApiKey();
+    renderChannelList();
+}
+
+/* ────────────────────────────────────────
    EVENTS
 ──────────────────────────────────────── */
 function bindEvents() {
@@ -831,14 +1172,28 @@ function bindEvents() {
         localStorage.setItem('utube-night', on ? '1' : '0');
     });
 
-    document.querySelectorAll('.ch-tab').forEach((tab) => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.ch-tab').forEach((x) => x.classList.remove('active'));
-            tab.classList.add('active');
-            activeChannel = tab.dataset.channel;
-            renderHero();
-            renderGrid();
-        });
+    $('#channelTabs').addEventListener('click', (e) => {
+        const tab = e.target.closest('.ch-tab');
+        if (!tab) return;
+        document.querySelectorAll('.ch-tab').forEach((x) => x.classList.remove('active'));
+        tab.classList.add('active');
+        activeChannel = tab.dataset.channel;
+        renderHero();
+        renderGrid();
+    });
+
+    $('#settingsBtn').addEventListener('click', openSettings);
+    $('#settingsCloseBtn').addEventListener('click', closeSettings);
+    $('#settingsModal').addEventListener('click', (e) => {
+        if (e.target === $('#settingsModal')) closeSettings();
+    });
+    $('#saveApiKeyBtn').addEventListener('click', () => {
+        setApiKey($('#apiKeyInput').value);
+        showFeedback(t('keySaved'), true);
+    });
+    $('#addChannelBtn').addEventListener('click', addChannel);
+    $('#customChannelInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') addChannel();
     });
 
     let debounce;
@@ -852,12 +1207,12 @@ function bindEvents() {
     });
 
     $('#heroPlayBtn').addEventListener('click', (e) => {
-        const v = VIDEOS.find((x) => x.id === e.currentTarget.dataset.id);
+        const v = findVideoById(e.currentTarget.dataset.id);
         if (v) openPlayer(v);
     });
 
     $('#heroVideo').addEventListener('click', (e) => {
-        const v = VIDEOS.find((x) => x.id === e.currentTarget.dataset.id);
+        const v = findVideoById(e.currentTarget.dataset.id);
         if (v) openPlayer(v);
     });
 
@@ -866,7 +1221,10 @@ function bindEvents() {
         if (e.target === $('#playerModal')) closePlayer();
     });
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closePlayer();
+        if (e.key === 'Escape') {
+            if ($('#settingsModal').classList.contains('open')) closeSettings();
+            else closePlayer();
+        }
     });
 }
 
@@ -877,6 +1235,8 @@ function bindEvents() {
     const savedLang = localStorage.getItem('utube-lang');
     if (savedLang && LANGS.some((l) => l.code === savedLang)) lang = savedLang;
     initTheme();
+    initSettings();
+    renderTabs();
     bindEvents();
     applyI18n();
     renderHero();

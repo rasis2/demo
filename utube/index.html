@@ -24,6 +24,7 @@
         <div class="topbar-right">
             <button id="langBtn" class="lang-btn">BM</button>
             <button id="nightBtn" class="night-btn" title="Gelap/Terang" aria-label="Gelap">🌙</button>
+            <button id="settingsBtn" class="night-btn" data-i18n-title="settings" title="Tetapan" aria-label="Tetapan">⚙️</button>
         </div>
     </header>
 
@@ -35,17 +36,7 @@
 
     <!-- ═══════════ CHANNEL TABS ═══════════ -->
     <nav class="channel-tabs" id="channelTabs">
-        <button class="ch-tab active" data-channel="all"><span class="ch-icon">✨</span><span data-i18n="tabAll">Semua</span></button>
-        <button class="ch-tab" data-channel="monsta"><span class="ch-icon">⚡</span><span>MONSTA</span></button>
-        <button class="ch-tab" data-channel="papazola"><span class="ch-icon">🍕</span><span>Papa Zola</span></button>
-        <button class="ch-tab" data-channel="upinipin"><span class="ch-icon">🌙</span><span>Upin &amp; Ipin</span></button>
-        <button class="ch-tab" data-channel="ejenali"><span class="ch-icon">🕵️</span><span>Ejen Ali</span></button>
-        <button class="ch-tab" data-channel="didi"><span class="ch-icon">🐤</span><span>Didi &amp; Friends</span></button>
-        <button class="ch-tab" data-channel="durioo"><span class="ch-icon">🕌</span><span>Durioo+</span></button>
-        <button class="ch-tab" data-channel="msrachel"><span class="ch-icon">🎓</span><span>Ms Rachel</span></button>
-        <button class="ch-tab" data-channel="alifsofia"><span class="ch-icon">🌸</span><span>Alif &amp; Sofia</span></button>
-        <button class="ch-tab" data-channel="omarhana"><span class="ch-icon">🌙</span><span>Omar &amp; Hana</span></button>
-        <button class="ch-tab" data-channel="learnwithzakaria"><span class="ch-icon">🎨</span><span>Learn with Zakaria</span></button>
+        <!-- tabs injected by JS (built-in + custom channels) -->
     </nav>
 
     <!-- ═══════════ CONTENT ═══════════ -->
@@ -103,6 +94,40 @@
                     <h4 class="suggest-title" data-i18n="next">Tonton Seterusnya</h4>
                     <div class="suggest-box" id="suggestBox"><!-- suggestions injected by JS --></div>
                 </aside>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ SETTINGS MODAL ═══════════ -->
+    <div class="player-modal" id="settingsModal">
+        <div class="player-shell settings-shell">
+            <div class="player-top">
+                <h3 class="player-title" data-i18n="settings">Tetapan</h3>
+                <button class="close-btn" id="settingsCloseBtn" aria-label="Tutup">✕</button>
+            </div>
+            <div class="settings-body">
+
+                <section class="settings-section">
+                    <h4 class="settings-title" data-i18n="apiKeyLabel">Kunci API YouTube</h4>
+                    <input type="text" id="apiKeyInput" class="settings-input" data-i18n-ph="apiKeyPh" placeholder="Paste kunci API di sini..." autocomplete="off" spellcheck="false" />
+                    <p class="settings-hint" data-i18n="apiKeyHelp">Diperlukan untuk mengesahkan saluran. Dapatkan secara percuma di Google Cloud Console (dayakan "YouTube Data API v3").</p>
+                    <button id="saveApiKeyBtn" class="btn-play btn-small" data-i18n="saveBtn">Simpan</button>
+                </section>
+
+                <section class="settings-section">
+                    <h4 class="settings-title" data-i18n="linkedChannels">Saluran Terhubung</h4>
+                    <div class="channel-list" id="channelList"><!-- injected by JS --></div>
+                </section>
+
+                <section class="settings-section">
+                    <h4 class="settings-title" data-i18n="addChannelTitle">Tambah Saluran</h4>
+                    <div class="settings-row">
+                        <input type="text" id="customChannelInput" class="settings-input" data-i18n-ph="channelPh" placeholder="@handle, pautan atau ID saluran..." autocomplete="off" spellcheck="false" />
+                        <button id="addChannelBtn" class="btn-play btn-small" data-i18n="addBtn">Tambah</button>
+                    </div>
+                    <div id="settingsFeedback" class="settings-feedback" hidden></div>
+                </section>
+
             </div>
         </div>
     </div>
