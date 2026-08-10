@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kenderaan & Parkir — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .mode-row { display:flex; gap:6px; margin-bottom:14px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .mode { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
+    .mode.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+    .veh-card { display:flex; align-items:center; gap:12px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; }
+    .veh-plate { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:15px; background:var(--surface); border:1px solid var(--border2); padding:6px 12px; border-radius:7px; letter-spacing:0.5px; }
+    .veh-meta { font-size:12px; color:var(--text-muted); }
+    .btn-sm-danger { background:var(--red-dim); color:var(--red); border:1px solid rgba(224,92,92,0.3); border-radius:7px; padding:6px 12px; font-size:11px; font-weight:600; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon gold">🚗</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+
+    <div class="mode-row animate-in">
+      <div class="mode active" id="modeOwner" onclick="switchMode('owner')">🏠 <span id="txt-mode-owner"></span></div>
+      <div class="mode" id="modeAdmin" onclick="switchMode('admin')">⚙️ <span id="txt-mode-admin"></span></div>
+    </div>
+
+    <div id="ownerLogin">
+      <div class="section animate-in">
+        <div class="section-title" id="txt-login-title"></div>
+        <div class="field"><label id="txt-unit-lbl"></label><input id="unit" onkeydown="if(event.key==='Enter')ownerLogin()"></div>
+        <div class="field"><label id="txt-cred-lbl"></label><input id="cred" onkeydown="if(event.key==='Enter')ownerLogin()"></div>
+        <div class="error-text" id="err" style="margin-bottom:8px"></div>
+        <button class="btn btn-gold" onclick="ownerLogin()" id="txt-login-btn"></button>
+      </div>
+    </div>
+
+    <div id="adminPinBox" style="display:none">
+      <div class="section animate-in">
+        <div class="section-title" id="txt-admin-pin-title"></div>
+        <div class="field"><input type="password" id="pin" maxlength="10" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+        <button class="btn btn-gold" onclick="adminLogin()" id="txt-admin-login-btn"></button>
+      </div>
+    </div>
+
+    <div id="content" style="display:none">
+      <div id="ownerContent">
+        <div class="section animate-in">
+          <div class="section-title" id="txt-reg-section"></div>
+          <div class="field"><label id="txt-veh-plate"></label><input id="plate" maxlength="10" placeholder=""></div>
+          <div class="field"><label id="txt-veh-model"></label><input id="model" maxlength="40" placeholder=""></div>
+          <div class="field"><label id="txt-veh-lot"></label><input id="lot" maxlength="10" placeholder=""></div>
+          <button class="btn btn-gold" onclick="register()" id="txt-veh-add"></button>
+        </div>
+        <div class="section animate-in">
+          <div class="section-title" id="txt-list-section"></div>
+          <div id="myVeh"></div>
+        </div>
+      </div>
+
+      <div id="adminContent" style="display:none">
+        <div class="section animate-in">
+          <div class="section-title" id="txt-all-section"></div>
+          <div id="allVeh"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    renderNav('veh_title')
+    const $ = id => document.getElementById(id)
+    let mode = 'owner', curUnit = null
+
+    $('txt-title').textContent = t('veh_title'); $('txt-subtitle').textContent = t('veh_subtitle')
+    $('txt-mode-owner').textContent = t('role_owner'); $('txt-mode-admin').textContent = t('role_admin')
+    $('txt-login-title').textContent = t('owner_section_login')
+    $('txt-unit-lbl').textContent = t('owner_unit_label'); $('txt-cred-lbl').textContent = t('owner_credential_label')
+    $('txt-login-btn').textContent = t('check')
+    $('txt-admin-pin-title').textContent = t('admin_pin_title'); $('txt-admin-login-btn').textContent = t('enter')
+    $('txt-reg-section').textContent = t('veh_reg_section')
+    $('txt-veh-plate').textContent = t('veh_plate'); $('plate').placeholder = t('veh_ph_plate')
+    $('txt-veh-model').textContent = t('veh_model'); $('model').placeholder = t('veh_ph_model')
+    $('txt-veh-lot').textContent = t('veh_lot'); $('lot').placeholder = t('veh_ph_lot')
+    $('txt-veh-add').textContent = '✓ ' + t('veh_add'); $('txt-list-section').textContent = t('veh_list_section')
+    $('txt-all-section').textContent = t('veh_list_section')
+
+    function switchMode(m) {
+      mode = m
+      $('modeOwner').classList.toggle('active', m === 'owner')
+      $('modeAdmin').classList.toggle('active', m === 'admin')
+      $('ownerLogin').style.display = m === 'owner' ? 'block' : 'none'
+      $('adminPinBox').style.display = m === 'admin' ? 'block' : 'none'
+      $('content').style.display = 'none'
+    }
+
+    function ownerLogin() {
+      const unit = $('unit').value.trim(), cred = $('cred').value.trim()
+      if (!unit || !cred) { $('err').textContent = t('owner_error_fill'); return }
+      const isEmail = cred.includes('@')
+      apiCheckOwner({ unit, email: isEmail ? cred : '', phone: isEmail ? '' : cred }).then(d => {
+        if (d.error) { $('err').textContent = d.error; return }
+        curUnit = d.owner.unit; $('err').textContent = ''
+        $('content').style.display = 'block'
+        $('adminContent').style.display = 'none'
+        $('ownerContent').style.display = 'block'
+        loadMyVeh()
+      })
+    }
+
+    function adminLogin() {
+      if ($('pin').value !== kj_load().settings.pin_admin) { showToast(t('admin_pin_error'), 'error-toast'); return }
+      curUnit = null
+      $('content').style.display = 'block'
+      $('ownerContent').style.display = 'none'
+      $('adminContent').style.display = 'block'
+      loadAllVeh()
+    }
+
+    async function register() {
+      if (!curUnit) { showToast(t('veh_login_hint'), 'error-toast'); return }
+      const plate = $('plate').value.trim().toUpperCase()
+      if (!plate) { showToast(t('veh_ph_plate'), 'error-toast'); return }
+      await apiAddVehicle({ unit: curUnit, plate, model: $('model').value.trim(), lot: $('lot').value.trim().toUpperCase() })
+      showToast(t('veh_success'), 'success')
+      $('plate').value = ''; $('model').value = ''; $('lot').value = ''
+      loadMyVeh()
+    }
+
+    function renderVeh(el, list, removable) {
+      if (!list.length) { el.innerHTML = emptyState('🚗', t('veh_empty')); return }
+      el.innerHTML = list.map(v =>
+        '<div class="veh-card"><span class="veh-plate">' + esc(v.plate) + '</span>' +
+          '<div style="flex:1"><div style="font-weight:700">' + esc(v.model || '—') + '</div>' +
+          '<div class="veh-meta">Unit ' + esc(v.unit) + (v.lot ? ' · ' + t('veh_lot') + ': ' + esc(v.lot) : '') + '</div></div>' +
+          (removable ? '<button class="btn-sm-danger" onclick="removeVeh(\'' + v.id + '\')">' + t('veh_remove') + '</button>' : '') +
+        '</div>'
+      ).join('')
+    }
+
+    async function loadMyVeh() {
+      const all = await apiGetVehicles()
+      renderVeh($('myVeh'), all.filter(v => v.unit === curUnit), true)
+    }
+    async function loadAllVeh() {
+      renderVeh($('allVeh'), await apiGetVehicles(), true)
+    }
+    async function removeVeh(id) {
+      await apiDeleteVehicle(id)
+      showToast(t('veh_removed'), 'success')
+      if (mode === 'admin') loadAllVeh(); else loadMyVeh()
+    }
+  </script>
+</body>
+</html>

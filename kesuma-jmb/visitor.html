@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
+    .hub { width:100%; max-width:480px; padding:40px 20px 60px; }
+    .back-home { display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); text-decoration:none; font-size:13px; margin-bottom:32px; padding:6px 12px; border-radius:8px; border:1px solid var(--border); background:var(--surface); transition:all 0.2s; }
+    .back-home:hover { color:var(--text); border-color:var(--border2); }
+    .hub-header { margin-bottom:28px; }
+    .hub-icon { font-size:40px; margin-bottom:12px; }
+    .hub-title { font-family:var(--heading-font); font-size:28px; font-weight:800; letter-spacing:-1px; margin-bottom:6px; }
+    .hub-subtitle { color:var(--text-muted); font-size:13px; }
+    .role-cards { display:flex; flex-direction:column; gap:10px; }
+    .role-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px 20px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:16px; transition:all 0.2s; }
+    .role-card:hover { border-color:rgba(var(--accent-rgb),0.4); transform:translateX(4px); box-shadow:var(--shadow); }
+    .role-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .role-icon.green { background:var(--green-dim); border:1px solid rgba(76,175,125,0.2); }
+    .role-icon.blue { background:rgba(99,179,237,0.12); border:1px solid rgba(99,179,237,0.2); }
+    .role-icon.purple { background:rgba(159,122,234,0.12); border:1px solid rgba(159,122,234,0.2); }
+    .role-info { flex:1; }
+    .role-label { font-family:var(--heading-font); font-size:15px; font-weight:700; margin-bottom:3px; }
+    .role-desc { font-size:12px; color:var(--text-muted); }
+    .role-arrow { color:var(--text-muted); font-size:16px; transition:all 0.2s; }
+    .role-card:hover .role-arrow { color:var(--accent); transform:translateX(3px); }
+  </style>
+</head>
+<body>
+  <div class="hub animate-in">
+    <a href="index.html" class="back-home">← Kesuma JMB</a>
+    <div class="hub-header">
+      <div class="hub-icon">🪪</div>
+      <h1 class="hub-title" id="txt-title"></h1>
+      <p class="hub-subtitle" id="txt-subtitle"></p>
+    </div>
+    <div class="role-cards">
+      <a href="visitor-register.html" class="role-card">
+        <div class="role-icon green">📝</div>
+        <div class="role-info">
+          <div class="role-label" id="txt-register"></div>
+          <div class="role-desc" id="txt-register-desc"></div>
+        </div>
+        <span class="role-arrow">→</span>
+      </a>
+      <a href="visitor-check.html" class="role-card">
+        <div class="role-icon blue">🔍</div>
+        <div class="role-info">
+          <div class="role-label" id="txt-check"></div>
+          <div class="role-desc" id="txt-check-desc"></div>
+        </div>
+        <span class="role-arrow">→</span>
+      </a>
+      <a href="guard.html" class="role-card">
+        <div class="role-icon purple">🛡️</div>
+        <div class="role-info">
+          <div class="role-label" id="txt-guard"></div>
+          <div class="role-desc" id="txt-guard-desc"></div>
+        </div>
+        <span class="role-arrow">→</span>
+      </a>
+    </div>
+  </div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    applyTheme()
+    document.getElementById('txt-title').textContent = t('sys_visitor')
+    document.getElementById('txt-subtitle').textContent = t('sys_visitor_desc')
+    document.getElementById('txt-register').textContent = t('vis_register_title')
+    document.getElementById('txt-register-desc').textContent = t('vis_register_desc')
+    document.getElementById('txt-check').textContent = t('vis_check_title')
+    document.getElementById('txt-check-desc').textContent = t('vis_check_desc')
+    document.getElementById('txt-guard').textContent = t('guard_title')
+    document.getElementById('txt-guard-desc').textContent = t('guard_desc')
+  </script>
+</body>
+</html>

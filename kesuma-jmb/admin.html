@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .badge-urgent { background:rgba(224,92,92,0.15); color:var(--red); border:1px solid rgba(224,92,92,0.3); }
+    .tab-bar { display:flex; gap:6px; margin-bottom:16px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
+    .tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+    .vis-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; gap:8px; }
+    .vis-row:last-child { border-bottom:none; }
+    .vis-row-name { font-weight:600; }
+    .vis-row-meta { font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
+    .btn-sm { padding:5px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; border:none; font-family:var(--body-font); transition:all 0.2s; }
+    .btn-approve { background:var(--green); color:#fff; }
+    .btn-reject { background:var(--red); color:#fff; }
+    .mod-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; }
+    .mod-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; text-decoration:none; color:inherit; padding:16px 10px; text-align:center; transition:all 0.2s; }
+    .mod-card:hover { border-color:rgba(var(--accent-rgb),0.4); background:var(--surface); transform:translateY(-1px); }
+    .mod-card .mi { font-size:22px; margin-bottom:6px; }
+    .mod-card .mn { font-size:11px; font-weight:700; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+
+  <div id="pinGate" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 57px)">
+    <div style="width:100%;max-width:360px;padding:20px">
+      <div class="section animate-in">
+        <div class="page-icon red" style="margin-bottom:18px">⚙️</div>
+        <h2 style="font-family:var(--heading-font);font-size:22px;font-weight:800;margin-bottom:5px;letter-spacing:-0.5px" id="txt-pin-title"></h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px" id="txt-pin-subtitle"></p>
+        <div class="field">
+          <label id="txt-pin-label"></label>
+          <input type="password" id="adminPin" maxlength="10" onkeydown="if(event.key==='Enter')unlockAdmin()">
+          <div class="error-text" id="pinError"></div>
+        </div>
+        <button class="btn btn-gold" onclick="unlockAdmin()" style="margin-top:4px" id="txt-enter-btn"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard" style="display:none">
+    <main class="main">
+      <div class="page-header animate-in">
+        <div class="page-icon red">⚙️</div>
+        <h1 class="page-title" id="txt-title"></h1>
+        <p class="page-subtitle" id="txt-subtitle"></p>
+      </div>
+
+      <!-- Quick access to admin modules -->
+      <div class="section animate-in">
+        <div class="section-title" id="txt-modules"></div>
+        <div class="mod-grid" id="modGrid"></div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-bar animate-in">
+        <div class="tab active" onclick="switchTab('parcel')" id="tab-parcel"></div>
+        <div class="tab" onclick="switchTab('visitor')" id="tab-visitor"></div>
+      </div>
+
+      <!-- ══ PARCEL TAB ══ -->
+      <div id="parcelTab">
+        <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+          <div style="flex:1;padding:16px;text-align:center;border-right:1px solid var(--border)">
+            <div id="statTotal" class="num" style="font-size:24px">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-units"></div>
+          </div>
+          <div style="flex:1;padding:16px;text-align:center;border-right:1px solid var(--border)">
+            <div id="statPending" class="num" style="font-size:24px;color:var(--accent)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-pending"></div>
+          </div>
+          <div style="flex:1;padding:16px;text-align:center">
+            <div id="statDone" class="num" style="font-size:24px;color:var(--green)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-done"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap" class="animate-in">
+          <input id="searchInput" oninput="applyFilters()" style="flex:1;min-width:120px;height:40px" placeholder="">
+          <div class="select-wrap" style="flex:0 0 150px">
+            <select id="statusFilter" onchange="applyFilters()" style="height:40px">
+              <option value="all" id="opt-all"></option>
+              <option value="hasPending" id="opt-pending"></option>
+              <option value="urgent" id="opt-urgent"></option>
+              <option value="recent" id="opt-recent"></option>
+              <option value="done" id="opt-done"></option>
+            </select>
+          </div>
+        </div>
+        <div class="section animate-in" style="padding:0;overflow:hidden">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th id="col-unit"></th><th id="col-email"></th><th id="col-phone"></th>
+                <th style="text-align:center">⏳</th><th style="text-align:center">✓</th><th></th>
+              </tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="pagination animate-in">
+          <button class="btn btn-outline" onclick="prevPage()" id="txt-prev"></button>
+          <span class="page-info" id="pageInfo">—</span>
+          <button class="btn btn-outline" onclick="nextPage()" id="txt-next"></button>
+        </div>
+      </div>
+
+      <!-- ══ VISITOR TAB ══ -->
+      <div id="visitorTab" style="display:none">
+        <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+          <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+            <div id="vStatPending" class="num" style="font-size:22px;color:var(--accent)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-vstat-pending"></div>
+          </div>
+          <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+            <div id="vStatApproved" class="num" style="font-size:22px;color:var(--green)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-vstat-approved"></div>
+          </div>
+          <div style="flex:1;padding:14px;text-align:center">
+            <div id="vStatIn" class="num" style="font-size:22px;color:#63b3ed">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-vstat-in"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <input id="visSearchInput" oninput="applyVisitorFilter()" style="flex:1;min-width:120px;height:40px" placeholder="">
+          <div class="select-wrap" style="flex:0 0 150px">
+            <select id="visStatusFilter" onchange="applyVisitorFilter()" style="height:40px">
+              <option value="all" id="vopt-all"></option>
+              <option value="Pending" id="vopt-pending"></option>
+              <option value="Approved" id="vopt-approved"></option>
+              <option value="Rejected" id="vopt-rejected"></option>
+              <option value="Checked In" id="vopt-checkedin"></option>
+            </select>
+          </div>
+        </div>
+        <div class="section animate-in" style="padding:10px 16px">
+          <div id="visitorList"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    renderNav('card_admin')
+    const $ = id => document.getElementById(id)
+    $('txt-pin-title').textContent = t('admin_pin_title')
+    $('txt-pin-subtitle').textContent = t('admin_pin_subtitle')
+    $('txt-pin-label').textContent = t('admin_pin_label')
+    $('adminPin').placeholder = '••••'
+    $('txt-enter-btn').textContent = t('enter')
+    $('txt-title').textContent = t('admin_title')
+    $('txt-subtitle').textContent = t('admin_subtitle')
+    $('txt-modules').textContent = t('dash_quick')
+    $('txt-stat-units').textContent = t('admin_units')
+    $('txt-stat-pending').textContent = t('admin_pending')
+    $('txt-stat-done').textContent = t('admin_done')
+    $('searchInput').placeholder = t('admin_search')
+    $('opt-all').textContent = t('admin_filter_all')
+    $('opt-pending').textContent = t('admin_filter_pending')
+    $('opt-urgent').textContent = '🔴 ' + t('admin_urgent')
+    $('opt-recent').textContent = '🟡 ' + t('admin_recent')
+    $('opt-done').textContent = t('admin_filter_done')
+    $('col-unit').textContent = t('admin_col_unit')
+    $('col-email').textContent = t('admin_col_email')
+    $('col-phone').textContent = t('admin_col_phone')
+    $('txt-prev').textContent = t('admin_prev')
+    $('txt-next').textContent = t('admin_next')
+    $('tab-parcel').textContent = '📦 ' + t('sys_parcel')
+    $('tab-visitor').textContent = '🪪 ' + t('sys_visitor')
+    $('txt-vstat-pending').textContent = t('vis_status_pending')
+    $('txt-vstat-approved').textContent = t('vis_status_approved')
+    $('txt-vstat-in').textContent = t('vis_status_checkedin')
+    $('vopt-all').textContent = t('admin_filter_all')
+    $('vopt-pending').textContent = t('vis_status_pending')
+    $('vopt-approved').textContent = t('vis_status_approved')
+    $('vopt-rejected').textContent = t('vis_status_rejected')
+    $('vopt-checkedin').textContent = t('vis_status_checkedin')
+    $('visSearchInput').placeholder = t('admin_search')
+
+    const MODULES = [
+      ['📊', 'sys_dashboard', 'dashboard.html'], ['🔧', 'sys_maintenance', 'maintenance.html'],
+      ['💰', 'sys_payments', 'payments.html'], ['📢', 'sys_announcements', 'announcements.html'],
+      ['📅', 'sys_bookings', 'bookings.html'], ['🚗', 'sys_vehicles', 'vehicles.html'],
+      ['📄', 'sys_documents', 'documents.html'], ['👥', 'sys_residents', 'residents.html'],
+    ]
+    $('modGrid').innerHTML = MODULES.map(m =>
+      '<a class="mod-card" href="' + m[2] + '"><div class="mi">' + m[0] + '</div><div class="mn">' + t(m[1]) + '</div></a>'
+    ).join('')
+
+    let allData = [], filtered = [], page = 1, allVisitors = []
+    const perPage = 15, TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000
+
+    function showToast(msg, type) {
+      const el = $('toast'); el.textContent = msg; el.className = 'toast ' + (type || '') + ' show'
+      setTimeout(() => el.className = 'toast', 2800)
+    }
+
+    function switchTab(tab) {
+      $('tab-parcel').classList.toggle('active', tab === 'parcel')
+      $('tab-visitor').classList.toggle('active', tab === 'visitor')
+      $('parcelTab').style.display = tab === 'parcel' ? 'block' : 'none'
+      $('visitorTab').style.display = tab === 'visitor' ? 'block' : 'none'
+    }
+
+    function unlockAdmin() {
+      if ($('adminPin').value !== kj_load().settings.pin_admin) { $('pinError').textContent = t('admin_pin_error'); return }
+      $('pinGate').style.display = 'none'; $('dashboard').style.display = 'block'
+      loadAdmin(); loadAdminVisitors()
+    }
+
+    function isUrgent(parcel) {
+      if (!parcel.createdAt || parcel.status !== 'Pending') return false
+      return (Date.now() - new Date(parcel.createdAt).getTime()) > TWO_DAYS_MS
+    }
+
+    function loadAdmin() {
+      apiAdmin().then(data => {
+        allData = data
+        const totalPending = data.reduce((a, o) => a + o.parcels.filter(p => p.status === 'Pending').length, 0)
+        const totalDone = data.reduce((a, o) => a + o.parcels.filter(p => p.status === 'Done').length, 0)
+        $('statTotal').textContent = data.length
+        $('statPending').textContent = totalPending
+        $('statDone').textContent = totalDone
+        applyFilters()
+      }).catch(() => showToast(t('error_server'), 'error-toast'))
+    }
+
+    async function loadAdminVisitors() {
+      try {
+        allVisitors = await apiGetVisitors()
+        $('vStatPending').textContent = allVisitors.filter(v => v.status === 'Pending').length
+        $('vStatApproved').textContent = allVisitors.filter(v => v.status === 'Approved').length
+        $('vStatIn').textContent = allVisitors.filter(v => v.status === 'Checked In').length
+        applyVisitorFilter()
+      } catch (e) { console.error(e) }
+    }
+
+    function applyFilters() {
+      const search = $('searchInput').value.toLowerCase()
+      const status = $('statusFilter').value
+      filtered = allData.filter(o => {
+        const matchSearch = o.unit.toLowerCase().includes(search) || o.email.toLowerCase().includes(search) || o.phone.includes(search)
+        const pending = o.parcels.filter(p => p.status === 'Pending')
+        const done = o.parcels.filter(p => p.status === 'Done').length
+        const hasUrgent = pending.some(p => isUrgent(p))
+        const hasRecent = pending.some(p => !isUrgent(p))
+        const matchStatus = status === 'all' || (status === 'hasPending' && pending.length > 0) || (status === 'urgent' && hasUrgent) || (status === 'recent' && hasRecent) || (status === 'done' && done > 0 && pending.length === 0)
+        return matchSearch && matchStatus
+      })
+      page = 1; render()
+    }
+
+    function render() {
+      const start = (page - 1) * perPage
+      const slice = filtered.slice(start, start + perPage)
+      const totalPages = Math.max(1, Math.ceil(filtered.length / perPage))
+      $('pageInfo').textContent = page + ' / ' + totalPages
+      let html = ''
+      slice.forEach(o => {
+        const pendingArr = o.parcels.filter(p => p.status === 'Pending')
+        const done = o.parcels.filter(p => p.status === 'Done').length
+        const urgentCount = pendingArr.filter(p => isUrgent(p)).length
+        const pending = pendingArr.length
+        let pendingBadge = ''
+        if (urgentCount > 0) pendingBadge += '<span class="badge-status badge-urgent">🔴 ' + urgentCount + '</span> '
+        if (pending - urgentCount > 0) pendingBadge += '<span class="badge-status badge-pending">🟡 ' + (pending - urgentCount) + '</span>'
+        if (pending === 0) pendingBadge = '<span style="color:var(--text-muted)">—</span>'
+        html += '<tr>' +
+          '<td><strong style="font-family:\'JetBrains Mono\',monospace;font-size:13px">' + o.unit + '</strong></td>' +
+          '<td><input id="e-' + o.unit + '" value="' + o.email + '" style="min-width:150px"></td>' +
+          '<td><input id="p-' + o.unit + '" value="' + o.phone + '" style="min-width:110px"></td>' +
+          '<td style="text-align:center;white-space:nowrap">' + pendingBadge + '</td>' +
+          '<td style="text-align:center">' + (done > 0 ? '<span class="badge-status badge-done">' + done + '</span>' : '<span style="color:var(--text-muted)">—</span>') + '</td>' +
+          '<td><button class="btn-green" onclick="saveOwner(\'' + o.unit + '\')">' + t('save') + '</button></td>' +
+        '</tr>'
+      })
+      $('tableBody').innerHTML = html
+    }
+
+    function saveOwner(unit) {
+      const email = $('e-' + unit).value
+      const phone = $('p-' + unit).value
+      apiUpdateOwner(unit, { email, phone }).then(() => {
+        const o = allData.find(x => x.unit === unit)
+        if (o) { o.email = email; o.phone = phone }
+        showToast('Unit ' + unit + ' ' + t('admin_saved'), 'success')
+      }).catch(() => showToast(t('admin_save_error'), 'error-toast'))
+    }
+
+    function prevPage() { if (page > 1) { page--; render() } }
+    function nextPage() { if (page < Math.ceil(filtered.length / perPage)) { page++; render() } }
+
+    function applyVisitorFilter() {
+      const search = $('visSearchInput').value.toUpperCase()
+      const status = $('visStatusFilter').value
+      let list = status === 'all' ? allVisitors : allVisitors.filter(v => v.status === status)
+      if (search) list = list.filter(v => v.ref_code.includes(search) || v.name.toUpperCase().includes(search) || v.unit.includes(search))
+      renderVisitorList(list)
+    }
+
+    function fmtDate(ts) {
+      if (!ts) return '—'
+      return new Date(ts).toLocaleString('ms-MY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+    }
+
+    const statusKey = { Pending: 'vis_status_pending', Approved: 'vis_status_approved', Rejected: 'vis_status_rejected', 'Checked In': 'vis_status_checkedin', 'Checked Out': 'guard_checkout' }
+
+    function renderVisitorList(list) {
+      const el = $('visitorList')
+      if (!list.length) { el.innerHTML = emptyState('🪪', t('vis_empty')); return }
+      el.innerHTML = list.map(v =>
+        '<div class="vis-row">' +
+          '<div style="flex:1;min-width:0">' +
+            '<div class="vis-row-name">' + esc(v.name) + '</div>' +
+            '<div class="vis-row-meta">' + esc(v.ref_code) + ' · Unit ' + esc(v.unit) + ' · ' + fmtDate(v.created_at) + '</div>' +
+            '<div style="font-size:11px;color:var(--text-muted)">' + esc(v.purpose) + '</div>' +
+          '</div>' +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">' +
+            badgeHtml(v.status) +
+            (v.status === 'Pending' ? '<div style="display:flex;gap:5px">' +
+              '<button class="btn-sm btn-approve" onclick="adminVisitorAction(\'' + v.id + '\',\'Approved\')">' + t('guard_approve') + '</button>' +
+              '<button class="btn-sm btn-reject" onclick="adminVisitorAction(\'' + v.id + '\',\'Rejected\')">' + t('guard_reject') + '</button></div>' : '') +
+          '</div></div>'
+      ).join('')
+    }
+
+    async function adminVisitorAction(id, status) {
+      try {
+        await apiUpdateVisitor(id, status)
+        showToast(t('guard_updated'), 'success')
+        loadAdminVisitors()
+      } catch (e) { showToast(t('error_server'), 'error-toast') }
+    }
+  </script>
+</body>
+</html>

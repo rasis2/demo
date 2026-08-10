@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cara Guna — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .acc-item { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:8px; transition:border-color 0.2s; }
+    .acc-item.open { border-color:rgba(var(--accent-rgb),0.35); }
+    .acc-header { display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; user-select:none; }
+    .acc-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .acc-icon.gold   { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); }
+    .acc-icon.teal   { background:rgba(76,175,125,0.1); border:1px solid rgba(76,175,125,0.2); }
+    .acc-icon.purple { background:rgba(159,122,234,0.1); border:1px solid rgba(159,122,234,0.2); }
+    .acc-icon.blue   { background:rgba(99,179,237,0.1); border:1px solid rgba(99,179,237,0.2); }
+    .acc-icon.red    { background:rgba(224,92,92,0.1); border:1px solid rgba(224,92,92,0.2); }
+    .acc-label { flex:1; }
+    .acc-name { font-family:var(--heading-font); font-size:14px; font-weight:800; }
+    .acc-role { font-size:11px; color:var(--text-muted); margin-top:1px; }
+    .acc-chevron { font-size:11px; color:var(--text-muted); transition:transform 0.25s; }
+    .acc-item.open .acc-chevron { transform:rotate(180deg); }
+    .acc-body { display:none; padding:0 16px 14px; }
+    .acc-item.open .acc-body { display:block; }
+    .step-list { list-style:none; padding:0; margin:0; }
+    .step-item { display:flex; gap:12px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; line-height:1.5; }
+    .step-item:last-child { border-bottom:none; }
+    .step-num { width:22px; height:22px; border-radius:50%; background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); color:var(--accent); font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    .step-text { flex:1; color:var(--text-muted); }
+    .step-text strong { color:var(--text); font-weight:600; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon gold">📖</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+    <div id="accordionList" class="animate-in" style="animation-delay:0.05s"></div>
+  </main>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    renderNav('card_how')
+
+    const content = {
+      ms: {
+        title: 'Cara Guna',
+        subtitle: 'Panduan untuk setiap fungsi sistem',
+        items: [
+          { icon:'🚚', color:'gold',   name:'Dispatcher',          role:'Kakitangan penerimaan / penghantar',
+            steps:['<strong>Login</strong> dengan PIN (1125)','<strong>Pilih tingkat</strong> kemudian pilih unit yang betul','<strong>Ambil gambar</strong> parsel dan pilih kurier','Tekan <strong>Daftar Parsel</strong> — rekod disimpan dalam sistem'] },
+          { icon:'🏠', color:'teal',   name:'Pemilik — Parsel',    role:'Semak & tandakan parsel selesai',
+            steps:['Buka halaman <strong>Pemilik</strong>','Masukkan <strong>No. Unit</strong> dan <strong>Emel ATAU No. Telefon</strong>','Pergi tab <strong>Parsel</strong> — lihat senarai parsel','Klik <strong>Selesai</strong> bila parsel dah diambil'] },
+          { icon:'📝', color:'blue',   name:'Daftar Lawatan',      role:'Pelawat dari luar yang nak masuk',
+            steps:['Buka halaman <strong>Daftar Lawatan</strong>','Isi nama, no. IC, telefon, unit yang nak dilawati, tujuan','Isi <strong>jenis kenderaan</strong> dan <strong>no. plat</strong> (wajib)','Tekan <strong>Daftar Sekarang</strong> — dapat <strong>Kod Rujukan + QR Code</strong>','<strong>Salin atau download</strong> QR, tunjuk kepada guard masa tiba'] },
+          { icon:'🏠', color:'teal',   name:'Pemilik — Pelawat',   role:'Lulus atau tolak permohonan pelawat',
+            steps:['Login ke halaman <strong>Pemilik</strong>','Pergi tab <strong>Pelawat</strong>','Semak senarai pelawat yang ada status <strong>Menunggu</strong>','Klik <strong>Lulus</strong> atau <strong>Tolak</strong> — pelawat akan dimaklumkan'] },
+          { icon:'🛡️', color:'purple', name:'Security',            role:'Pantau & urus pelawat di pintu masuk',
+            steps:['Login dengan PIN (1125)','Lihat tab <strong>Diluluskan</strong> — senarai pelawat yang sah','Bila pelawat tiba dan tunjuk QR atau kod, klik <strong>Check In</strong>','Bila pelawat keluar, klik <strong>Check Out</strong>','Pelawat status <strong>Menunggu</strong> perlu kelulusan pemilik dahulu'] },
+          { icon:'🔍', color:'blue',   name:'Semak Status Lawatan', role:'Pelawat yang ingin tahu status permohonan',
+            steps:['Buka halaman <strong>Semak Status</strong>','Masukkan <strong>Kod Rujukan</strong> (contoh: KES4X7MNP)','Tengok status — Menunggu, Diluluskan, Ditolak, atau Telah Masuk','Kalau diluluskan, tunjuk QR kepada guard di pintu masuk'] },
+          { icon:'⚙️', color:'red',    name:'Admin',               role:'Akses penuh — urus semua sistem',
+            steps:['Login dengan PIN (1125)','Tab <strong>Parsel</strong> — pantau semua unit, edit emel/telefon pemilik, semak parsel tertunggak','Tab <strong>Pelawat</strong> — semak semua rekod lawatan, filter by status, boleh lulus/tolak','Guna carian dan filter untuk cari unit atau pelawat tertentu'] },
+        ]
+      },
+      en: {
+        title: 'How It Works',
+        subtitle: 'Guide for each system function',
+        items: [
+          { icon:'🚚', color:'gold',   name:'Dispatcher',          role:'Reception staff / courier',
+            steps:['<strong>Login</strong> with PIN (1125)','<strong>Select floor</strong> then the correct unit','<strong>Take a photo</strong> of the parcel and select courier','Press <strong>Register Parcel</strong> — record saved in system'] },
+          { icon:'🏠', color:'teal',   name:'Owner — Parcels',     role:'Check & mark parcels as done',
+            steps:['Open the <strong>Owner</strong> page','Enter <strong>Unit No.</strong> and <strong>Email OR Phone</strong>','Go to <strong>Parcel</strong> tab — view parcel list','Click <strong>Done</strong> once parcel is collected'] },
+          { icon:'📝', color:'blue',   name:'Register Visit',      role:'Outside visitor wanting to enter',
+            steps:['Open <strong>Register Visit</strong> page','Fill in name, IC number, phone, unit to visit, and purpose','Enter <strong>vehicle type</strong> and <strong>plate number</strong> (required)','Press <strong>Register Now</strong> — receive <strong>Reference Code + QR Code</strong>','<strong>Copy or download</strong> the QR, show to guard on arrival'] },
+          { icon:'🏠', color:'teal',   name:'Owner — Visitors',    role:'Approve or reject visitor requests',
+            steps:['Login to <strong>Owner</strong> page','Go to <strong>Visitor</strong> tab','Check visitors with <strong>Pending</strong> status','Click <strong>Approve</strong> or <strong>Reject</strong>'] },
+          { icon:'🛡️', color:'purple', name:'Security',            role:'Monitor & manage visitors at entrance',
+            steps:['Login with PIN (1125)','Check <strong>Approved</strong> tab — list of valid visitors','When visitor arrives and shows QR or code, click <strong>Check In</strong>','When visitor leaves, click <strong>Check Out</strong>','Visitors with <strong>Pending</strong> status require owner approval first'] },
+          { icon:'🔍', color:'blue',   name:'Check Visit Status',  role:'Visitors wanting to know their request status',
+            steps:['Open <strong>Check Status</strong> page','Enter <strong>Reference Code</strong> (e.g. KES4X7MNP)','View status — Pending, Approved, Rejected, or Checked In','If approved, show QR to guard at entrance'] },
+          { icon:'⚙️', color:'red',    name:'Admin',               role:'Full access — manage all systems',
+            steps:['Login with PIN (1125)','<strong>Parcel</strong> tab — monitor all units, edit owner contacts, check overdue parcels','<strong>Visitor</strong> tab — view all visit records, filter by status, approve/reject','Use search and filter to find specific units or visitors'] },
+        ]
+      },
+      zh: {
+        title: '使用指南',
+        subtitle: '每个系统功能的操作说明',
+        items: [
+          { icon:'🚚', color:'gold',   name:'派送员',              role:'前台工作人员 / 快递员',
+            steps:['使用PIN (1125) <strong>登录</strong>','<strong>选择楼层</strong>，然后选择正确单位','<strong>拍摄</strong>包裹照片并选择快递公司','点击<strong>登记包裹</strong> — 记录保存至系统'] },
+          { icon:'🏠', color:'teal',   name:'业主 — 包裹',         role:'查看并标记包裹完成',
+            steps:['打开<strong>业主</strong>页面','输入<strong>单位号</strong>和<strong>邮箱或电话</strong>','进入<strong>包裹</strong>选项卡查看列表','领取包裹后点击<strong>完成</strong>'] },
+          { icon:'📝', color:'blue',   name:'登记访问',             role:'想要进入的外来访客',
+            steps:['打开<strong>登记访问</strong>页面','填写姓名、身份证、电话、访问单位和目的','填写<strong>车辆类型</strong>和<strong>车牌号码</strong>（必填）','点击<strong>立即登记</strong> — 获得<strong>参考码 + QR码</strong>','<strong>复制或下载</strong>QR码，到达时出示给保安'] },
+          { icon:'🏠', color:'teal',   name:'业主 — 访客',         role:'批准或拒绝访客申请',
+            steps:['登录<strong>业主</strong>页面','进入<strong>访客</strong>选项卡','查看状态为<strong>待审批</strong>的访客','点击<strong>批准</strong>或<strong>拒绝</strong>'] },
+          { icon:'🛡️', color:'purple', name:'保安',               role:'在入口处监控和管理访客',
+            steps:['使用PIN (1125) 登录','查看<strong>已批准</strong>选项卡 — 有效访客列表','访客到达并出示QR或参考码时，点击<strong>签到</strong>','访客离开时点击<strong>签出</strong>','<strong>待审批</strong>的访客需先获得业主批准'] },
+          { icon:'🔍', color:'blue',   name:'查询访问状态',         role:'想了解申请状态的访客',
+            steps:['打开<strong>查询状态</strong>页面','输入<strong>参考码</strong>（如：KES4X7MNP）','查看状态 — 待审批、已批准、已拒绝或已签到','若已批准，在入口处向保安出示QR码'] },
+          { icon:'⚙️', color:'red',    name:'管理员',              role:'完整访问权限 — 管理所有系统',
+            steps:['使用PIN (1125) 登录','<strong>包裹</strong>选项卡 — 监控所有单位、编辑业主联系方式、查看积压包裹','<strong>访客</strong>选项卡 — 查看所有访问记录、按状态筛选、批准/拒绝','使用搜索和筛选查找特定单位或访客'] },
+        ]
+      },
+      ta: {
+        title: 'பயன்படுத்தும் முறை',
+        subtitle: 'ஒவ்வொரு அமைப்பு செயல்பாட்டிற்கான வழிகாட்டி',
+        items: [
+          { icon:'🚚', color:'gold',   name:'டிஸ்பாட்சர்',         role:'வரவேற்பு ஊழியர் / கூரியர்',
+            steps:['PIN (1125) மூலம் <strong>உள்நுழைய</strong>','<strong>தளத்தை தேர்ந்தெடு</strong>, பின் சரியான யூனிட்','பார்சலை <strong>புகைப்படம் எடுத்து</strong> கூரியர் தேர்ந்தெடு','<strong>பார்சல் பதிவு</strong> கிளிக் செய்யவும்'] },
+          { icon:'🏠', color:'teal',   name:'உரிமையாளர் — பார்சல்', role:'பார்சல்களை சரிபார்க்கவும்',
+            steps:['<strong>உரிமையாளர்</strong> பக்கம் திறக்கவும்','<strong>யூனிட் எண்</strong> மற்றும் <strong>மின்னஞ்சல் அல்லது தொலைபேசி</strong> உள்ளிடவும்','<strong>பார்சல்</strong> தாவல் — பட்டியல் பார்க்கவும்','பார்சல் எடுத்த பிறகு <strong>முடிந்தது</strong> கிளிக்'] },
+          { icon:'📝', color:'blue',   name:'வருகை பதிவு',          role:'நுழைய விரும்பும் வெளி பார்வையாளர்',
+            steps:['<strong>வருகை பதிவு</strong> பக்கம் திறக்கவும்','பெயர், IC, தொலைபேசி, வருகை யூனிட், நோக்கம் நிரப்பவும்','<strong>வாகன வகை</strong> மற்றும் <strong>பதிவு எண்</strong> (கட்டாயம்) நிரப்பவும்','<strong>இப்போது பதிவு செய்</strong> — <strong>குறிப்பு எண் + QR</strong> பெறவும்','QR ஐ <strong>நகலெடுத்து அல்லது பதிவிறக்கி</strong> காவலரிடம் காட்டவும்'] },
+          { icon:'🏠', color:'teal',   name:'உரிமையாளர் — பார்வையாளர்', role:'பார்வையாளரை அனுமதி அல்லது மறு',
+            steps:['<strong>உரிமையாளர்</strong> பக்கம் உள்நுழைய','<strong>பார்வையாளர்</strong> தாவலுக்கு செல்லவும்','<strong>நிலுவையில்</strong> உள்ளவர்களை பார்க்கவும்','<strong>அனுமதி</strong> அல்லது <strong>நிராகரி</strong> கிளிக்'] },
+          { icon:'🛡️', color:'purple', name:'பாதுகாப்பு',           role:'நுழைவாயிலில் பார்வையாளர்களை கண்காணி',
+            steps:['PIN (1125) மூலம் உள்நுழைய','<strong>அனுமதிக்கப்பட்ட</strong> தாவல் — செல்லுபடியான பார்வையாளர்கள்','பார்வையாளர் வந்து QR காட்டும்போது <strong>Check In</strong> கிளிக்','பார்வையாளர் செல்லும்போது <strong>Check Out</strong> கிளிக்','<strong>நிலுவையில்</strong> உள்ளவர்களுக்கு உரிமையாளர் அனுமதி தேவை'] },
+          { icon:'🔍', color:'blue',   name:'வருகை நிலை சரிபார்',   role:'விண்ணப்ப நிலை அறிய விரும்பும் பார்வையாளர்',
+            steps:['<strong>நிலை சரிபார்</strong> பக்கம் திறக்கவும்','<strong>குறிப்பு எண்</strong> உள்ளிடவும் (எ.கா: KES4X7MNP)','நிலை பார்க்கவும் — நிலுவை, அனுமதி, மறுப்பு, அல்லது உள்ளே','அனுமதித்தால் நுழைவாயிலில் காவலரிடம் QR காட்டவும்'] },
+          { icon:'⚙️', color:'red',    name:'நிர்வாகி',             role:'முழு அணுகல் — அனைத்தையும் நிர்வகி',
+            steps:['PIN (1125) மூலம் உள்நுழைய','<strong>பார்சல்</strong> தாவல் — யூனிட்கள் கண்காணி, உரிமையாளர் தகவல் திருத்து','<strong>பார்வையாளர்</strong> தாவல் — அனைத்து பதிவுகள், வடிகட்டி, அனுமதி/மறு','தேடல் மற்றும் வடிகட்டி பயன்படுத்தவும்'] },
+        ]
+      }
+    }
+
+    const lang = getLang()
+    const c = content[lang] || content.ms
+    document.getElementById('txt-title').textContent = c.title
+    document.getElementById('txt-subtitle').textContent = c.subtitle
+
+    const container = document.getElementById('accordionList')
+    c.items.forEach(item => {
+      const div = document.createElement('div')
+      div.className = 'acc-item'
+      div.innerHTML = `
+        <div class="acc-header" onclick="toggle(this)">
+          <div class="acc-icon ${item.color}">${item.icon}</div>
+          <div class="acc-label">
+            <div class="acc-name">${item.name}</div>
+            <div class="acc-role">${item.role}</div>
+          </div>
+          <span class="acc-chevron">▼</span>
+        </div>
+        <div class="acc-body">
+          <ul class="step-list">
+            ${item.steps.map((s,j) => `<li class="step-item"><div class="step-num">${j+1}</div><div class="step-text">${s}</div></li>`).join('')}
+          </ul>
+        </div>`
+      container.appendChild(div)
+    })
+
+    function toggle(header) {
+      const item = header.closest('.acc-item')
+      const wasOpen = item.classList.contains('open')
+      document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('open'))
+      if (!wasOpen) item.classList.add('open')
+    }
+  </script>
+</body>
+</html>

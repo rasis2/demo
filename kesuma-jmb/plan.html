@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scale-Up Plan — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .sys-tab-bar { display:flex; gap:6px; margin-bottom:20px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .sys-tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
+    .sys-tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+    .phase-card { border-left:3px solid var(--accent); padding-left:20px; margin-bottom:28px; position:relative; }
+    .phase-card::before { content:''; position:absolute; left:-8px; top:4px; width:13px; height:13px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); }
+    .phase-num { font-size:11px; font-weight:700; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+    .phase-title { font-family:var(--heading-font); font-size:17px; font-weight:800; margin-bottom:8px; letter-spacing:-0.3px; }
+    .phase-cost { display:inline-flex; align-items:center; gap:6px; background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; padding:4px 12px; border-radius:100px; margin-bottom:10px; }
+    .phase-items { list-style:none; }
+    .phase-items li { font-size:13px; color:var(--text-soft); line-height:1.6; padding:4px 0; border-bottom:1px solid var(--border); display:flex; gap:8px; }
+    .phase-items li:last-child { border-bottom:none; }
+    .phase-items li::before { content:'→'; color:var(--accent); font-weight:700; flex-shrink:0; }
+    .cost-table { width:100%; }
+    .cost-table td { padding:8px 10px; font-size:13px; vertical-align:top; }
+    .cost-table tr { border-bottom:1px solid var(--border); }
+    .cost-table tr:last-child { border-bottom:none; }
+    .cost-label { color:var(--text-muted); width:55%; }
+    .cost-val { font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--accent); text-align:right; }
+    .note-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-size:13px; color:var(--text-muted); line-height:1.7; }
+    .tag { display:inline-block; padding:3px 10px; border-radius:100px; font-size:11px; font-weight:600; background:var(--green-dim); color:var(--green); border:1px solid rgba(76,175,125,0.2); margin:2px; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon" style="background:var(--accent-dim);border:1px solid rgba(var(--accent-rgb),0.2)">🚀</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+
+    <!-- System tab -->
+    <div class="sys-tab-bar animate-in">
+      <div class="sys-tab active" onclick="switchPlan('parcel')" id="plan-tab-parcel"></div>
+      <div class="sys-tab" onclick="switchPlan('visitor')" id="plan-tab-visitor"></div>
+    </div>
+
+    <div id="planContent">
+      <div class="section animate-in" style="animation-delay:0.05s">
+        <div class="section-title" id="txt-phases-title"></div>
+        <div id="phasesContainer"></div>
+      </div>
+      <div class="section animate-in" style="animation-delay:0.1s">
+        <div class="section-title" id="txt-cost-title"></div>
+        <table class="cost-table" id="costTable"></table>
+      </div>
+      <div class="section animate-in" style="animation-delay:0.15s">
+        <div class="section-title" id="txt-tech-title"></div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-backend"></div>
+          <div id="tags-backend"></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-notif"></div>
+          <div id="tags-notif"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-frontend"></div>
+          <div id="tags-frontend"></div>
+        </div>
+      </div>
+      <div class="section animate-in" style="animation-delay:0.2s">
+        <div class="section-title" id="txt-note-title"></div>
+        <div class="note-box" id="txt-note"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    renderNav('plan_title')
+    document.getElementById('txt-title').textContent = t('plan_title')
+    document.getElementById('txt-subtitle').textContent = t('plan_subtitle')
+
+    const plans = {
+      ms: {
+        parcel: {
+          tab: '📦 Sistem Parsel',
+          phases_title: 'FASA PEMBANGUNAN',
+          cost_title: 'ANGGARAN KOS (BULANAN)',
+          tech_title: 'TEKNOLOGI DICADANGKAN',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifikasi',
+          tech_frontend: 'Frontend / Mobile',
+          tags_backend: ['Node.js','Express','PostgreSQL','Supabase','Firebase'],
+          tags_notif: ['WhatsApp Cloud API','Twilio SMS','FCM Push','NodeMailer'],
+          tags_frontend: ['React / Next.js','React Native','PWA'],
+          note_title: 'NOTA PENTING',
+          note: '⚠️ <strong>Kos bergantung kepada jumlah pengguna dan mesej.</strong> WhatsApp API sahaja boleh mencecah RM 50–150/bulan untuk 475 unit. Pilihan lebih murah ialah <strong>email + push notification</strong> dulu sebelum beralih ke WhatsApp API.',
+          costs: [['WhatsApp Business API','RM 0.08–0.12 / mesej'],['SMS Gateway','RM 0.05–0.10 / SMS'],['VPS Hosting','RM 20–80 / bulan'],['Domain + SSL','RM 40–80 / tahun'],['Supabase (DB + Auth)','RM 0–90 / bulan'],['Push Notifications (FCM)','Percuma'],['Email (Resend/Mailgun)','RM 0–30 / bulan'],['Anggaran minimum (Fasa 2)','RM 60–150 / bulan',true],['Anggaran penuh (Fasa 3–4)','RM 200–500 / bulan',true]],
+          phases: [
+            { num:'FASA 1 · SEKARANG', title:'Sistem Asas (Sedia Ada)', cost:'Percuma', items:['Web app HTML/CSS/JS + Supabase backend','Daftar parsel dengan gambar, unit, kurier','Pemilik semak parsel sendiri via web','Admin urus maklumat pemilik','Support 4 bahasa, 4 tema'] },
+            { num:'FASA 2 · 1–3 BULAN', title:'Notifikasi & Auth', cost:'RM 60–150 / bulan', items:['WhatsApp / email notifikasi automatik bila parsel tiba','Login pemilik dengan OTP','Push notification percuma via FCM','Dashboard admin dengan statistik & graf'] },
+            { num:'FASA 3 · 3–6 BULAN', title:'Pengalaman Pengguna & Keselamatan', cost:'RM 150–300 / bulan', items:['Mobile app atau PWA boleh install','QR code scan untuk ambil parsel — auto mark done','History parsel dengan carian & filter','Role-based access (guard, admin, supervisor)'] },
+            { num:'FASA 4 · 6–12 BULAN', title:'Skala Penuh & Komersialisasi', cost:'RM 300–700 / bulan', items:['Auto-detect unit dari tracking number kurier','Analytics — trend parsel, peak hours','SaaS model untuk kondominium lain','Integrasi sistem pengurusan condo (JMB)'] },
+          ]
+        },
+        visitor: {
+          tab: '🪪 Sistem Pelawat',
+          phases_title: 'FASA PEMBANGUNAN',
+          cost_title: 'ANGGARAN KOS (BULANAN)',
+          tech_title: 'TEKNOLOGI DICADANGKAN',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifikasi & Keselamatan',
+          tech_frontend: 'Frontend / Hardware',
+          tags_backend: ['Supabase','PostgreSQL','Edge Functions','Row Level Security'],
+          tags_notif: ['WhatsApp Cloud API','FCM Push','QR Code Scanner','OTP Auth'],
+          tags_frontend: ['React Native','PWA','IP Camera Integration','Raspberry Pi Gate'],
+          note_title: 'NOTA PENTING',
+          note: '⚠️ <strong>Sistem pelawat memerlukan kerjasama pemilik unit.</strong> Keberkesanan bergantung pada pemilik yang aktif luluskan/tolak dalam masa singkat. Fasa awal — approval manual melalui web sudah mencukupi sebelum tambah notifikasi automatik.',
+          costs: [['WhatsApp notifikasi kelulusan','RM 0.08–0.12 / mesej'],['Kamera IP lobby','RM 150–500 (sekali)'],['QR Scanner hardware','RM 80–300 (sekali)'],['Gate/barrier integration','RM 500–2000 (sekali)'],['Supabase realtime','RM 0–25 / bulan'],['Push notification (FCM)','Percuma'],['Anggaran digital sahaja (Fasa 2)','RM 20–60 / bulan',true],['Anggaran dengan hardware (Fasa 3)','RM 800–3000 (sekali) + RM 30–80 / bulan',true]],
+          phases: [
+            { num:'FASA 1 · SEKARANG', title:'Sistem Asas (Sedia Ada)', cost:'Percuma', items:['Daftar pelawat dengan nama, IC, telefon, tujuan','Jana QR code + kod rujukan (KES + 6 chars)','Pemilik unit lulus/tolak melalui web','Guard check in / check out pelawat yang diluluskan','Admin pantau semua rekod pelawat'] },
+            { num:'FASA 2 · 1–3 BULAN', title:'Notifikasi & Kelulusan Automatik', cost:'RM 20–60 / bulan', items:['WhatsApp / push notifikasi ke pemilik bila ada pelawat baru','Pemilik lulus terus dari notifikasi WhatsApp','Auto-reject pelawat yang tidak dilulus dalam tempoh masa','QR code scan di pintu masuk (pakai kamera telefon guard)','Log lengkap dengan timestamp masuk & keluar'] },
+            { num:'FASA 3 · 3–6 BULAN', title:'Hardware & Keselamatan Fizikal', cost:'RM 800–3000 sekali + RM 30–80 / bulan', items:['QR scanner hardware di lobby','Kamera IP rakam semua orang masuk','Integrasi dengan barrier/gate automatik','Blacklist pelawat bermasalah','Notifikasi kepada guard dan pemilik serentak'] },
+            { num:'FASA 4 · 6–12 BULAN', title:'AI & Automasi Penuh', cost:'RM 200–500 / bulan', items:['Face recognition untuk penghuni tetap','Visitor pre-register sebelum tiba (owner invite link)','Analytics — pola lawatan, frequent visitors','Integrasi dengan sistem keselamatan bangunan','Laporan bulanan untuk pengurusan JMB'] },
+          ]
+        }
+      },
+      en: {
+        parcel: {
+          tab: '📦 Parcel System',
+          phases_title: 'DEVELOPMENT PHASES',
+          cost_title: 'COST ESTIMATE (MONTHLY)',
+          tech_title: 'RECOMMENDED TECHNOLOGIES',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifications',
+          tech_frontend: 'Frontend / Mobile',
+          tags_backend: ['Node.js','Express','PostgreSQL','Supabase','Firebase'],
+          tags_notif: ['WhatsApp Cloud API','Twilio SMS','FCM Push','NodeMailer'],
+          tags_frontend: ['React / Next.js','React Native','PWA'],
+          note_title: 'IMPORTANT NOTE',
+          note: '⚠️ <strong>Costs depend on number of users and messages.</strong> WhatsApp API alone could reach RM 50–150/month for 475 units. A cheaper option is <strong>email + push notifications</strong> first before switching to WhatsApp API.',
+          costs: [['WhatsApp Business API','RM 0.08–0.12 / msg'],['SMS Gateway','RM 0.05–0.10 / SMS'],['VPS Hosting','RM 20–80 / month'],['Domain + SSL','RM 40–80 / year'],['Supabase (DB + Auth)','RM 0–90 / month'],['Push Notifications (FCM)','Free'],['Email (Resend/Mailgun)','RM 0–30 / month'],['Minimum estimate (Phase 2)','RM 60–150 / month',true],['Full estimate (Phase 3–4)','RM 200–500 / month',true]],
+          phases: [
+            { num:'PHASE 1 · NOW', title:'Core System (Current)', cost:'Free', items:['HTML/CSS/JS web app + Supabase backend','Register parcels with photo, unit, courier','Owners check parcels via web','Admin manages owner information','4 languages, 4 themes'] },
+            { num:'PHASE 2 · 1–3 MONTHS', title:'Notifications & Auth', cost:'RM 60–150 / month', items:['Automatic WhatsApp/email notification on parcel arrival','Owner login with OTP','Free push notifications via FCM','Admin dashboard with stats & charts'] },
+            { num:'PHASE 3 · 3–6 MONTHS', title:'UX & Security', cost:'RM 150–300 / month', items:['Mobile app or installable PWA','QR code scan to collect — auto mark done','Parcel history with search & filter','Role-based access (guard, admin, supervisor)'] },
+            { num:'PHASE 4 · 6–12 MONTHS', title:'Full Scale & Commercialisation', cost:'RM 300–700 / month', items:['Auto-detect unit from courier tracking number','Analytics — parcel trends, peak hours','SaaS model for other condos','Condo management system integration'] },
+          ]
+        },
+        visitor: {
+          tab: '🪪 Visitor System',
+          phases_title: 'DEVELOPMENT PHASES',
+          cost_title: 'COST ESTIMATE (MONTHLY)',
+          tech_title: 'RECOMMENDED TECHNOLOGIES',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifications & Security',
+          tech_frontend: 'Frontend / Hardware',
+          tags_backend: ['Supabase','PostgreSQL','Edge Functions','Row Level Security'],
+          tags_notif: ['WhatsApp Cloud API','FCM Push','QR Code Scanner','OTP Auth'],
+          tags_frontend: ['React Native','PWA','IP Camera Integration','Raspberry Pi Gate'],
+          note_title: 'IMPORTANT NOTE',
+          note: '⚠️ <strong>The visitor system depends on active unit owners.</strong> Effectiveness relies on owners approving/rejecting in a timely manner. For Phase 1 — manual web-based approval is sufficient before adding automatic notifications.',
+          costs: [['WhatsApp approval notification','RM 0.08–0.12 / msg'],['Lobby IP camera','RM 150–500 (one-time)'],['QR scanner hardware','RM 80–300 (one-time)'],['Gate/barrier integration','RM 500–2000 (one-time)'],['Supabase realtime','RM 0–25 / month'],['Push notifications (FCM)','Free'],['Digital only estimate (Phase 2)','RM 20–60 / month',true],['With hardware (Phase 3)','RM 800–3000 (one-time) + RM 30–80 / month',true]],
+          phases: [
+            { num:'PHASE 1 · NOW', title:'Core System (Current)', cost:'Free', items:['Register visitor with name, IC, phone, purpose','Generate QR code + reference code (KES + 6 chars)','Unit owner approves/rejects via web','Guard check in / check out approved visitors','Admin monitors all visitor records'] },
+            { num:'PHASE 2 · 1–3 MONTHS', title:'Notifications & Auto-Approval', cost:'RM 20–60 / month', items:['WhatsApp/push notification to owner on new visitor','Owner approves directly from WhatsApp notification','Auto-reject visitors not approved within time limit','QR code scan at entrance (guard phone camera)','Full log with check-in & check-out timestamps'] },
+            { num:'PHASE 3 · 3–6 MONTHS', title:'Hardware & Physical Security', cost:'RM 800–3000 one-time + RM 30–80 / month', items:['QR scanner hardware in lobby','IP camera records all entrants','Integration with automatic barrier/gate','Blacklist problematic visitors','Simultaneous notifications to guard and owner'] },
+            { num:'PHASE 4 · 6–12 MONTHS', title:'AI & Full Automation', cost:'RM 200–500 / month', items:['Face recognition for regular residents','Pre-register visitors (owner invite link)','Analytics — visit patterns, frequent visitors','Integration with building security systems','Monthly reports for JMB management'] },
+          ]
+        }
+      }
+    }
+
+    let currentPlan = 'parcel'
+
+    function getLangPlan() {
+      const l = getLang()
+      return plans[l] || plans.en
+    }
+
+    function switchPlan(type) {
+      currentPlan = type
+      document.getElementById('plan-tab-parcel').classList.toggle('active', type === 'parcel')
+      document.getElementById('plan-tab-visitor').classList.toggle('active', type === 'visitor')
+      renderPlan()
+    }
+
+    function renderPlan() {
+      const lp = getLangPlan()
+      const d = lp[currentPlan] || getLangPlan()['parcel']
+
+      document.getElementById('txt-phases-title').textContent = d.phases_title
+      document.getElementById('txt-cost-title').textContent = d.cost_title
+      document.getElementById('txt-tech-title').textContent = d.tech_title
+      document.getElementById('txt-tech-backend').textContent = d.tech_backend
+      document.getElementById('txt-tech-notif').textContent = d.tech_notif
+      document.getElementById('txt-tech-frontend').textContent = d.tech_frontend
+      document.getElementById('txt-note-title').textContent = d.note_title
+      document.getElementById('txt-note').innerHTML = d.note
+
+      const tag = t => `<span class="tag">${t}</span>`
+      document.getElementById('tags-backend').innerHTML = d.tags_backend.map(tag).join('')
+      document.getElementById('tags-notif').innerHTML = d.tags_notif.map(tag).join('')
+      document.getElementById('tags-frontend').innerHTML = d.tags_frontend.map(tag).join('')
+
+      document.getElementById('costTable').innerHTML = d.costs.map(([label, val, hi]) =>
+        `<tr${hi ? ' style="background:var(--accent-dim)"' : ''}>
+          <td class="cost-label"${hi ? ' style="font-weight:700;color:var(--text)"' : ''}>${label}</td>
+          <td class="cost-val"${hi ? ' style="font-size:14px"' : ''}>${val}</td>
+        </tr>`
+      ).join('')
+
+      const pc = document.getElementById('phasesContainer')
+      pc.innerHTML = ''
+      d.phases.forEach((p, i) => {
+        pc.innerHTML += `<div class="phase-card animate-in" style="animation-delay:${i*0.06}s">
+          <div class="phase-num">${p.num}</div>
+          <div class="phase-title">${p.title}</div>
+          <div class="phase-cost">💰 ${p.cost}</div>
+          <ul class="phase-items">${p.items.map(item => `<li>${item}</li>`).join('')}</ul>
+        </div>`
+      })
+    }
+
+    // Set tab labels
+    const lp = getLangPlan()
+    document.getElementById('plan-tab-parcel').textContent = lp.parcel.tab
+    document.getElementById('plan-tab-visitor').textContent = lp.visitor.tab
+
+    renderPlan()
+  </script>
+</body>
+</html>

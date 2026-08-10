@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .profile-card { text-align:center; padding:28px 20px 20px; }
+    .avatar { width:72px; height:72px; border-radius:50%; background:var(--accent-dim); border:2px solid rgba(var(--accent-rgb),0.3); display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 14px; }
+    .profile-name { font-family:var(--heading-font); font-size:20px; font-weight:800; letter-spacing:-0.5px; margin-bottom:4px; }
+    .profile-bio { font-size:13px; color:var(--text-muted); line-height:1.7; max-width:340px; margin:0 auto; }
+    .tag { display:inline-block; padding:3px 10px; border-radius:100px; font-size:11px; font-weight:600; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(var(--accent-rgb),0.2); margin:3px; }
+    .tag.green  { background:rgba(76,175,125,0.1); color:var(--green); border-color:rgba(76,175,125,0.2); }
+    .tag.blue   { background:rgba(99,179,237,0.1); color:#63b3ed; border-color:rgba(99,179,237,0.2); }
+    .tag.purple { background:rgba(159,122,234,0.1); color:#9f7aea; border-color:rgba(159,122,234,0.2); }
+    .story-text { font-size:13px; color:var(--text-muted); line-height:1.8; }
+    .story-text p { margin-bottom:14px; }
+    .story-text p:last-child { margin-bottom:0; }
+    .stack-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="section animate-in" style="padding-bottom:0">
+      <div class="profile-card">
+        <div class="avatar">✦</div>
+        <div class="profile-name">Araduas Rasis Razali</div>
+        <p class="profile-bio" id="txt-bio"></p>
+      </div>
+    </div>
+    <div class="section animate-in" style="animation-delay:0.05s">
+      <div class="section-title" id="txt-story-title"></div>
+      <div class="story-text" id="txt-story"></div>
+    </div>
+    <div class="section animate-in" style="animation-delay:0.1s">
+      <div class="section-title" id="txt-stack-title"></div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:8px" id="txt-stack-frontend"></div>
+        <div class="stack-row"><span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">Vanilla JS</span></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:8px" id="txt-stack-backend"></div>
+        <div class="stack-row"><span class="tag green">Supabase</span><span class="tag green">PostgreSQL</span><span class="tag green">Supabase Storage</span><span class="tag green">Row Level Security</span></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:8px" id="txt-stack-tools"></div>
+        <div class="stack-row"><span class="tag blue">Netlify</span><span class="tag blue">GitHub</span><span class="tag blue">QRCode.js</span><span class="tag blue">Claude AI</span></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:8px" id="txt-stack-features"></div>
+        <div class="stack-row"><span class="tag purple">4 Languages</span><span class="tag purple">4 Themes</span><span class="tag purple">QR Code</span><span class="tag purple">Realtime DB</span><span class="tag purple">No Server</span></div>
+      </div>
+    </div>
+    <div class="section animate-in" style="animation-delay:0.15s">
+      <div class="section-title" id="txt-sys-title"></div>
+      <div id="txt-sys-list" style="font-size:13px;color:var(--text-muted);line-height:2"></div>
+    </div>
+  </main>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    renderNav('card_about')
+    const content = {
+      ms: {
+        bio: 'QA engineer yang vibe code untuk mudahkan urusan jiran tetangga di Residensi Kesuma, Beranang.',
+        story_title: 'CERITA DI SEBALIK PROJEK',
+        story: `<p>Parsel asyik tertimbun di lobby, penghuni tak tahu bila parsel sampai, guard pun kelam-kabut nak kenalpasti pemilik. Lawatan pula — tiada rekod, siapa masuk siapa keluar pun tak ada cara nak jejak.</p>
+<p>Sebagai penghuni Residensi Kesuma yang rasa masalah ni sendiri, aku putuskan nak buat sesuatu. Dengan bantuan <strong>Claude AI</strong> sebagai copilot coding, aku vibe code sistem ini dalam masa beberapa minggu — tanpa server, tanpa kos bulanan, terus guna Supabase dan Netlify.</p>
+<p>Bukan projek korporat. Ni projek <strong>jiran untuk jiran</strong> — dibina dengan niat ikhlas untuk menjadikan kehidupan di Residensi Kesuma sedikit lebih mudah.</p>`,
+        stack_title: 'TECH STACK',
+        stack_frontend: 'FRONTEND',
+        stack_backend: 'BACKEND & DATABASE',
+        stack_tools: 'TOOLS & DEPLOYMENT',
+        stack_features: 'CIRI-CIRI',
+        sys_title: 'SISTEM YANG DIBINA',
+        sys_list: `📦 <strong>Sistem Parsel</strong> — Dispatcher log parsel, pemilik semak & tandakan selesai<br>
+🪪 <strong>Sistem Pelawat</strong> — Daftar dengan QR, pemilik lulus/tolak, guard check in/out<br>
+🛡️ <strong>Security Dashboard</strong> — Guard pantau semua pelawat yang diluluskan<br>
+⚙️ <strong>Admin Dashboard</strong> — Akses penuh kedua-dua sistem, urus 475 unit<br>
+🌐 <strong>4 Bahasa</strong> — Bahasa Malaysia, English, 中文, தமிழ்<br>
+🎨 <strong>4 Tema</strong> — Obsidian, Light, Breeze, Candy`
+      },
+      en: {
+        bio: 'A QA engineer who vibe codes to make life easier for neighbours at Residensi Kesuma, Beranang.',
+        story_title: 'THE STORY BEHIND THE PROJECT',
+        story: `<p>Parcels piling up in the lobby, residents not knowing when their parcels arrived, guards scrambling to identify owners. Visitors — no records, no way to track who came and went.</p>
+<p>As a resident of Residensi Kesuma experiencing these problems firsthand, I decided to do something about it. With <strong>Claude AI</strong> as my coding copilot, I vibe coded this system in a few weeks — no server, no monthly cost, just Supabase and Netlify.</p>
+<p>Not a corporate project. This is a <strong>neighbour-to-neighbour</strong> project — built with genuine intent to make life at Residensi Kesuma a little bit easier.</p>`,
+        stack_title: 'TECH STACK',
+        stack_frontend: 'FRONTEND',
+        stack_backend: 'BACKEND & DATABASE',
+        stack_tools: 'TOOLS & DEPLOYMENT',
+        stack_features: 'FEATURES',
+        sys_title: 'SYSTEMS BUILT',
+        sys_list: `📦 <strong>Parcel System</strong> — Dispatcher logs parcels, owner checks & marks done<br>
+🪪 <strong>Visitor System</strong> — Register with QR, owner approves/rejects, guard check in/out<br>
+🛡️ <strong>Security Dashboard</strong> — Guard monitors all approved visitors<br>
+⚙️ <strong>Admin Dashboard</strong> — Full access to both systems, manages 475 units<br>
+🌐 <strong>4 Languages</strong> — Bahasa Malaysia, English, 中文, தமிழ்<br>
+🎨 <strong>4 Themes</strong> — Obsidian, Light, Breeze, Candy`
+      },
+      zh: {
+        bio: '一名QA工程师，通过写代码为Residensi Kesuma, Beranang的邻居们简化日常事务。',
+        story_title: '项目背后的故事',
+        story: `<p>大厅里包裹堆积如山，居民不知道自己的包裹什么时候到了，保安也忙乱地识别业主。访客方面——没有记录，无法追踪谁进谁出。</p>
+<p>作为Residensi Kesuma的居民，亲身感受到这些问题后，我决定做点什么。在<strong>Claude AI</strong>作为编程副驾驶的帮助下，我在几周内完成了这个系统——无需服务器，无需月费，只用Supabase和Netlify。</p>
+<p>这不是企业项目。这是一个<strong>邻居为邻居</strong>的项目——真诚地希望让Residensi Kesuma的生活更轻松一点。</p>`,
+        stack_title: '技术栈',
+        stack_frontend: '前端',
+        stack_backend: '后端 & 数据库',
+        stack_tools: '工具 & 部署',
+        stack_features: '功能特色',
+        sys_title: '已建系统',
+        sys_list: `📦 <strong>包裹系统</strong> — 派送员登记包裹，业主查看并标记完成<br>
+🪪 <strong>访客系统</strong> — 登记生成QR码，业主批准/拒绝，保安签到/签出<br>
+🛡️ <strong>保安仪表板</strong> — 监控所有已批准的访客<br>
+⚙️ <strong>管理员仪表板</strong> — 两个系统的完整访问权限，管理475个单位<br>
+🌐 <strong>4种语言</strong> — 马来语, English, 中文, தமிழ்<br>
+🎨 <strong>4个主题</strong> — Obsidian, Light, Breeze, Candy`
+      },
+      ta: {
+        bio: 'Residensi Kesuma, Beranang இல் உள்ள அண்டை வீட்டாரின் அன்றாட வாழ்க்கையை எளிதாக்க குறியீடு எழுதும் ஒரு QA பொறியாளர்.',
+        story_title: 'திட்டத்தின் பின்னணி கதை',
+        story: `<p>லாபியில் பார்சல்கள் குவிந்து கிடக்கின்றன, குடியிருப்பாளர்களுக்கு தங்கள் பார்சல்கள் எப்போது வந்தன என்று தெரியவில்லை, காவலர்கள் உரிமையாளர்களை அடையாளம் காண தவிக்கின்றனர். பார்வையாளர்கள் — எந்த பதிவும் இல்லை, யார் வந்தார்கள் யார் சென்றார்கள் என்று கண்காணிக்க வழியில்லை.</p>
+<p>Residensi Kesuma இன் குடியிருப்பாளராக இந்த பிரச்சினைகளை நேரில் அனுபவித்து, ஏதாவது செய்ய முடிவு செய்தேன். <strong>Claude AI</strong>ஐ கோடிங் உதவியாளராக கொண்டு, சில வாரங்களில் இந்த அமைப்பை உருவாக்கினேன் — சர்வர் இல்லை, மாதாந்திர கட்டணம் இல்லை, Supabase மற்றும் Netlify மட்டுமே.</p>
+<p>இது ஒரு நிறுவன திட்டம் அல்ல. இது ஒரு <strong>அண்டைவீட்டார்-க்கு-அண்டைவீட்டார்</strong> திட்டம் — Residensi Kesuma இல் வாழ்க்கையை சற்று எளிதாக்கும் நோக்கில் கட்டப்பட்டது.</p>`,
+        stack_title: 'தொழில்நுட்ப அடுக்கு',
+        stack_frontend: 'முன்தளம்',
+        stack_backend: 'பின்தளம் & தரவுத்தளம்',
+        stack_tools: 'கருவிகள் & வரிசைப்படுத்தல்',
+        stack_features: 'அம்சங்கள்',
+        sys_title: 'கட்டப்பட்ட அமைப்புகள்',
+        sys_list: `📦 <strong>பார்சல் அமைப்பு</strong> — டிஸ்பாட்சர் பதிவு, உரிமையாளர் சரிபார்த்து முடிக்கிறார்<br>
+🪪 <strong>பார்வையாளர் அமைப்பு</strong> — QR பதிவு, உரிமையாளர் அனுமதி, காவலர் Check In/Out<br>
+🛡️ <strong>பாதுகாப்பு டாஷ்போர்டு</strong> — அனுமதிக்கப்பட்ட அனைத்து பார்வையாளர்களையும் கண்காணிக்கிறது<br>
+⚙️ <strong>நிர்வாக டாஷ்போர்டு</strong> — இரண்டு அமைப்புகளிலும் முழு அணுகல், 475 யூனிட்கள்<br>
+🌐 <strong>4 மொழிகள்</strong> — மலாய், English, 中文, தமிழ்<br>
+🎨 <strong>4 தீம்கள்</strong> — Obsidian, Light, Breeze, Candy`
+      }
+    }
+    const lang = getLang()
+    const c = content[lang] || content.ms
+    document.getElementById('txt-bio').textContent = c.bio
+    document.getElementById('txt-story-title').textContent = c.story_title
+    document.getElementById('txt-story').innerHTML = c.story
+    document.getElementById('txt-stack-title').textContent = c.stack_title
+    document.getElementById('txt-stack-frontend').textContent = c.stack_frontend
+    document.getElementById('txt-stack-backend').textContent = c.stack_backend
+    document.getElementById('txt-stack-tools').textContent = c.stack_tools
+    document.getElementById('txt-stack-features').textContent = c.stack_features
+    document.getElementById('txt-sys-title').textContent = c.sys_title
+    document.getElementById('txt-sys-list').innerHTML = c.sys_list
+  </script>
+</body>
+</html>

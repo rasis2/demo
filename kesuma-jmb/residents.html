@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direktori Penduduk — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .res-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); gap:8px; }
+    .res-row:last-child { border-bottom:none; }
+    .res-unit { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px; color:var(--accent); }
+    .res-name { font-weight:700; font-size:13.5px; }
+    .res-meta { font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
+    .res-veh { font-size:11px; color:var(--text-muted); }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+
+  <div id="pinGate" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 57px)">
+    <div style="width:100%;max-width:360px;padding:20px">
+      <div class="section animate-in">
+        <div class="page-icon red" style="margin-bottom:18px">👥</div>
+        <h2 style="font-family:var(--heading-font);font-size:22px;font-weight:800;margin-bottom:5px;letter-spacing:-0.5px" id="txt-pin-title"></h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px" id="txt-pin-subtitle"></p>
+        <div class="field">
+          <input type="password" id="adminPin" maxlength="10" onkeydown="if(event.key==='Enter')unlock()">
+          <div class="error-text" id="pinError"></div>
+        </div>
+        <button class="btn btn-gold" onclick="unlock()" style="margin-top:4px" id="txt-enter-btn"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard" style="display:none">
+    <main class="main">
+      <div class="page-header animate-in">
+        <div class="page-icon red">👥</div>
+        <h1 class="page-title" id="txt-title"></h1>
+        <p class="page-subtitle" id="txt-subtitle"></p>
+      </div>
+
+      <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="flex:1;padding:14px;text-align:center">
+          <div id="statCount" class="num" style="font-size:22px">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-count"></div>
+        </div>
+      </div>
+
+      <input id="search" oninput="applyFilter()" placeholder="" style="margin-bottom:12px">
+
+      <div class="section animate-in" style="padding:0 16px">
+        <div id="resList"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    renderNav('res_title')
+    const $ = id => document.getElementById(id)
+    let all = []
+
+    $('txt-pin-title').textContent = t('res_title')
+    $('txt-pin-subtitle').textContent = t('admin_pin_subtitle')
+    $('adminPin').placeholder = '••••'
+    $('txt-enter-btn').textContent = t('enter')
+    $('txt-title').textContent = t('res_title'); $('txt-subtitle').textContent = t('res_subtitle')
+    $('txt-count').textContent = t('res_count')
+    $('search').placeholder = t('res_search')
+
+    function unlock() {
+      if ($('adminPin').value !== kj_load().settings.pin_admin) { $('pinError').textContent = t('admin_pin_error'); return }
+      $('pinGate').style.display = 'none'; $('dashboard').style.display = 'block'
+      load()
+    }
+
+    async function load() {
+      all = await apiAllOwners()
+      $('statCount').textContent = all.length
+      applyFilter()
+    }
+
+    function applyFilter() {
+      const q = $('search').value.trim().toLowerCase()
+      let list = all
+      if (q) list = all.filter(o =>
+        o.unit.toLowerCase().includes(q) || (o.name || '').toLowerCase().includes(q) ||
+        (o.email || '').toLowerCase().includes(q) || (o.phone || '').includes(q) ||
+        (o.vehicle_plate || '').toLowerCase().includes(q))
+      const el = $('resList')
+      if (!list.length) { el.innerHTML = emptyState('👥', t('res_empty')); return }
+      el.innerHTML = list.slice(0, 120).map(o =>
+        '<div class="res-row"><div style="flex:1;min-width:0">' +
+          '<div><span class="res-unit">' + esc(o.unit) + '</span> · <span class="res-name">' + esc(o.name) + '</span></div>' +
+          '<div class="res-meta">' + esc(o.email) + ' · ' + esc(o.phone) + '</div>' +
+          (o.vehicle_plate ? '<div class="res-veh">🚗 ' + esc(o.vehicle_plate) + (o.vehicle_model ? ' · ' + esc(o.vehicle_model) : '') + (o.parking_lot ? ' · ' + t('veh_lot') + ' ' + esc(o.parking_lot) : '') + '</div>' : '') +
+        '</div></div>'
+      ).join('')
+    }
+  </script>
+</body>
+</html>

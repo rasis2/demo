@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guard — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .vis-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; }
+    .vis-name { font-family:var(--heading-font); font-size:15px; font-weight:700; margin-bottom:3px; }
+    .vis-meta { font-size:11px; color:var(--text-muted); margin-bottom:8px; font-family:'JetBrains Mono',monospace; }
+    .btn-sm { padding:7px 16px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:var(--body-font); transition:all 0.2s; }
+    .btn-checkin { background:rgba(99,179,237,0.18); color:#63b3ed; border:1px solid rgba(99,179,237,0.3); }
+    .btn-checkin:hover { background:rgba(99,179,237,0.28); }
+    .btn-checkout { background:var(--surface3); color:var(--text-muted); border:1px solid var(--border2); }
+    .btn-checkout:hover { background:var(--surface); }
+    .pending-note { display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); background:var(--surface3); padding:5px 10px; border-radius:6px; border:1px solid var(--border); }
+    .tab-bar { display:flex; gap:6px; margin-bottom:14px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
+    .tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+
+  <div id="pinGate" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 57px)">
+    <div style="width:100%;max-width:340px;padding:20px">
+      <div class="section animate-in">
+        <div class="page-icon" style="background:rgba(159,122,234,0.12);border:1px solid rgba(159,122,234,0.2);margin-bottom:16px">🛡️</div>
+        <h2 style="font-family:var(--heading-font);font-size:20px;font-weight:800;margin-bottom:4px" id="txt-pin-title"></h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px" id="txt-pin-sub"></p>
+        <div class="field">
+          <input type="password" id="guardPin" maxlength="10" onkeydown="if(event.key==='Enter')unlockGuard()">
+          <div class="error-text" id="pinError"></div>
+        </div>
+        <button class="btn btn-gold" onclick="unlockGuard()" id="txt-enter-btn"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard" style="display:none">
+    <main class="main">
+      <div class="page-header animate-in">
+        <div class="page-icon" style="background:rgba(159,122,234,0.12);border:1px solid rgba(159,122,234,0.2)">🛡️</div>
+        <h1 class="page-title" id="txt-title"></h1>
+        <p class="page-subtitle" id="txt-subtitle"></p>
+      </div>
+
+      <!-- Stats -->
+      <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:14px;animation-delay:0.05s">
+        <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+          <div id="statApproved" class="num" style="font-size:22px;color:var(--green)">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-stat-approved"></div>
+        </div>
+        <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+          <div id="statIn" class="num" style="font-size:22px;color:#63b3ed">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-stat-in"></div>
+        </div>
+        <div style="flex:1;padding:14px;text-align:center">
+          <div id="statOut" class="num" style="font-size:22px;color:var(--text-muted)">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-stat-out"></div>
+        </div>
+      </div>
+
+      <!-- Note about pending -->
+      <div class="pending-note animate-in" style="margin-bottom:14px;animation-delay:0.08s">
+        ℹ️ <span id="txt-pending-note"></span>
+      </div>
+
+      <!-- Search -->
+      <div style="margin-bottom:12px" class="animate-in" style="animation-delay:0.1s">
+        <input id="searchInput" oninput="applyFilter()">
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar animate-in">
+        <div class="tab active" onclick="switchTab('Approved')" id="tab-approved"></div>
+        <div class="tab" onclick="switchTab('Checked In')" id="tab-checkedin"></div>
+        <div class="tab" onclick="switchTab('all')" id="tab-all"></div>
+      </div>
+
+      <div id="visList"></div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    renderNav('guard_title')
+    document.getElementById('txt-pin-title').textContent = t('guard_title')
+    document.getElementById('txt-pin-sub').textContent = t('guard_pin_sub')
+    document.getElementById('guardPin').placeholder = '••••'
+    document.getElementById('txt-enter-btn').textContent = t('enter')
+    document.getElementById('txt-title').textContent = t('guard_title')
+    document.getElementById('txt-subtitle').textContent = t('guard_subtitle')
+    document.getElementById('txt-stat-approved').textContent = t('vis_status_approved')
+    document.getElementById('txt-stat-in').textContent = t('vis_status_checkedin')
+    document.getElementById('txt-stat-out').textContent = t('guard_checkout')
+    document.getElementById('txt-pending-note').textContent = t('guard_pending_note')
+    document.getElementById('searchInput').placeholder = t('guard_search')
+    document.getElementById('tab-approved').textContent = t('vis_status_approved')
+    document.getElementById('tab-checkedin').textContent = t('vis_status_checkedin')
+    document.getElementById('tab-all').textContent = t('guard_tab_all')
+
+    let allVisitors = [], currentTab = 'Approved'
+
+    function showToast(msg, type='') {
+      const el = document.getElementById('toast')
+      el.textContent = msg; el.className = `toast ${type} show`
+      setTimeout(() => el.className = 'toast', 2800)
+    }
+
+    function unlockGuard() {
+      if (document.getElementById('guardPin').value !== '1125') {
+        document.getElementById('pinError').textContent = t('admin_pin_error'); return
+      }
+      document.getElementById('pinGate').style.display = 'none'
+      document.getElementById('dashboard').style.display = 'block'
+      loadVisitors()
+    }
+
+    function fmtDate(ts) {
+      if (!ts) return '—'
+      return new Date(ts).toLocaleString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+    }
+
+    async function loadVisitors() {
+      try {
+        allVisitors = await apiGetVisitors()
+        document.getElementById('statApproved').textContent = allVisitors.filter(v=>v.status==='Approved').length
+        document.getElementById('statIn').textContent = allVisitors.filter(v=>v.status==='Checked In').length
+        document.getElementById('statOut').textContent = allVisitors.filter(v=>v.status==='Checked Out').length
+        applyFilter()
+      } catch(e) { showToast(t('error_server'),'error-toast') }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab
+      document.getElementById('tab-approved').classList.toggle('active', tab==='Approved')
+      document.getElementById('tab-checkedin').classList.toggle('active', tab==='Checked In')
+      document.getElementById('tab-all').classList.toggle('active', tab==='all')
+      applyFilter()
+    }
+
+    function applyFilter() {
+      const search = document.getElementById('searchInput').value.toUpperCase()
+      let list = currentTab === 'all' ? allVisitors : allVisitors.filter(v=>v.status===currentTab)
+      if (search) list = list.filter(v => v.ref_code.includes(search) || v.name.toUpperCase().includes(search) || v.unit.includes(search))
+      renderList(list)
+    }
+
+    function renderList(list) {
+      const el = document.getElementById('visList')
+      if (!list.length) {
+        el.innerHTML = '<div class="empty"><div class="empty-icon">🛡️</div><p>' + t('vis_empty') + '</p></div>'
+        return
+      }
+      const statusBadge = { Pending:'badge-pending', Approved:'badge-done', Rejected:'badge-urgent', 'Checked In':'badge-done', 'Checked Out':'badge-pending' }
+      const statusKey = { Pending:'vis_status_pending', Approved:'vis_status_approved', Rejected:'vis_status_rejected', 'Checked In':'vis_status_checkedin', 'Checked Out':'guard_checkout' }
+
+      el.innerHTML = list.map(v => `
+        <div class="vis-card animate-in">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+            <div class="vis-name">${v.name}</div>
+            <span class="badge-status ${statusBadge[v.status]||'badge-pending'}">${t(statusKey[v.status]||'vis_status_pending')}</span>
+          </div>
+          <div class="vis-meta">${v.ref_code} · Unit ${v.unit} · ${fmtDate(v.created_at)}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">${v.purpose} · ${v.phone}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${v.status==='Approved' ? `<button class="btn-sm btn-checkin" onclick="updateStatus(${v.id},'Checked In')">${t('guard_checkin')}</button>` : ''}
+            ${v.status==='Checked In' ? `<button class="btn-sm btn-checkout" onclick="updateStatus(${v.id},'Checked Out')">${t('guard_checkout')}</button>` : ''}
+            ${v.status==='Pending' ? `<span class="pending-note">⏳ ${t('guard_wait_owner')}</span>` : ''}
+            ${v.status==='Rejected' ? `<span class="pending-note">❌ ${t('vis_status_rejected')}</span>` : ''}
+          </div>
+        </div>`).join('')
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        await apiUpdateVisitor(id, status)
+        showToast(t('guard_updated'), 'success')
+        loadVisitors()
+      } catch(e) { showToast(t('error_server'), 'error-toast') }
+    }
+  </script>
+</body>
+</html>

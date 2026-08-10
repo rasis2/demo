@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kesuma JMB — Sistem Pengurusan Harta</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { display:flex; flex-direction:column; align-items:center; min-height:100vh; overflow-x:hidden; padding-top:60px; box-sizing:border-box; }
+    body::before { content:''; position:fixed; top:-200px; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(var(--accent-rgb),0.07) 0%,transparent 70%); pointer-events:none; z-index:0; }
+    .topbar { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:var(--bg); border-bottom:1px solid var(--border); }
+    .topbar-left { display:flex; align-items:center; gap:10px; }
+    .topbar-logo { font-family:var(--heading-font); font-size:13px; font-weight:800; color:var(--text-muted); letter-spacing:-0.3px; }
+    .portal-btn { text-decoration:none; color:var(--text-muted); border:1px solid var(--border); border-radius:8px; padding:4px 10px; font-size:11px; font-weight:600; transition:all 0.2s; }
+    .portal-btn:hover { color:var(--accent); border-color:var(--accent); }
+    .topbar-right { display:flex; gap:8px; align-items:center; }
+    .hero { position:relative; z-index:1; text-align:center; padding:24px clamp(12px,4vw,40px) 32px; width:min(520px, 100%); margin:0 auto; box-sizing:border-box; }
+    .badge { display:inline-block; background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.3); color:var(--accent); font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:100px; margin-bottom:18px; animation:fadeIn 0.5s ease both; }
+    h1 { font-family:var(--heading-font); font-size:clamp(30px,6.5vw,46px); font-weight:800; line-height:1.05; letter-spacing:-2px; margin-bottom:10px; animation:fadeIn 0.5s 0.08s ease both; }
+    h1 span { color:var(--accent); }
+    .subtitle { color:var(--text-muted); font-size:13px; line-height:1.7; margin-bottom:24px; animation:fadeIn 0.5s 0.16s ease both; }
+
+    .sys-block { width:100%; margin:0 auto 14px; animation:fadeIn 0.5s ease both; }
+    .sys-label-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; padding:0 2px; }
+    .sys-tag { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); }
+    .sys-line { flex:1; height:1px; background:var(--border); }
+
+    .sub-links { display:grid; gap:7px; }
+    .sub-links-1 { grid-template-columns:1fr; }
+    .sub-links-2 { grid-template-columns:1fr 1fr; }
+    .sub-links-3 { grid-template-columns:1fr 1fr 1fr; }
+    .sub-links-4 { grid-template-columns:repeat(4,1fr); }
+    @media (max-width:420px){ .sub-links-4 { grid-template-columns:1fr 1fr; } }
+
+    .sub-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px; transition:all 0.2s; font-size:12px; font-weight:600; padding:10px 12px; }
+    .sub-card:hover { border-color:rgba(var(--accent-rgb),0.35); background:var(--surface); transform:translateY(-1px); }
+    .sub-card-lg { padding:14px 12px; align-items:flex-start !important; gap:10px; }
+    .sub-card-lg .sub-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+    .sub-name { font-size:12px; font-weight:700; font-family:var(--heading-font); margin-bottom:2px; }
+    .sub-desc { font-size:10px; color:var(--text-muted); font-weight:400; line-height:1.4; }
+    .sub-card-icon { flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:14px 8px; gap:7px; font-size:11px; font-weight:700; }
+    .sub-card-icon .sub-icon { font-size:20px; }
+    .sub-card-sm { flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:12px 6px; gap:5px; font-size:10px; }
+    .sub-card-sm .sub-icon { font-size:18px; }
+    .sub-icon { font-size:15px; }
+
+    .demo-note { width:100%; max-width:520px; margin:4px auto 0; padding:12px 16px; border:1px solid var(--border); border-radius:12px; background:var(--surface); font-size:11px; color:var(--text-muted); line-height:1.6; animation:fadeIn 0.5s 0.36s ease both; }
+    .demo-note b { color:var(--accent); }
+    .footer-note { position:relative; z-index:1; margin-top:20px; font-size:11px; color:var(--text-muted); opacity:0.4; animation:fadeIn 0.5s 0.4s ease both; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-left">
+      <a class="portal-btn" href="../index.html" title="Portal Demo" aria-label="Portal Demo">↩</a>
+      <div class="topbar-logo">Kesuma JMB</div>
+    </div>
+    <div class="topbar-right">
+      <div id="themeSwitcher"></div>
+      <div id="langSwitcher"></div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="badge" id="txt-badge"></div>
+    <h1 id="txt-h1"></h1>
+    <p class="subtitle" id="txt-subtitle"></p>
+
+    <!-- 1. DASHBOARD -->
+    <div class="sys-block" style="animation-delay:0.14s">
+      <div class="sys-label-row"><div class="sys-line"></div><span class="sys-tag" id="txt-dash-tag"></span><div class="sys-line"></div></div>
+      <div class="sub-links sub-links-1">
+        <a href="dashboard.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">📊</span>
+          <div><div class="sub-name" id="txt-dash-name"></div><div class="sub-desc" id="txt-dash-desc"></div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 2. PARCEL -->
+    <div class="sys-block" style="animation-delay:0.18s">
+      <div class="sys-label-row"><div class="sys-line"></div><span class="sys-tag" id="txt-parcel-tag"></span><div class="sys-line"></div></div>
+      <div class="sub-links sub-links-2">
+        <a href="dispatcher.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🚚</span>
+          <div><div class="sub-name" id="txt-parcel-name"></div><div class="sub-desc" id="txt-parcel-desc"></div></div>
+        </a>
+        <a href="owner.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🏠</span>
+          <div><div class="sub-name" id="txt-owner-name"></div><div class="sub-desc" id="txt-owner-desc"></div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. VISITOR -->
+    <div class="sys-block" style="animation-delay:0.22s">
+      <div class="sys-label-row"><div class="sys-line"></div><span class="sys-tag" id="txt-visitor-tag"></span><div class="sys-line"></div></div>
+      <div class="sub-links sub-links-3">
+        <a href="visitor-register.html" class="sub-card sub-card-icon"><span class="sub-icon">🪪</span><span id="txt-vis-reg-name"></span></a>
+        <a href="visitor-check.html" class="sub-card sub-card-icon"><span class="sub-icon">🔍</span><span id="txt-vis-chk-name"></span></a>
+        <a href="guard.html" class="sub-card sub-card-icon"><span class="sub-icon">🛡️</span><span id="txt-guard-name"></span></a>
+      </div>
+    </div>
+
+    <!-- 4. RESIDENT SERVICES -->
+    <div class="sys-block" style="animation-delay:0.26s">
+      <div class="sys-label-row"><div class="sys-line"></div><span class="sys-tag" id="txt-svc-tag"></span><div class="sys-line"></div></div>
+      <div class="sub-links sub-links-4">
+        <a href="maintenance.html" class="sub-card sub-card-sm"><span class="sub-icon">🔧</span><span id="txt-svc-mnt"></span></a>
+        <a href="payments.html" class="sub-card sub-card-sm"><span class="sub-icon">💰</span><span id="txt-svc-pay"></span></a>
+        <a href="bookings.html" class="sub-card sub-card-sm"><span class="sub-icon">📅</span><span id="txt-svc-bk"></span></a>
+        <a href="vehicles.html" class="sub-card sub-card-sm"><span class="sub-icon">🚗</span><span id="txt-svc-veh"></span></a>
+      </div>
+    </div>
+
+    <!-- 5. INFORMATION -->
+    <div class="sys-block" style="animation-delay:0.3s">
+      <div class="sys-label-row"><div class="sys-line"></div><span class="sys-tag" id="txt-info-tag"></span><div class="sys-line"></div></div>
+      <div class="sub-links sub-links-4">
+        <a href="announcements.html" class="sub-card sub-card-sm"><span class="sub-icon">📢</span><span id="txt-info-ann"></span></a>
+        <a href="documents.html" class="sub-card sub-card-sm"><span class="sub-icon">📄</span><span id="txt-info-doc"></span></a>
+        <a href="residents.html" class="sub-card sub-card-sm"><span class="sub-icon">👥</span><span id="txt-info-res"></span></a>
+        <a href="about.html" class="sub-card sub-card-sm"><span class="sub-icon">✦</span><span id="txt-about"></span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-note" id="txt-demo-note"></div>
+  <p class="footer-note" id="txt-footer"></p>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    renderLangSwitcher('langSwitcher')
+    renderThemeSwitcher('themeSwitcher')
+
+    const set = (id, key) => { document.getElementById(id).textContent = t(key) }
+
+    set('txt-badge', 'index_badge')
+    document.getElementById('txt-h1').innerHTML = t('index_title1') + '<br><span>' + t('index_title2') + '</span>'
+    set('txt-subtitle', 'index_subtitle')
+
+    set('txt-dash-tag', 'sys_dashboard'); set('txt-dash-name', 'sys_dashboard'); set('txt-dash-desc', 'sys_dashboard_desc')
+
+    set('txt-parcel-tag', 'sys_parcel'); set('txt-parcel-name', 'card_dispatcher'); set('txt-parcel-desc', 'card_dispatcher_desc')
+    set('txt-owner-name', 'card_owner'); set('txt-owner-desc', 'sys_parcel_desc')
+
+    set('txt-visitor-tag', 'sys_visitor'); set('txt-vis-reg-name', 'vis_register_title')
+    set('txt-vis-chk-name', 'vis_check_title'); set('txt-guard-name', 'guard_title')
+
+    set('txt-svc-tag', 'res_tag'); set('txt-svc-mnt', 'sys_maintenance'); set('txt-svc-pay', 'sys_payments')
+    set('txt-svc-bk', 'sys_bookings'); set('txt-svc-veh', 'sys_vehicles')
+
+    set('txt-info-tag', 'info_tag'); set('txt-info-ann', 'sys_announcements'); set('txt-info-doc', 'sys_documents')
+    set('txt-info-res', 'sys_residents'); set('txt-about', 'card_about')
+
+    document.getElementById('txt-demo-note').innerHTML =
+      '<b>Demo:</b> ' + t('demo_note') + '<br>' + t('demo_note_creds')
+    set('txt-footer', 'footer')
+  </script>
+</body>
+</html>

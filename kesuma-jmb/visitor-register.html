@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Lawatan — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .qr-wrap { display:flex; flex-direction:column; align-items:center; padding:16px 0 8px; }
+    #qrCanvas { display:flex; justify-content:center; } #qrCanvas canvas, #qrCanvas img { border-radius:10px; border:3px solid var(--accent); padding:8px; background:#fff; }
+    .ref-box { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.3); border-radius:10px; padding:14px 18px; text-align:center; margin:14px 0; }
+    .ref-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+    .ref-code { font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700; color:var(--accent); letter-spacing:4px; }
+    .action-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+    .btn-action { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-family:var(--body-font); transition:all 0.2s; }
+    .btn-action:hover { border-color:rgba(var(--accent-rgb),0.4); color:var(--accent); }
+    .btn-copied { border-color:var(--green)!important; color:var(--green)!important; }
+    .success-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; text-align:center; }
+    .success-icon { font-size:48px; margin-bottom:12px; }
+    .success-title { font-family:var(--heading-font); font-size:20px; font-weight:800; margin-bottom:6px; }
+    .success-sub { font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.6; }
+    .info-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+    .info-row:last-child { border-bottom:none; }
+    .info-label { color:var(--text-muted); }
+    .info-val { font-weight:600; text-align:right; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div id="formView">
+      <div class="page-header animate-in">
+        <div class="page-icon green">📝</div>
+        <h1 class="page-title" id="txt-title"></h1>
+        <p class="page-subtitle" id="txt-subtitle"></p>
+      </div>
+      <div class="section animate-in" style="animation-delay:0.05s">
+        <div class="section-title" id="txt-sec-visitor"></div>
+        <div class="field">
+          <label id="txt-name-label"></label>
+          <input id="visName" type="text">
+        </div>
+        <div class="field">
+          <label id="txt-ic-label"></label>
+          <input id="visIc" type="text">
+        </div>
+        <div class="field">
+          <label id="txt-phone-label"></label>
+          <input id="visPhone" type="tel">
+        </div>
+      </div>
+      <div class="section animate-in" style="animation-delay:0.08s">
+        <div class="section-title" id="txt-sec-unit"></div>
+        <div class="field">
+          <label id="txt-floor-label"></label>
+          <div class="select-wrap">
+            <select id="floorSelect" onchange="onFloorChange()">
+              <option value="" id="opt-floor-ph"></option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="unitField" style="display:none">
+          <label id="txt-unit-label"></label>
+          <div class="select-wrap">
+            <select id="unitSelect" onchange="onUnitChange()">
+              <option value=""></option>
+            </select>
+          </div>
+        </div>
+        <div id="unitConfirm" style="display:none;margin-top:-4px;margin-bottom:12px;padding:10px 14px;background:var(--accent-dim);border:1px solid rgba(var(--accent-rgb),0.25);border-radius:8px">
+          <span style="font-size:12px;color:var(--text-muted)" id="txt-unit-confirm"></span>
+          <span id="unitConfirmVal" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent);margin-left:8px"></span>
+        </div>
+        <input type="hidden" id="unit">
+      </div>
+      <div class="section animate-in" style="animation-delay:0.11s">
+        <div class="section-title" id="txt-sec-purpose"></div>
+        <div class="field">
+          <label id="txt-purpose-label"></label>
+          <div class="select-wrap">
+            <select id="visPurpose">
+              <option value="" id="opt-purpose-ph"></option>
+              <option value="Ziarah" id="opt-ziarah"></option>
+              <option value="Hantar Barang" id="opt-hantar"></option>
+              <option value="Urusan Kerja" id="opt-kerja"></option>
+              <option value="Pembaikan" id="opt-baiki"></option>
+              <option value="Lain-lain" id="opt-lain"></option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label id="txt-vehicle-type-label"></label>
+          <div class="select-wrap">
+            <select id="visVehicleType">
+              <option value="" id="opt-vehicle-ph"></option>
+              <option value="Kereta" id="opt-car"></option>
+              <option value="Motosikal" id="opt-moto"></option>
+              <option value="Lori / Van" id="opt-lorry"></option>
+              <option value="Tiada" id="opt-none"></option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label id="txt-vehicle-plate-label"></label>
+          <input id="visPlate" type="text" style="text-transform:uppercase">
+        </div>
+      </div>
+      <button class="btn btn-gold animate-in" style="animation-delay:0.14s" onclick="registerVisitor()" id="txt-submit"></button>
+    </div>
+
+    <!-- SUCCESS VIEW -->
+    <div id="successView" style="display:none" class="animate-in">
+      <div class="success-card">
+        <div class="success-icon">✅</div>
+        <div class="success-title" id="txt-success-title"></div>
+        <div class="success-sub" id="txt-success-sub"></div>
+
+        <div class="ref-box">
+          <div class="ref-label" id="txt-ref-label"></div>
+          <div class="ref-code" id="refCode"></div>
+        </div>
+
+        <!-- Copy + Download buttons -->
+        <div class="action-btns">
+          <button class="btn-action" id="copyBtn" onclick="copyCode()">📋 <span id="txt-copy-btn"></span></button>
+          <button class="btn-action" onclick="downloadQR()">⬇️ <span id="txt-dl-btn"></span></button>
+        </div>
+
+        <div class="qr-wrap">
+          <div id="qrCanvas"></div>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:10px" id="txt-qr-hint"></p>
+        </div>
+
+        <div style="margin-top:16px;text-align:left">
+          <div class="section-title" id="txt-details-label"></div>
+          <div id="detailRows"></div>
+        </div>
+
+        <button class="btn btn-gold" style="margin-top:20px" onclick="resetForm()" id="txt-new-reg"></button>
+      </div>
+    </div>
+  </main>
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    renderNav('vis_register_title')
+    document.getElementById('txt-title').textContent = t('vis_register_title')
+    document.getElementById('txt-subtitle').textContent = t('vis_register_subtitle')
+    document.getElementById('txt-sec-visitor').textContent = t('vis_sec_info')
+    document.getElementById('txt-name-label').textContent = t('vis_name')
+    document.getElementById('visName').placeholder = t('vis_name_ph')
+    document.getElementById('txt-ic-label').textContent = t('vis_ic')
+    document.getElementById('visIc').placeholder = t('vis_ic_ph')
+    document.getElementById('txt-phone-label').textContent = t('vis_phone')
+    document.getElementById('visPhone').placeholder = t('vis_phone_ph')
+    document.getElementById('txt-sec-unit').textContent = t('vis_sec_unit')
+    document.getElementById('txt-floor-label').textContent = t('disp_floor_label')
+    document.getElementById('opt-floor-ph').textContent = t('disp_floor_placeholder')
+    document.getElementById('txt-unit-label').textContent = t('disp_unit_label')
+    document.getElementById('txt-unit-confirm').textContent = t('disp_unit_confirm')
+    document.getElementById('txt-sec-purpose').textContent = t('vis_sec_purpose')
+    document.getElementById('txt-purpose-label').textContent = t('vis_purpose')
+    document.getElementById('opt-purpose-ph').textContent = t('vis_purpose_ph')
+    document.getElementById('opt-ziarah').textContent = t('vis_purpose_visit')
+    document.getElementById('opt-hantar').textContent = t('vis_purpose_delivery')
+    document.getElementById('opt-kerja').textContent = t('vis_purpose_work')
+    document.getElementById('opt-baiki').textContent = t('vis_purpose_repair')
+    document.getElementById('opt-lain').textContent = t('vis_purpose_other')
+    document.getElementById('txt-vehicle-type-label').textContent = t('vis_vehicle_type')
+    document.getElementById('opt-vehicle-ph').textContent = t('vis_vehicle_type_ph')
+    document.getElementById('opt-car').textContent = t('vis_vehicle_car')
+    document.getElementById('opt-moto').textContent = t('vis_vehicle_moto')
+    document.getElementById('opt-lorry').textContent = t('vis_vehicle_lorry')
+    document.getElementById('opt-none').textContent = t('vis_vehicle_none')
+    document.getElementById('txt-vehicle-plate-label').textContent = t('vis_vehicle_plate')
+    document.getElementById('visPlate').placeholder = t('vis_vehicle_plate_ph_req')
+    document.getElementById('txt-submit').textContent = '✓  ' + t('vis_submit')
+    document.getElementById('txt-copy-btn').textContent = t('vis_copy_code')
+    document.getElementById('txt-dl-btn').textContent = t('vis_download_qr')
+
+    const FLOORS = Array.from({length:19},(_,i)=>i+4)
+    const UNITS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,'23A',25]
+    const floorSel = document.getElementById('floorSelect')
+    FLOORS.forEach(i => {
+      const o = document.createElement('option')
+      o.value = i; o.textContent = t('disp_floor_prefix') + ' ' + i
+      floorSel.appendChild(o)
+    })
+    function onFloorChange() {
+      const floor = floorSel.value
+      const unitSel = document.getElementById('unitSelect')
+      document.getElementById('unit').value = ''
+      document.getElementById('unitConfirm').style.display = 'none'
+      document.getElementById('unitField').style.display = floor ? 'block' : 'none'
+      if (!floor) return
+      unitSel.innerHTML = '<option value="">' + t('disp_unitnum_placeholder') + '</option>'
+      UNITS.forEach(j => {
+        const o = document.createElement('option')
+        o.value = floor+'-'+j; o.textContent = t('disp_unitnum_prefix')+' '+j
+        unitSel.appendChild(o)
+      })
+    }
+    function onUnitChange() {
+      const val = document.getElementById('unitSelect').value
+      document.getElementById('unit').value = val
+      document.getElementById('unitConfirmVal').textContent = val
+      document.getElementById('unitConfirm').style.display = val ? 'block' : 'none'
+    }
+
+    function showToast(msg, type='') {
+      const el = document.getElementById('toast')
+      el.textContent = msg; el.className = `toast ${type} show`
+      setTimeout(() => el.className = 'toast', 2800)
+    }
+
+    let currentRef = ''
+
+    function copyCode() {
+      navigator.clipboard.writeText(currentRef).then(() => {
+        const btn = document.getElementById('copyBtn')
+        btn.classList.add('btn-copied')
+        btn.innerHTML = '✓ <span>' + t('vis_copied') + '</span>'
+        setTimeout(() => {
+          btn.classList.remove('btn-copied')
+          btn.innerHTML = '📋 <span>' + t('vis_copy_code') + '</span>'
+        }, 2000)
+      })
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrCanvas canvas')
+      if (!canvas) return
+      const link = document.createElement('a')
+      link.download = 'visitor-' + currentRef + '.png'
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    }
+
+    async function registerVisitor() {
+      const name = document.getElementById('visName').value.trim()
+      const ic = document.getElementById('visIc').value.trim()
+      const phone = document.getElementById('visPhone').value.trim()
+      const unit = document.getElementById('unit').value
+      const purpose = document.getElementById('visPurpose').value
+      const vehicle_type = document.getElementById('visVehicleType').value
+      const vehicle_plate = document.getElementById('visPlate').value.trim().toUpperCase()
+      if (!name||!ic||!phone||!unit||!purpose||!vehicle_plate) { showToast(t('vis_error_fill'),'error-toast'); return }
+
+      const btn = document.getElementById('txt-submit')
+      btn.textContent = '⏳ ' + t('loading'); btn.disabled = true
+      try {
+        const result = await apiRegisterVisitor({name, ic_no:ic, phone, unit, purpose})
+        showSuccess(result, {name, ic, phone, unit, purpose, vehicle_type, vehicle_plate})
+      } catch(e) {
+        showToast(t('error_server'), 'error-toast'); console.error(e)
+      } finally {
+        btn.textContent = '✓  ' + t('vis_submit'); btn.disabled = false
+      }
+    }
+
+    function showSuccess(visitor, info) {
+      document.getElementById('formView').style.display = 'none'
+      document.getElementById('successView').style.display = 'block'
+      document.getElementById('txt-success-title').textContent = t('vis_success_title')
+      document.getElementById('txt-success-sub').textContent = t('vis_success_sub')
+      document.getElementById('txt-ref-label').textContent = t('vis_ref_label')
+      document.getElementById('txt-qr-hint').textContent = t('vis_qr_hint')
+      document.getElementById('txt-details-label').textContent = t('vis_details')
+      document.getElementById('txt-new-reg').textContent = t('vis_new_reg')
+      document.getElementById('txt-copy-btn').textContent = t('vis_copy_code')
+      document.getElementById('txt-dl-btn').textContent = t('vis_download_qr')
+
+      currentRef = visitor.ref_code
+      document.getElementById('refCode').textContent = currentRef
+
+      const canvas = document.getElementById('qrCanvas')
+      canvas.innerHTML = ''
+      new QRCode(canvas, { text: currentRef, width:180, height:180, colorDark:'#000000', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H })
+
+      const rows = [
+        [t('vis_name'), info.name],
+        [t('vis_ic'), info.ic],
+        [t('vis_phone'), info.phone],
+        ['Unit', info.unit],
+        [t('vis_purpose'), info.purpose],
+        [t('vis_vehicle_type'), info.vehicle_type || '—'],
+        [t('vis_vehicle_plate'), info.vehicle_plate || '—'],
+        [t('vis_status'), t('vis_status_pending')]
+      ]
+      document.getElementById('detailRows').innerHTML = rows.map(([l,v]) =>
+        `<div class="info-row"><span class="info-label">${l}</span><span class="info-val">${v}</span></div>`
+      ).join('')
+    }
+
+    function resetForm() {
+      document.getElementById('successView').style.display = 'none'
+      document.getElementById('formView').style.display = 'block'
+      ;['visName','visIc','visPhone','unit','visPlate'].forEach(id => document.getElementById(id).value = '')
+      document.getElementById('visPurpose').value = ''
+      document.getElementById('visVehicleType').value = ''
+      document.getElementById('floorSelect').value = ''
+      document.getElementById('unitField').style.display = 'none'
+      document.getElementById('unitConfirm').style.display = 'none'
+      currentRef = ''
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemilik — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tab-bar { display:flex; gap:6px; margin-bottom:16px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); font-family:var(--heading-font); }
+    .tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+    .vis-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; transition:border-color 0.2s; }
+    .vis-name { font-family:var(--heading-font); font-size:14px; font-weight:700; margin-bottom:2px; }
+    .vis-meta { font-size:11px; color:var(--text-muted); margin-bottom:8px; font-family:'JetBrains Mono',monospace; }
+    .btn-sm { padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:var(--body-font); transition:all 0.2s; }
+    .btn-approve { background:var(--green); color:#fff; }
+    .btn-approve:hover { opacity:0.85; }
+    .btn-reject { background:var(--red); color:#fff; }
+    .btn-reject:hover { opacity:0.85; }
+    .mod-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; }
+    .mod-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; text-decoration:none; color:inherit; padding:14px 10px; text-align:center; transition:all 0.2s; }
+    .mod-card:hover { border-color:rgba(var(--accent-rgb),0.4); background:var(--surface); transform:translateY(-1px); }
+    .mod-card .mi { font-size:20px; margin-bottom:6px; }
+    .mod-card .mn { font-size:11px; font-weight:700; }
+    .ann-item { padding:11px 0; border-bottom:1px solid var(--border); }
+    .ann-item:last-child { border-bottom:none; }
+    .ann-title { font-family:var(--heading-font); font-weight:700; font-size:13.5px; margin-bottom:2px; }
+    .ann-meta { font-size:11px; color:var(--text-muted); }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon green">🔍</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="section animate-in" style="animation-delay:0.05s">
+        <div class="section-title" id="txt-section"></div>
+        <div class="field">
+          <label id="txt-unit-label"></label>
+          <input id="unit" onkeydown="if(event.key==='Enter')checkOwner()">
+        </div>
+        <div class="field">
+          <label id="txt-credential-label"></label>
+          <input id="credential" onkeydown="if(event.key==='Enter')checkOwner()">
+        </div>
+        <div class="error-text" id="ownerError" style="margin-top:4px"></div>
+      </div>
+      <button class="btn btn-gold animate-in" onclick="checkOwner()" id="txt-check-btn"></button>
+      <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:14px" id="txt-login-hint"></p>
+    </div>
+
+    <!-- DASHBOARD (shown after login) -->
+    <div id="dashboard" style="display:none">
+      <!-- Quick links -->
+      <div class="section animate-in">
+        <div class="section-title" id="txt-svc-title"></div>
+        <div class="mod-grid">
+          <a class="mod-card" href="payments.html"><div class="mi">💰</div><div class="mn" id="txt-m-pay"></div></a>
+          <a class="mod-card" href="maintenance.html"><div class="mi">🔧</div><div class="mn" id="txt-m-mnt"></div></a>
+          <a class="mod-card" href="bookings.html"><div class="mi">📅</div><div class="mn" id="txt-m-bk"></div></a>
+          <a class="mod-card" href="vehicles.html"><div class="mi">🚗</div><div class="mn" id="txt-m-veh"></div></a>
+          <a class="mod-card" href="announcements.html"><div class="mi">📢</div><div class="mn" id="txt-m-ann"></div></a>
+        </div>
+      </div>
+
+      <!-- Balance strip -->
+      <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)">
+          <div id="balFee" class="num" style="font-size:20px">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-bal-fee"></div>
+        </div>
+        <div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)">
+          <div id="balPaid" class="num" style="font-size:20px;color:var(--green)">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-bal-paid"></div>
+        </div>
+        <div style="text-align:center;flex:1;padding:14px">
+          <div id="balOut" class="num" style="font-size:20px;color:var(--red)">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-bal-out"></div>
+        </div>
+      </div>
+
+      <!-- Tab bar: Parcel | Visitor | Notis -->
+      <div class="tab-bar animate-in">
+        <div class="tab active" onclick="switchTab('parcel')" id="tab-parcel"></div>
+        <div class="tab" onclick="switchTab('visitor')" id="tab-visitor"></div>
+        <div class="tab" onclick="switchTab('announce')" id="tab-ann"></div>
+      </div>
+
+      <!-- PARCEL TAB -->
+      <div id="parcelTab">
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <div class="select-wrap" style="flex:1">
+            <select id="filterStatus" onchange="applyParcelFilter()" style="height:40px">
+              <option value="all" id="opt-all"></option>
+              <option value="Pending" id="opt-pending"></option>
+              <option value="Done" id="opt-done"></option>
+            </select>
+          </div>
+        </div>
+        <div id="parcelResult"></div>
+      </div>
+
+      <!-- VISITOR TAB -->
+      <div id="visitorTab" style="display:none">
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <div class="select-wrap" style="flex:1">
+            <select id="filterVisitor" onchange="applyVisitorFilter()" style="height:40px">
+              <option value="all" id="vopt-all"></option>
+              <option value="Pending" id="vopt-pending"></option>
+              <option value="Approved" id="vopt-approved"></option>
+              <option value="Rejected" id="vopt-rejected"></option>
+              <option value="Checked In" id="vopt-checkedin"></option>
+            </select>
+          </div>
+        </div>
+        <div id="visitorResult"></div>
+      </div>
+
+      <!-- NOTIS TAB -->
+      <div id="announceTab" style="display:none">
+        <div class="section animate-in" style="padding:6px 16px">
+          <div id="annList"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="toast" id="toast"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    renderNav('card_owner')
+    const $ = id => document.getElementById(id)
+    $('txt-title').textContent = t('owner_title')
+    $('txt-subtitle').textContent = t('owner_subtitle')
+    $('txt-section').textContent = t('owner_section_login')
+    $('txt-unit-label').textContent = t('owner_unit_label')
+    $('unit').placeholder = t('owner_unit_placeholder')
+    $('txt-credential-label').textContent = t('owner_credential_label')
+    $('credential').placeholder = t('owner_credential_ph')
+    $('txt-check-btn').textContent = '🔍  ' + t('check')
+    $('txt-login-hint').textContent = t('demo_note_creds')
+    $('txt-svc-title').textContent = t('dash_quick')
+    $('txt-m-pay').textContent = t('sys_payments')
+    $('txt-m-mnt').textContent = t('sys_maintenance')
+    $('txt-m-bk').textContent = t('sys_bookings')
+    $('txt-m-veh').textContent = t('sys_vehicles')
+    $('txt-m-ann').textContent = t('sys_announcements')
+    $('txt-bal-fee').textContent = t('pay_monthly')
+    $('txt-bal-paid').textContent = t('pay_paid')
+    $('txt-bal-out').textContent = t('pay_outstanding')
+    $('tab-parcel').textContent = '📦 ' + t('sys_parcel')
+    $('tab-visitor').textContent = '🪪 ' + t('sys_visitor')
+    $('tab-ann').textContent = '📢 ' + t('sys_announcements')
+    $('opt-all').textContent = t('owner_filter_all')
+    $('opt-pending').textContent = t('owner_filter_pending')
+    $('opt-done').textContent = t('owner_filter_done')
+    $('vopt-all').textContent = t('owner_filter_all')
+    $('vopt-pending').textContent = t('vis_status_pending')
+    $('vopt-approved').textContent = t('vis_status_approved')
+    $('vopt-rejected').textContent = t('vis_status_rejected')
+    $('vopt-checkedin').textContent = t('vis_status_checkedin')
+
+    let allParcels = [], allVisitors = [], currentUnit = ''
+
+    function showToast(msg, type) {
+      const el = $('toast'); el.textContent = msg; el.className = 'toast ' + (type || '') + ' show'
+      setTimeout(() => el.className = 'toast', 2800)
+    }
+
+    function switchTab(tab) {
+      $('tab-parcel').classList.toggle('active', tab === 'parcel')
+      $('tab-visitor').classList.toggle('active', tab === 'visitor')
+      $('tab-ann').classList.toggle('active', tab === 'announce')
+      $('parcelTab').style.display = tab === 'parcel' ? 'block' : 'none'
+      $('visitorTab').style.display = tab === 'visitor' ? 'block' : 'none'
+      $('announceTab').style.display = tab === 'announce' ? 'block' : 'none'
+      if (tab === 'announce') loadAnns()
+    }
+
+    function checkOwner() {
+      const unit = $('unit').value.trim()
+      const credential = $('credential').value.trim()
+      const err = $('ownerError')
+      if (!unit || !credential) { err.textContent = t('owner_error_fill'); return }
+      err.textContent = ''
+      currentUnit = unit
+      const isEmail = credential.includes('@')
+      const email = isEmail ? credential : ''
+      const phone = isEmail ? '' : credential
+
+      $('parcelResult').innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:24px">' + t('loading') + '</p>'
+
+      apiCheckOwner({ unit, email, phone }).then(async d => {
+        if (d.error) { err.textContent = d.error; return }
+        allParcels = d.parcels
+        allVisitors = d.visitors || []
+        currentUnit = d.owner.unit
+        $('loginForm').style.display = 'none'
+        $('dashboard').style.display = 'block'
+        applyParcelFilter()
+        applyVisitorFilter()
+        const bal = apiOwnerBalance(currentUnit, await apiGetOwnerPayments(currentUnit))
+        $('balFee').textContent = fmtMoney(bal.fee)
+        $('balPaid').textContent = fmtMoney(bal.paid)
+        $('balOut').textContent = fmtMoney(bal.outstanding)
+      }).catch(() => { err.textContent = t('error_server') })
+    }
+
+    async function loadAnns() {
+      const list = await apiGetAnnouncements()
+      const el = $('annList')
+      if (!list.length) { el.innerHTML = emptyState('📢', t('dash_noann')); return }
+      el.innerHTML = list.slice(0, 6).map(a =>
+        '<div class="ann-item"><div class="ann-title' + (a.pinned ? ' ann-pin" style="color:var(--accent)' : '') + '">' + (a.pinned ? '📌 ' : '') + esc(a.title) + '</div>' +
+        '<div class="ann-meta">' + fmtDate(a.created_at) + '</div>' +
+        (a.body ? '<div style="font-size:12px;color:var(--text-muted);margin-top:3px">' + esc(a.body) + '</div>' : '') +
+        '</div>'
+      ).join('')
+    }
+
+    function fmtDate(ts) {
+      if (!ts) return '—'
+      const d = new Date(ts)
+      return d.toLocaleDateString(getLang() === 'en' ? 'en-MY' : 'ms-MY', { day: 'numeric', month: 'short', year: 'numeric' }) + ' · ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+
+    function applyParcelFilter() {
+      const f = $('filterStatus').value
+      renderParcels(f === 'all' ? allParcels : allParcels.filter(p => p.status === f))
+    }
+
+    function renderParcels(parcels) {
+      const el = $('parcelResult')
+      const pending = allParcels.filter(p => p.status === 'Pending').length
+      const done = allParcels.filter(p => p.status === 'Done').length
+      let html = '<div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">' +
+        '<div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)"><div class="num" style="font-size:22px;color:var(--accent)">' + pending + '</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + t('pending') + '</div></div>' +
+        '<div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)"><div class="num" style="font-size:22px;color:var(--green)">' + done + '</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + t('done') + '</div></div>' +
+        '<div style="text-align:center;flex:1;padding:14px"><div class="num" style="font-size:22px">' + allParcels.length + '</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + t('total') + '</div></div></div>'
+      if (!parcels.length) { el.innerHTML = html + emptyState('📭', t('owner_empty')); return }
+      parcels.forEach((p, i) => {
+        html += '<div class="parcel-card animate-in" style="animation-delay:' + (i * 0.04) + 's">' +
+          (p.image ? '<img class="parcel-img" src="' + p.image + '" alt="Parsel" onclick="openLightbox(\'' + p.image + '\')" title="' + t('enlarge_hint') + '">' : '<div class="parcel-img" style="display:flex;align-items:center;justify-content:center;font-size:22px">📦</div>') +
+          '<div class="parcel-info">' +
+            '<div class="parcel-courier">' + esc(p.courier) + '</div>' +
+            '<div class="parcel-date">🕐 ' + fmtDate(p.createdAt) + '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+              badgeHtml(p.status) +
+              (p.status === 'Pending' ? '<button class="btn-green" onclick="markDone(\'' + p.id + '\')">' + t('owner_mark_done') + '</button>' : '') +
+            '</div></div></div>'
+      })
+      el.innerHTML = html
+    }
+
+    function markDone(id) {
+      apiMarkDone(id).then(() => { showToast(t('owner_marked'), 'success'); checkOwner() })
+    }
+
+    const statusKey = { Pending: 'vis_status_pending', Approved: 'vis_status_approved', Rejected: 'vis_status_rejected', 'Checked In': 'vis_status_checkedin', 'Checked Out': 'guard_checkout' }
+
+    function applyVisitorFilter() {
+      const f = $('filterVisitor').value
+      renderVisitors(f === 'all' ? allVisitors : allVisitors.filter(v => v.status === f))
+    }
+
+    function renderVisitors(visitors) {
+      const el = $('visitorResult')
+      const pending = allVisitors.filter(v => v.status === 'Pending').length
+      const approved = allVisitors.filter(v => v.status === 'Approved' || v.status === 'Checked In').length
+      let html = '<div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">' +
+        '<div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)"><div class="num" style="font-size:22px;color:var(--accent)">' + pending + '</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + t('vis_status_pending') + '</div></div>' +
+        '<div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)"><div class="num" style="font-size:22px;color:var(--green)">' + approved + '</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + t('vis_status_approved') + '</div></div>' +
+        '<div style="text-align:center;flex:1;padding:14px"><div class="num" style="font-size:22px">' + allVisitors.length + '</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + t('total') + '</div></div></div>'
+      if (!visitors.length) { el.innerHTML = html + emptyState('🪪', t('vis_empty')); return }
+      visitors.forEach((v, i) => {
+        html += '<div class="vis-card animate-in" style="animation-delay:' + (i * 0.04) + 's">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px">' +
+            '<div class="vis-name">' + esc(v.name) + '</div>' + badgeHtml(v.status) +
+          '</div>' +
+          '<div class="vis-meta">' + esc(v.ref_code) + ' · ' + fmtDate(v.created_at) + '</div>' +
+          '<div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">' + esc(v.purpose) + ' · ' + esc(v.phone) + '</div>' +
+          (v.status === 'Pending' ? '<div style="display:flex;gap:8px">' +
+            '<button class="btn-sm btn-approve" onclick="approveVisitor(\'' + v.id + '\',\'Approved\')">' + t('guard_approve') + '</button>' +
+            '<button class="btn-sm btn-reject" onclick="approveVisitor(\'' + v.id + '\',\'Rejected\')">' + t('guard_reject') + '</button></div>' : '') +
+        '</div>'
+      })
+      el.innerHTML = html
+    }
+
+    async function approveVisitor(id, status) {
+      try {
+        await apiUpdateVisitor(id, status)
+        showToast(status === 'Approved' ? t('vis_status_approved') : t('vis_status_rejected'), 'success')
+        const d = await apiCheckOwner({ unit: currentUnit, email: '', phone: '' })
+        // re-check may fail phone-less; reload visitors via API instead
+        const all = await apiGetVisitors()
+        allVisitors = all.filter(v => v.unit === currentUnit)
+        applyVisitorFilter()
+      } catch (e) { showToast(t('error_server'), 'error-toast') }
+    }
+  </script>
+</body>
+</html>

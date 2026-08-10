@@ -1,0 +1,114 @@
+# Netlify configuration for Kesuma Parcel Hub
+# Static site — no build step needed
+
+[build]
+  publish = "."
+
+# Clean URLs — /dispatcher instead of /dispatcher.html
+[[redirects]]
+  from = "/dispatcher"
+  to = "/dispatcher.html"
+  status = 200
+
+[[redirects]]
+  from = "/owner"
+  to = "/owner.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/how"
+  to = "/how.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/plan"
+  to = "/plan.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/parcel"
+  to = "/parcel.html"
+  status = 200
+
+[[redirects]]
+  from = "/visitor"
+  to = "/visitor.html"
+  status = 200
+
+[[redirects]]
+  from = "/visitor-register"
+  to = "/visitor-register.html"
+  status = 200
+
+[[redirects]]
+  from = "/visitor-check"
+  to = "/visitor-check.html"
+  status = 200
+
+[[redirects]]
+  from = "/guard"
+  to = "/guard.html"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/maintenance"
+  to = "/maintenance.html"
+  status = 200
+
+[[redirects]]
+  from = "/payments"
+  to = "/payments.html"
+  status = 200
+
+[[redirects]]
+  from = "/announcements"
+  to = "/announcements.html"
+  status = 200
+
+[[redirects]]
+  from = "/bookings"
+  to = "/bookings.html"
+  status = 200
+
+[[redirects]]
+  from = "/vehicles"
+  to = "/vehicles.html"
+  status = 200
+
+[[redirects]]
+  from = "/documents"
+  to = "/documents.html"
+  status = 200
+
+[[redirects]]
+  from = "/residents"
+  to = "/residents.html"
+  status = 200
