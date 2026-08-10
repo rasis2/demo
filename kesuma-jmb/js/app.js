@@ -237,6 +237,8 @@ async function renderView() {
     await v.render(wrap)
   } catch (e) {
     if (e && e.message === 'NOT_CONFIGURED') { showSetup(); return }
+    const noSchema = e && /PGRST205|could not find the table/i.test(e.message)
+    if (noSchema) { showSetup(); return }
     console.error(e)
     wrap.innerHTML = '<div class="card card-pad"><div class="empty"><div class="ei">⚠️</div><p>' + t('err_server') + '</p><button class="btn btn-ghost mt-16" onclick="renderView()">' + t('retry') + '</button></div></div>'
   }

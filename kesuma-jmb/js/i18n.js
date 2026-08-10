@@ -88,7 +88,7 @@ const I18N = {
     setup_desc: 'Untuk mula, sambungkan projek Supabase anda. Salin Project URL dan anon public key dari Supabase Dashboard → Settings → API.',
     setup_url: 'Supabase URL', setup_key: 'Anon Public Key', setup_save: 'Sambungkan', setup_help: 'Perlu skema?',
     setup_ok: 'Berjaya disambungkan!', setup_fail: 'Tidak dapat menyambung. Pastikan URL & key betul dan skema telah dijalankan.',
-    demo_note_creds: 'Cuba: PIN Admin / Guard / Dispatcher 1125 · Pemilik: unit 4-1 (email unit4-1@kesuma.my atau telefon yang dipaparkan).',
+    demo_note_creds: 'Cuba: PIN Admin / Guard / Dispatcher 1125 · Pemilik: unit 4-1 (email owner4-1@demo.com atau telefon 01230401).',
     setup_need_schema: 'Jadual belum wujud dalam pangkalan data. Buka <b>schema.sql</b> (dalam repo) dan jalankan dalam <b>Supabase SQL Editor</b>, kemudian buat bucket <b>parcel-images</b> (Public).',
   },
   en: {
@@ -177,7 +177,7 @@ const I18N = {
     setup_desc: 'To get started, connect your Supabase project. Copy the Project URL and anon public key from Supabase Dashboard → Settings → API.',
     setup_url: 'Supabase URL', setup_key: 'Anon Public Key', setup_save: 'Connect', setup_help: 'Need the schema?',
     setup_ok: 'Connected successfully!', setup_fail: 'Unable to connect. Check the URL & key and make sure the schema has been run.',
-    demo_note_creds: 'Try: Admin / Guard / Dispatcher PIN 1125 · Owner: unit 4-1 (email unit4-1@kesuma.my or the phone shown).',
+    demo_note_creds: 'Try: Admin / Guard / Dispatcher PIN 1125 · Owner: unit 4-1 (email owner4-1@demo.com or phone 01230401).',
     setup_need_schema: 'Tables not found in the database. Open <b>schema.sql</b> (in the repo) and run it in the <b>Supabase SQL Editor</b>, then create the <b>parcel-images</b> bucket (Public).',
   },
   zh: {
@@ -266,7 +266,7 @@ const I18N = {
     setup_desc: '要开始，请连接您的 Supabase 项目。从 Supabase 控制台 → Settings → API 复制 Project URL 和 anon public key。',
     setup_url: 'Supabase URL', setup_key: 'Anon Public Key', setup_save: '连接', setup_help: '需要架构？',
     setup_ok: '连接成功！', setup_fail: '无法连接。请检查 URL 和 key，并确保已运行架构。',
-    demo_note_creds: '试试：管理员 / 保安 / 收发员 PIN 1125 · 业主：单位 4-1（邮箱 unit4-1@kesuma.my 或所显示的电话）。',
+    demo_note_creds: '试试：管理员 / 保安 / 收发员 PIN 1125 · 业主：单位 4-1（邮箱 owner4-1@demo.com 或电话 01230401）。',
     setup_need_schema: '数据库中未找到表。请打开 <b>schema.sql</b>（在仓库中）并在 <b>Supabase SQL 编辑器</b> 中运行，然后创建 <b>parcel-images</b> 存储桶（公共）。',
   },
   ta: {
@@ -355,7 +355,7 @@ const I18N = {
     setup_desc: 'தொடங்க, உங்கள் Supabase திட்டத்தை இணைக்கவும். Supabase Dashboard → Settings → API இலிருந்து Project URL மற்றும் anon public key-ஐ நகலெடுக்கவும்.',
     setup_url: 'Supabase URL', setup_key: 'Anon Public Key', setup_save: 'இணைக்க', setup_help: 'திட்டம் தேவையா?',
     setup_ok: 'வெற்றிகரமாக இணைக்கப்பட்டது!', setup_fail: 'இணைக்க முடியவில்லை. URL & key சரிபார்த்து, திட்டம் இயக்கப்பட்டதா உறுதிசெய்யவும்.',
-    demo_note_creds: 'முயற்சி: நிர்வாகி / பாதுகாப்பு / டிஸ்பாட்சர் PIN 1125 · உரிமையாளர்: யூனிட் 4-1 (மின்னஞ்சல் unit4-1@kesuma.my அல்லது காட்டப்படும் தொலைபேசி).',
+    demo_note_creds: 'முயற்சி: நிர்வாகி / பாதுகாப்பு / டிஸ்பாட்சர் PIN 1125 · உரிமையாளர்: யூனிட் 4-1 (மின்னஞ்சல் owner4-1@demo.com அல்லது தொலைபேசி 01230401).',
     setup_need_schema: 'தரவுத்தளத்தில் அட்டவணைகள் காணப்படவில்லை. <b>schema.sql</b>-ஐ (களஞ்சியத்தில்) திறந்து <b>Supabase SQL எடிட்டரில்</b> இயக்கவும், பிறகு <b>parcel-images</b> பக்கெட்டை (Public) உருவாக்கவும்.',
   },
 }
