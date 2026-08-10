@@ -313,10 +313,6 @@ VIEWS.settings = {
         '</div>' +
         '<div class="flex"><button class="btn btn-primary" id="st_test">' + t('set_test') + '</button>' +
         '<span id="st_status" class="state-pill"></span></div>' +
-      '</div></div>' +
-      '<div class="card"><div class="card-head"><h3>🌱 ' + t('set_seed') + '</h3></div><div class="card-body flex-between">' +
-        '<div class="small muted">' + t('set_schema_hint') + '</div>' +
-        '<button class="btn btn-ghost" onclick="window.open(\'schema.sql\')">' + t('set_schema') + '</button>' +
       '</div></div>'
 
     const saveAll = async () => {
