@@ -71,7 +71,7 @@ function isStaff() { return state.session && state.session.type === 'staff' }
 function isAdmin() { return isStaff() && state.session.role === 'admin' }
 
 function logout() {
-  state.session = null; saveSession(); updateShell(); toast(t('logout_ok'))
+  state.session = null; saveSession(); updateShell(); renderView(); toast(t('logout_ok'))
 }
 
 // ── Modal helper ──
@@ -188,7 +188,7 @@ function showLogin() {
           } else {
             state.session = { type: 'staff', role: u.role, name: u.name || u.username }
           }
-          saveSession(); closeModal(ov); updateShell(); toast(t('login_success'), 'success')
+          saveSession(); closeModal(ov); updateShell(); renderView(); toast(t('login_success'), 'success')
         } catch (e) { errEl.textContent = t('err_server') }
         btn.disabled = false; btn.textContent = t('login')
       }
