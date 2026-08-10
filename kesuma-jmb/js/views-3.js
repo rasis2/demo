@@ -76,29 +76,55 @@ VIEWS.vehicles = {
   key: 'nav_vehicles', icon: '🚗',
   render: async (wrap) => {
     const ownerU = isOwner(), staffU = isStaff()
+
+    // Register form: owners register their own unit; staff/guard register on behalf (with unit field)
+    let form
+    if (ownerU) {
+      form =
+        '<div class="form-row">' +
+          '<div class="field grow"><label data-i18n="veh_plate"></label><input class="input mono" id="vv_plate" placeholder="' + t('veh_plate_ph') + '" style="text-transform:uppercase"></div>' +
+          '<div class="field"><label data-i18n="veh_lot"></label><input class="input mono" id="vv_lot" placeholder="' + t('veh_lot_ph') + '"></div>' +
+        '</div>' +
+        '<div class="field"><label data-i18n="veh_model"></label><input class="input" id="vv_model" placeholder="' + t('veh_model_ph') + '"></div>' +
+        '<button class="btn btn-primary btn-block btn-lg" id="vv_go">' + t('veh_submit') + '</button>'
+    } else if (staffU) {
+      form =
+        '<div class="field"><label data-i18n="unit_lbl"></label><input class="input mono" id="vv_unit" placeholder="' + t('unit_ph') + '"></div>' +
+        '<div class="form-row">' +
+          '<div class="field grow"><label data-i18n="veh_plate"></label><input class="input mono" id="vv_plate" placeholder="' + t('veh_plate_ph') + '" style="text-transform:uppercase"></div>' +
+          '<div class="field"><label data-i18n="veh_lot"></label><input class="input mono" id="vv_lot" placeholder="' + t('veh_lot_ph') + '"></div>' +
+        '</div>' +
+        '<div class="field"><label data-i18n="veh_model"></label><input class="input" id="vv_model" placeholder="' + t('veh_model_ph') + '"></div>' +
+        '<button class="btn btn-primary btn-block btn-lg" id="vv_go">' + t('veh_submit') + '</button>'
+    } else {
+      form = '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p>' +
+        '<button class="btn btn-primary mt-16" id="vvLoginOwner">🏠 ' + t('login_owner') + '</button>' +
+        '<button class="btn btn-ghost mt-8" id="vvLoginStaff">🛡️ ' + t('login_staff') + '</button></div>'
+    }
+
     wrap.innerHTML =
       '<div class="page-head"><h1>🚗 ' + t('veh_title') + '</h1><p>' + t('veh_success') + '</p></div>' +
       '<div class="grid-2">' +
-        '<div class="card"><div class="card-head"><h3>➕ ' + t('veh_register') + '</h3></div><div class="card-body">' +
-          (ownerU
-            ? '<div class="form-row">' +
-                '<div class="field grow"><label data-i18n="veh_plate"></label><input class="input mono" id="vv_plate" placeholder="' + t('veh_plate_ph') + '" style="text-transform:uppercase"></div>' +
-                '<div class="field"><label data-i18n="veh_lot"></label><input class="input mono" id="vv_lot" placeholder="' + t('veh_lot_ph') + '"></div>' +
-              '</div>' +
-              '<div class="field"><label data-i18n="veh_model"></label><input class="input" id="vv_model" placeholder="' + t('veh_model_ph') + '"></div>' +
-              '<button class="btn btn-primary btn-block btn-lg" id="vv_go">' + t('veh_submit') + '</button>'
-            : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="vvLogin">' + t('login_owner') + '</button></div>')
-        + '</div></div>' +
+        '<div class="card"><div class="card-head"><h3>➕ ' + t('veh_register') + '</h3></div><div class="card-body">' + form + '</div></div>' +
         '<div class="card"><div class="card-head"><h3>' + t('veh_list') + '</h3></div><div class="card-body" id="vvList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
       '</div>'
 
-    const vvLogin = $('vvLogin'); if (vvLogin) vvLogin.onclick = showOwnerLogin
+    const vvLoginOwner = $('vvLoginOwner'); if (vvLoginOwner) vvLoginOwner.onclick = showOwnerLogin
+    const vvLoginStaff = $('vvLoginStaff'); if (vvLoginStaff) vvLoginStaff.onclick = showStaffLogin
     const vvGo = $('vv_go')
     if (vvGo) vvGo.onclick = async () => {
       const plate = $('vv_plate').value.trim().toUpperCase()
       if (!plate) { toast(t('required'), 'error'); return }
-      await kjUpdateOwner(state.session.unit, { vehicle_plate: plate, vehicle_model: $('vv_model').value.trim(), parking_lot: $('vv_lot').value.trim().toUpperCase() })
+      let unit = state.session.unit
+      if (staffU) {
+        unit = $('vv_unit').value.trim()
+        if (!unit) { toast(t('unit_lbl'), 'error'); return }
+        const o = await kjOwner(unit)
+        if (!o) { toast(t('unit_not_found'), 'error'); return }
+      }
+      await kjUpdateOwner(unit, { vehicle_plate: plate, vehicle_model: $('vv_model').value.trim(), parking_lot: $('vv_lot').value.trim().toUpperCase() })
       toast(t('veh_success'), 'success'); $('vv_plate').value = ''; $('vv_model').value = ''; $('vv_lot').value = ''
+      if (staffU) $('vv_unit').value = ''
       await loadVeh()
     }
     async function loadVeh() {

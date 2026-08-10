@@ -13,9 +13,11 @@ VIEWS.parcels = {
   key: 'nav_parcels', icon: '📦',
   render: async (wrap) => {
     const isStaffU = isStaff(), isOwnerU = isOwner()
-    wrap.innerHTML =
-      '<div class="page-head"><h1>📦 ' + t('par_title') + '</h1><p>' + t('par_added') + '</p></div>' +
-      '<div class="grid-2">' +
+
+    // Register form: STAFF ONLY. Owner only collects; guest prompted to log in.
+    let leftCol
+    if (isStaffU) {
+      leftCol =
         '<div class="card"><div class="card-head"><h3>➕ ' + t('par_add') + '</h3></div><div class="card-body">' +
           '<div class="form-row"><div class="field"><label data-i18n="par_floor"></label>' +
             '<select class="select" id="pf_floor"><option value="">—</option>' +
@@ -28,36 +30,56 @@ VIEWS.parcels = {
           '<div class="field"><label data-i18n="par_photo"></label>' +
             '<input type="file" class="input" id="pf_photo" accept="image/*" capture="environment" style="padding:8px">' +
             '<p class="small muted mt-8">' + t('par_photo_hint') + '</p>' +
-            (isStaffU ? '' : '<div class="field mt-16"><label data-i18n="pin_lbl"></label><input class="input" type="password" id="pf_pin" maxlength="10" placeholder="' + t('pin_ph') + '"></div>') +
           '</div>' +
           '<button class="btn btn-primary btn-block btn-lg" id="pf_submit">📦 ' + t('par_submit') + '</button>' +
-        '</div></div>' +
+        '</div></div>'
+    } else if (isOwnerU) {
+      leftCol =
+        '<div class="card"><div class="card-body" style="text-align:center;padding:26px 20px">' +
+          '<div class="ei" style="font-size:38px">📦</div>' +
+          '<p class="muted small mt-8">' + t('par_owner_hint') + '</p>' +
+        '</div></div>'
+    } else {
+      leftCol =
+        '<div class="card"><div class="card-body" style="text-align:center;padding:26px 20px">' +
+          '<div class="ei" style="font-size:38px">🔐</div>' +
+          '<p class="muted small mt-8">' + t('dash_login_hint') + '</p>' +
+          '<button class="btn btn-primary btn-block mt-16" id="parStaffLogin">🛡️ ' + t('login_staff') + '</button>' +
+          '<button class="btn btn-ghost btn-block mt-8" id="parOwnerLogin">🏠 ' + t('login_owner') + '</button>' +
+        '</div></div>'
+    }
+
+    wrap.innerHTML =
+      '<div class="page-head"><h1>📦 ' + t('par_title') + '</h1><p>' + t('par_added') + '</p></div>' +
+      '<div class="grid-2">' +
+        leftCol +
         '<div class="card"><div class="card-head"><h3>' + (isOwnerU ? '🏠 ' + t('par_my') : t('par_monitor')) + '</h3></div>' +
           '<div class="card-body" id="parList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
       '</div>'
 
-    // unit cascade
-    const floorEl = $('pf_floor'), unitEl = $('pf_unit')
-    floorEl.addEventListener('change', () => {
-      unitEl.innerHTML = '<option value="">' + t('par_select_unit') + '</option>'
-      if (!floorEl.value) return
-      KJ_UNITS.forEach(u => {
-        const o = document.createElement('option')
-        o.value = floorEl.value + '-' + u; o.textContent = 'No. ' + u
-        unitEl.appendChild(o)
-      })
-    })
+    const parStaffLogin = $('parStaffLogin'); if (parStaffLogin) parStaffLogin.onclick = showStaffLogin
+    const parOwnerLogin = $('parOwnerLogin'); if (parOwnerLogin) parOwnerLogin.onclick = showOwnerLogin
 
-    $('pf_submit').onclick = async () => {
+    const floorEl = $('pf_floor'), unitEl = $('pf_unit')
+    if (floorEl && unitEl) {
+      floorEl.addEventListener('change', () => {
+        unitEl.innerHTML = '<option value="">' + t('par_select_unit') + '</option>'
+        if (!floorEl.value) return
+        KJ_UNITS.forEach(u => {
+          const o = document.createElement('option')
+          o.value = floorEl.value + '-' + u; o.textContent = 'No. ' + u
+          unitEl.appendChild(o)
+        })
+      })
+    }
+
+    const pfSubmit = $('pf_submit')
+    if (pfSubmit) pfSubmit.onclick = async () => {
       const unit = unitEl.value, courier = $('pf_courier').value
       const photo = $('pf_photo').files[0]
       if (!unit) { toast(t('par_unit_req'), 'error'); return }
       if (!photo) { toast(t('par_photo_req'), 'error'); return }
-      if (!isStaffU) {
-        const s = await kjGetSettings()
-        if ($('pf_pin').value !== s.pinDispatcher) { toast(t('pin_error'), 'error'); return }
-      }
-      const btn = $('pf_submit'); btn.disabled = true; btn.textContent = '⏳ ' + t('loading')
+      const btn = pfSubmit; btn.disabled = true; btn.textContent = '⏳ ' + t('loading')
       try {
         await kjAddParcel({ unit, courier, file: photo })
         toast(t('par_success'), 'success')

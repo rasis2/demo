@@ -182,11 +182,20 @@ VIEWS.announcements = {
         '<div class="list-item" style="align-items:flex-start">' +
           '<div class="grow"><div class="li-title">' + (a.pinned ? '📌 ' : '') + esc(a.title) + '</div>' +
           '<div class="li-sub">' + esc(a.author) + ' · ' + fmtDate(a.created_at) + ' · ' + timeAgo(a.created_at) + '</div>' +
-          (a.body ? '<div class="small muted mt-8">' + esc(a.body) + '</div>' : '') + '</div>' +
+          (a.body ? '<div class="ann-body small muted mt-8" id="annb-' + a.id + '" style="display:none;white-space:pre-wrap">' + esc(a.body) + '</div>' : '') +
+          (a.body ? '<button class="btn btn-ghost btn-sm mt-8" id="annt-' + a.id + '" onclick="annToggle(\'' + a.id + '\')">' + t('ann_expand') + '</button>' : '') +
+          '</div>' +
           '<span class="badge gold">' + esc(a.category) + '</span>' +
           (admin ? '<button class="icon-btn-sm danger" onclick="adel(\'' + a.id + '\')">🗑</button>' : '') +
         '</div>'
       ).join('')
+      window.annToggle = (id) => {
+        const body = document.getElementById('annb-' + id)
+        const btn = document.getElementById('annt-' + id)
+        const open = body.style.display !== 'none'
+        body.style.display = open ? 'none' : 'block'
+        btn.textContent = open ? t('ann_expand') : t('ann_collapse')
+      }
       window.adel = async (id) => { await kjDeleteAnnouncement(id); toast(t('ann_deleted'), 'success'); loadAnns() }
     }
     await loadAnns()

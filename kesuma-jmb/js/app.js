@@ -273,7 +273,6 @@ function showSetup() {
 VIEWS.dashboard = {
   key: 'nav_dashboard', icon: '📊',
   render: async (wrap) => {
-    const s = await kjStats()
     const anns = await kjAnnouncements()
     const sessions = state.session
     const lang = getLang()
@@ -281,8 +280,37 @@ VIEWS.dashboard = {
     const stat = (icon, val, lbl, tone) =>
       '<div class="stat-card ' + (tone || '') + '"><div class="sc-ico">' + icon + '</div><div class="sc-val">' + val + '</div><div class="sc-lbl">' + esc(lbl) + '</div></div>'
 
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
     const hello = new Date().toLocaleDateString(lang === 'en' ? 'en-MY' : 'ms-MY', { weekday: 'long', day: 'numeric', month: 'long' })
+
+    // Owner sees only their own dashboard
+    let statsHtml = ''
+    if (isOwner()) {
+      const unit = state.session.unit
+      const [myParcels, allVis, myPay, myMaint, myBook] = await Promise.all([
+        kjParcelsByUnit(unit), kjVisitors(), kjPaymentsByUnit(unit), kjMaintenance(), kjBookings(),
+      ])
+      const fees = await kjGetSettings()
+      const paid = myPay.reduce((a, p) => a + Number(p.amount || 0), 0)
+      statsHtml =
+        '<div class="stat-grid">' +
+          stat('📦', myParcels.filter(p => p.status === 'Pending').length, t('dash_pending_parcels'), 'tone-orange') +
+          stat('🪪', allVis.filter(v => v.unit === unit && v.status === 'Pending').length, t('dash_pending_visitors'), 'tone-blue') +
+          stat('🔧', myMaint.filter(m => m.unit === unit && m.status !== 'Resolved').length, t('dash_open_maintenance'), 'tone-red') +
+          stat('💰', fmtMoney(Math.max(0, Number(fees.monthly) - paid)), t('pay_outstanding'), 'tone-green') +
+          stat('📅', myBook.filter(b => b.unit === unit && b.status === 'Pending').length, t('dash_bookings_pending'), 'tone-purple') +
+        '</div>'
+    } else {
+      const s = await kjStats()
+      statsHtml =
+        '<div class="stat-grid">' +
+          stat('🏢', s.units, t('dash_units')) +
+          stat('📦', s.parcelsPending, t('dash_pending_parcels'), 'tone-orange') +
+          stat('🪪', s.visitorsToday, t('dash_today_visitors'), 'tone-blue') +
+          stat('🔧', s.maintOpen, t('dash_open_maintenance'), 'tone-red') +
+          stat('💰', fmtMoney(s.paymentsTotal), t('dash_collected'), 'tone-green') +
+          stat('📅', s.bookingsPending, t('dash_bookings_pending'), 'tone-purple') +
+        '</div>'
+    }
 
     wrap.innerHTML =
       '<div class="page-head page-head-row">' +
@@ -290,14 +318,7 @@ VIEWS.dashboard = {
         '<p>' + esc(hello) + ' · ' + esc(t('dash_overview')) + '</p></div>' +
         (!sessions ? '<button class="btn btn-primary" id="dashLogin">🔐 ' + t('login') + '</button>' : '') +
       '</div>' +
-      '<div class="stat-grid">' +
-        stat('🏢', s.units, t('dash_units')) +
-        stat('📦', s.parcelsPending, t('dash_pending_parcels'), 'tone-orange') +
-        stat('🪪', s.visitorsToday, t('dash_today_visitors'), 'tone-blue') +
-        stat('🔧', s.maintOpen, t('dash_open_maintenance'), 'tone-red') +
-        stat('💰', fmtMoney(s.paymentsTotal), t('dash_collected'), 'tone-green') +
-        stat('📅', s.bookingsPending, t('dash_bookings_pending'), 'tone-purple') +
-      '</div>' +
+      statsHtml +
       '<div class="grid-2">' +
         '<div class="card"><div class="card-head"><h3>📢 ' + t('dash_recent_ann') + '</h3></div><div class="card-body" id="dashAnns" style="padding:8px 20px"></div></div>' +
         '<div><div class="card"><div class="card-head"><h3>⚡ ' + t('dash_quick_actions') + '</h3></div><div class="card-body">' +
@@ -321,7 +342,6 @@ VIEWS.dashboard = {
         (a.pinned ? '<span class="badge red">📌</span>' : '<span class="badge gold">' + esc(a.category) + '</span>') +
       '</div>'
     ).join('')
-    void months
   },
 }
 const qlink = (icon, label, view) => '<a class="quick-link" data-goto="' + view + '"><span class="qi">' + icon + '</span><span>' + esc(label) + '</span></a>'
