@@ -106,23 +106,46 @@ const NAV = [
 ]
 
 function navVisible(item) {
-  if (!item.roles) return true
-  if (item.roles.includes('auth') && (isStaff() || isOwner())) return true
-  if (item.roles.includes('admin') && isAdmin()) return true
-  return false
+  return canAccess(item.id)
+}
+
+// Staff role → allowed modules (admin = all)
+const STAFF_ACCESS = {
+  admin: null,
+  dispatcher: ['parcels'],
+  guard: ['parcels', 'visitors', 'vehicles'],
+}
+
+function canAccess(viewId) {
+  const item = NAV.find(n => n.id === viewId)
+  if (!item) return false
+  if (isStaff()) {
+    const allowed = STAFF_ACCESS[state.session.role]
+    if (allowed === null) return true
+    if (!allowed.includes(viewId)) return false
+  }
+  if (item.roles && item.roles.includes('admin')) return isAdmin()
+  if (item.roles && item.roles.includes('auth')) return isOwner() || isStaff()
+  return true
+}
+function defaultView() {
+  const first = NAV.find(n => canAccess(n.id))
+  return first ? first.id : 'dashboard'
 }
 
 function updateShell() {
   // Sidebar nav
   const nav = $('sidebarNav')
   const groups = [{ label: null, items: NAV.slice(0, 8) }, { label: t('nav_settings'), items: NAV.slice(8) }]
-  nav.innerHTML = groups.map(g =>
-    (g.label ? '<div class="nav-label">' + g.label + '</div>' : '') +
-    g.items.filter(navVisible).map(n =>
-      '<button class="nav-item' + (state.view === n.id ? ' active' : '') + '" data-nav="' + n.id + '">' +
-        '<span class="ni">' + n.icon + '</span>' + esc(t(n.key)) + '</button>'
-    ).join('')
-  ).join('')
+  nav.innerHTML = groups.map(g => {
+    const visible = g.items.filter(navVisible)
+    if (!visible.length) return ''
+    return (g.label ? '<div class="nav-label">' + g.label + '</div>' : '') +
+      visible.map(n =>
+        '<button class="nav-item' + (state.view === n.id ? ' active' : '') + '" data-nav="' + n.id + '">' +
+          '<span class="ni">' + n.icon + '</span>' + esc(t(n.key)) + '</button>'
+      ).join('')
+  }).join('')
   nav.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', () => goto(b.dataset.nav)))
 
   // Sidebar footer (user / login)
@@ -155,8 +178,10 @@ function goto(view) {
   location.hash = view
 }
 function onHash() {
-  const h = (location.hash || '#dashboard').replace('#', '')
-  state.view = VIEWS[h] ? h : 'dashboard'
+  const h = (location.hash || '').replace('#', '')
+  let view = VIEWS[h] ? h : 'dashboard'
+  if (!canAccess(view)) view = defaultView()
+  state.view = view
   updateShell()
   renderView()
 }
@@ -205,6 +230,10 @@ function showStaffLogin() { showLogin() }
 
 // ── View render dispatch ──
 async function renderView() {
+  if (!canAccess(state.view)) {
+    state.view = defaultView()
+    try { history.replaceState(null, '', '#' + state.view) } catch (e) {}
+  }
   const wrap = $('appContent')
   const v = VIEWS[state.view]
   if (!v) return
