@@ -283,3 +283,73 @@ VIEWS.settings = {
     }
   },
 }
+
+/* ─────────────────────────────── TENANTS ─────────────────────────────── */
+VIEWS.tenants = {
+  key: 'nav_tenants', icon: '🏠',
+  render: async (wrap) => {
+    wrap.innerHTML =
+      '<div class="page-head"><h1>🏠 ' + t('ten_title') + '</h1><p>' + t('ten_subtitle') + '</p></div>' +
+      '<div class="grid-2">' +
+        '<div class="card"><div class="card-head"><h3>➕ ' + t('ten_add') + '</h3></div><div class="card-body">' +
+          '<div class="field"><label data-i18n="ten_unit"></label><input class="input mono" id="tn_unit" placeholder="' + t('unit_ph') + '"></div>' +
+          '<div class="field"><label data-i18n="ten_name"></label><input class="input" id="tn_name" placeholder="' + t('vis_name_ph') + '"></div>' +
+          '<div class="form-row">' +
+            '<div class="field"><label data-i18n="ten_phone"></label><input class="input" id="tn_phone" placeholder="' + t('vis_phone_ph') + '"></div>' +
+            '<div class="field"><label data-i18n="ten_email"></label><input class="input" id="tn_email" placeholder="name@email.com"></div>' +
+          '</div>' +
+          '<div class="form-row">' +
+            '<div class="field"><label data-i18n="ten_start"></label><input class="input" type="date" id="tn_start"></div>' +
+            '<div class="field"><label data-i18n="ten_end"></label><input class="input" type="date" id="tn_end"></div>' +
+          '</div>' +
+          '<div class="form-row">' +
+            '<div class="field"><label data-i18n="ten_username"></label><input class="input mono" id="tn_user" placeholder="' + t('ten_user_auto') + '"></div>' +
+            '<div class="field"><label data-i18n="ten_password"></label><input class="input mono" id="tn_pass" value="kesuma123"></div>' +
+          '</div>' +
+          '<div class="error-text" id="tn_err" style="margin-bottom:8px"></div>' +
+          '<button class="btn btn-primary btn-block btn-lg" id="tn_go">' + t('ten_add_btn') + '</button>' +
+        '</div></div>' +
+        '<div class="card"><div class="card-head"><h3>' + t('ten_list') + '</h3></div><div class="card-body" id="tnList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
+      '</div>'
+
+    $('tn_go').onclick = async () => {
+      const unit = $('tn_unit').value.trim(), name = $('tn_name').value.trim()
+      const err = $('tn_err'); err.textContent = ''
+      if (!unit || !name) { err.textContent = t('required'); return }
+      const o = await kjOwner(unit)
+      if (!o) { err.textContent = t('unit_not_found'); return }
+      const username = ($('tn_user').value.trim() || ('t-' + unit))
+      if (!(await kjUsernameFree(username))) { err.textContent = t('ten_username_taken'); return }
+      const btn = $('tn_go'); btn.disabled = true; btn.textContent = '⏳ ' + t('loading')
+      try {
+        await kjAddTenant({ unit, name, phone: $('tn_phone').value.trim(), email: $('tn_email').value.trim(), ic_no: '', start_date: $('tn_start').value, end_date: $('tn_end').value, username, password: $('tn_pass').value })
+        toast(t('ten_success'), 'success')
+        $('tn_unit').value=''; $('tn_name').value=''; $('tn_phone').value=''; $('tn_email').value=''; $('tn_start').value=''; $('tn_end').value=''; $('tn_user').value=''
+        await loadT()
+      } catch (e) { err.textContent = t('err_server') }
+      btn.disabled = false; btn.textContent = t('ten_add_btn')
+    }
+
+    async function loadT() {
+      const list = await kjTenants()
+      const el = $('tnList')
+      if (!list.length) { el.innerHTML = emptyState('🏠', t('ten_empty')); return }
+      el.innerHTML = list.map(tt =>
+        '<div class="list-item">' +
+          '<div class="avatar" style="background:var(--orange-dim);color:var(--orange)">🏠</div>' +
+          '<div class="grow"><div class="li-title"><span class="mono">' + esc(tt.unit) + '</span> · ' + esc(tt.name) + '</div>' +
+          '<div class="li-sub">' + esc(tt.phone) + (tt.email ? ' · ' + esc(tt.email) : '') + '</div>' +
+          '<div class="li-sub mono">' + t('ten_start') + ': ' + esc(tt.start_date || '—') + ' · ' + t('ten_end') + ': ' + esc(tt.end_date || '—') + '</div></div>' +
+          (tt.status === 'Active'
+            ? '<span class="badge green">' + t('ten_active') + '</span>'
+            : '<span class="badge gray">' + t('ten_ended') + '</span>') +
+          (tt.status === 'Active' ? '<button class="btn btn-ghost btn-sm" onclick="tnEnd(\'' + tt.id + '\')">' + t('ten_end') + '</button>' : '') +
+          '<button class="icon-btn-sm danger" onclick="tnDel(\'' + tt.id + '\')">🗑</button>' +
+        '</div>'
+      ).join('')
+      window.tnEnd = async (id) => { await kjUpdateTenant(id, { status: 'Ended' }); toast(t('ten_ended_ok'), 'success'); loadT() }
+      window.tnDel = async (id) => { await kjDeleteTenant(id); toast(t('ten_delete'), 'success'); loadT() }
+    }
+    await loadT()
+  },
+}

@@ -53,6 +53,53 @@ async function kjSetSetting(key, value) {
 }
 
 // ── Owners ──
+async function kjLogin(username, password) {
+  const { data, error } = await kjSb().from('users').select('*').eq('username', String(username || '').trim()).limit(1)
+  if (error) throw error
+  const u = (data && data[0]) || null
+  if (!u) return { error: t('login_invalid') }
+  if (u.password !== password) return { error: t('login_invalid') }
+  return { user: { id: u.id, username: u.username, role: u.role, unit: u.unit, name: u.name } }
+}
+async function kjUsernameFree(username) {
+  const { data, error } = await kjSb().from('users').select('id').eq('username', username).limit(1)
+  if (error) throw error
+  return !(data && data.length)
+}
+
+// ── Tenants ──
+async function kjTenants() {
+  const { data, error } = await kjSb().from('tenants').select('*').order('created_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+async function kjAddTenant(t) {
+  const { data, error } = await kjSb().from('tenants').insert({
+    unit: t.unit, name: t.name, phone: t.phone || '', email: t.email || '', ic_no: t.ic_no || '',
+    start_date: t.start_date || '', end_date: t.end_date || '', status: 'Active',
+  }).select().single()
+  if (error) throw error
+  const { error: uerr } = await kjSb().from('users').insert({
+    username: t.username, password: t.password, role: 'tenant', unit: t.unit, name: t.name,
+  })
+  if (uerr) { await kjSb().from('tenants').delete().eq('id', data.id); throw uerr }
+  return data
+}
+async function kjUpdateTenant(id, patch) {
+  const { error } = await kjSb().from('tenants').update(patch).eq('id', id)
+  if (error) throw error
+}
+async function kjDeleteTenant(id) {
+  const { data, error } = await kjSb().from('tenants').select('unit,name').eq('id', id).single()
+  if (error) throw error
+  if (data && data.unit) {
+    // remove the tenant's login account (role tenant for that unit)
+    const { error: uErr } = await kjSb().from('users').delete().eq('unit', data.unit).eq('role', 'tenant')
+    if (uErr) throw uErr
+  }
+  const { error: dErr } = await kjSb().from('tenants').delete().eq('id', id)
+  if (dErr) throw dErr
+}
 async function kjOwner(unit) {
   const { data, error } = await kjSb().from('owners').select('*').eq('unit', unit).limit(1)
   if (error) throw error

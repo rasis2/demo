@@ -145,6 +145,35 @@ create table if not exists public.documents (
 );
 
 -- ─────────────────────────────────────────────
+--  USERS (login accounts — username + password)
+-- ─────────────────────────────────────────────
+create table if not exists public.users (
+  id uuid primary key default gen_random_uuid(),
+  username text unique not null,
+  password text not null,
+  role text not null default 'owner', -- owner | tenant | admin | guard | dispatcher
+  unit text,
+  name text not null default '',
+  created_at timestamptz not null default now()
+);
+
+-- ─────────────────────────────────────────────
+--  TENANTS (penyewa / renters per unit)
+-- ─────────────────────────────────────────────
+create table if not exists public.tenants (
+  id uuid primary key default gen_random_uuid(),
+  unit text not null references public.owners(unit) on delete cascade,
+  name text not null,
+  phone text not null default '',
+  email text not null default '',
+  ic_no text not null default '',
+  start_date text not null default '',
+  end_date text not null default '',
+  status text not null default 'Active', -- Active | Ended
+  created_at timestamptz not null default now()
+);
+
+-- ─────────────────────────────────────────────
 --  SETTINGS (key/value)
 -- ─────────────────────────────────────────────
 create table if not exists public.settings (
@@ -188,6 +217,22 @@ begin
   end if;
 end $$;
 
+-- Login accounts: 3 staff + 1 per owner unit (only if users table is empty).
+do $$
+declare o record;
+begin
+  if not exists (select 1 from public.users limit 1) then
+    insert into public.users (username, password, role, unit, name) values
+      ('admin',      'admin123',      'admin',      null, 'Pentadbir'),
+      ('guard',      'guard123',      'guard',      null, 'Keselamatan'),
+      ('dispatcher', 'dispatcher123', 'dispatcher', null, 'Dispatcher');
+    for o in select * from public.owners loop
+      insert into public.users (username, password, role, unit, name)
+      values (o.unit, 'kesuma123', 'owner', o.unit, coalesce(nullif(o.name, ''), 'Pemilik ' || o.unit));
+    end loop;
+  end if;
+end $$;
+
 insert into public.facilities (id, name, icon, capacity, cost)
 select gen_random_uuid(), f.name, f.icon, f.capacity, f.cost
 from (values
@@ -222,11 +267,13 @@ alter table public.facilities  enable row level security;
 alter table public.bookings    enable row level security;
 alter table public.documents   enable row level security;
 alter table public.settings    enable row level security;
+alter table public.users       enable row level security;
+alter table public.tenants     enable row level security;
 
 do $$
 declare t text;
 begin
-  foreach t in array array['owners','parcels','visitors','maintenance','payments','announcements','facilities','bookings','documents','settings'] loop
+  foreach t in array array['owners','parcels','visitors','maintenance','payments','announcements','facilities','bookings','documents','settings','users','tenants'] loop
     execute format('drop policy if exists "anon_all_%I" on public.%I', t, t);
     execute format('create policy "anon_all_%I" on public.%I for all using (true) with check (true)', t, t);
   end loop;

@@ -97,6 +97,7 @@ const NAV = [
   { id: 'vehicles', icon: '🚗', key: 'nav_vehicles', roles: null },
   { id: 'documents', icon: '📄', key: 'nav_documents', roles: null },
   { id: 'residents', icon: '👥', key: 'nav_residents', roles: ['admin'] },
+  { id: 'tenants', icon: '🏠', key: 'nav_tenants', roles: ['admin'] },
   { id: 'settings', icon: '⚙️', key: 'nav_settings', roles: ['admin'] },
 ]
 
@@ -135,10 +136,8 @@ function updateShell() {
     const lb = $('logoutBtn'); if (lb) lb.addEventListener('click', logout)
   } else {
     foot.innerHTML =
-      '<button class="btn btn-primary btn-block" id="loginOwnerBtn">🏠 ' + t('login_owner') + '</button>' +
-      '<button class="btn btn-ghost btn-block mt-8" id="loginStaffBtn">🛡️ ' + t('login_staff') + '</button>'
-    $('loginOwnerBtn').addEventListener('click', showOwnerLogin)
-    $('loginStaffBtn').addEventListener('click', showStaffLogin)
+      '<button class="btn btn-primary btn-block" id="loginBtn">🔐 ' + t('login') + '</button>'
+    $('loginBtn').addEventListener('click', showLogin)
   }
 
   // Topbar title
@@ -157,76 +156,47 @@ function onHash() {
   renderView()
 }
 
-// ── Login modals ──
-function showOwnerLogin() {
+// ── Login modal (username + password only) ──
+function showLogin() {
   openModal(
-    '<div class="modal-head"><h3>🏠 ' + t('login_owner') + '</h3><button class="icon-btn-sm" id="mlclose">✕</button></div>' +
+    '<div class="modal-head"><h3>🔐 ' + t('login_title') + '</h3><button class="icon-btn-sm" id="mlclose">✕</button></div>' +
     '<div class="modal-body">' +
-      '<div class="field"><label data-i18n="unit_lbl"></label><input class="input" id="ol_unit" placeholder="' + t('unit_ph') + '" autocomplete="off"></div>' +
-      '<div class="field"><label data-i18n="credential_lbl"></label><input class="input" id="ol_cred" placeholder="' + t('credential_ph') + '"></div>' +
-      '<div class="error-text" id="ol_err" style="margin-bottom:8px"></div>' +
-      '<button class="btn btn-primary btn-block" id="ol_go">' + t('verify') + '</button>' +
+      '<div class="field"><label data-i18n="username_lbl"></label><input class="input" id="lg_user" placeholder="' + t('username_ph') + '" autocomplete="off" autofocus></div>' +
+      '<div class="field"><label data-i18n="password_lbl"></label><input class="input" type="password" id="lg_pass" placeholder="' + t('password_ph') + '"></div>' +
+      '<div class="error-text" id="lg_err" style="margin-bottom:8px"></div>' +
+      '<button class="btn btn-primary btn-block btn-lg" id="lg_go">' + t('login') + '</button>' +
       '<p class="muted small mt-8" style="text-align:center">' + t('demo_note_creds') + '</p>' +
     '</div>',
     ov => {
       ov.querySelector('#mlclose').onclick = () => closeModal(ov)
       const go = async () => {
-        const unit = ov.querySelector('#ol_unit').value.trim()
-        const cred = ov.querySelector('#ol_cred').value.trim()
-        const errEl = ov.querySelector('#ol_err')
-        if (!unit || !cred) { errEl.textContent = t('required'); return }
+        const username = ov.querySelector('#lg_user').value.trim()
+        const password = ov.querySelector('#lg_pass').value
+        const errEl = ov.querySelector('#lg_err')
+        if (!username || !password) { errEl.textContent = t('required'); return }
+        const btn = ov.querySelector('#lg_go'); btn.disabled = true; btn.textContent = '⏳ ' + t('loading')
         try {
-          const isEmail = cred.includes('@')
-          const r = await kjVerifyOwner({ unit, email: isEmail ? cred : '', phone: isEmail ? '' : cred })
-          if (r.error) { errEl.textContent = r.error; return }
-          state.session = { type: 'owner', unit: r.owner.unit, name: r.owner.name || r.owner.unit }
+          const r = await kjLogin(username, password)
+          if (r.error) { errEl.textContent = r.error; btn.disabled = false; btn.textContent = t('login'); return }
+          const u = r.user
+          if (u.role === 'owner' || u.role === 'tenant') {
+            state.session = { type: 'owner', role: u.role, unit: u.unit, name: u.name || u.username }
+          } else {
+            state.session = { type: 'staff', role: u.role, name: u.name || u.username }
+          }
           saveSession(); closeModal(ov); updateShell(); toast(t('login_success'), 'success')
         } catch (e) { errEl.textContent = t('err_server') }
+        btn.disabled = false; btn.textContent = t('login')
       }
-      ov.querySelector('#ol_go').onclick = go
-      ov.querySelector('#ol_cred').addEventListener('keydown', e => { if (e.key === 'Enter') go() })
+      ov.querySelector('#lg_go').onclick = go
+      const enter = e => { if (e.key === 'Enter') go() }
+      ov.querySelector('#lg_user').addEventListener('keydown', enter)
+      ov.querySelector('#lg_pass').addEventListener('keydown', enter)
     }
   )
 }
-
-function showStaffLogin() {
-  openModal(
-    '<div class="modal-head"><h3>🛡️ ' + t('login_staff') + '</h3><button class="icon-btn-sm" id="mlclose">✕</button></div>' +
-    '<div class="modal-body">' +
-      '<div class="field"><label data-i18n="role_lbl"></label>' +
-        '<div class="seg" style="display:flex">' +
-          '<button type="button" data-role="admin" class="active">⚙️ ' + t('role_admin') + '</button>' +
-          '<button type="button" data-role="guard">🛡️ ' + t('role_guard') + '</button>' +
-          '<button type="button" data-role="dispatcher">📦 ' + t('role_dispatcher') + '</button>' +
-        '</div></div>' +
-      '<div class="field"><label data-i18n="pin_lbl"></label><input class="input" type="password" id="sl_pin" placeholder="' + t('pin_ph') + '" maxlength="10"></div>' +
-      '<div class="error-text" id="sl_err" style="margin-bottom:8px"></div>' +
-      '<button class="btn btn-primary btn-block" id="sl_go">' + t('enter') + '</button>' +
-    '</div>',
-    ov => {
-      ov.querySelector('#mlclose').onclick = () => closeModal(ov)
-      let role = 'admin'
-      ov.querySelectorAll('[data-role]').forEach(b => b.addEventListener('click', () => {
-        ov.querySelectorAll('[data-role]').forEach(x => x.classList.remove('active'))
-        b.classList.add('active'); role = b.dataset.role
-      }))
-      const go = async () => {
-        const pin = ov.querySelector('#sl_pin').value.trim()
-        const errEl = ov.querySelector('#sl_err')
-        try {
-          const s = await kjGetSettings()
-          const valid = { admin: s.pinAdmin, guard: s.pinGuard, dispatcher: s.pinDispatcher }
-          if (pin !== valid[role]) { errEl.textContent = t('pin_error'); return }
-          const names = { admin: t('role_admin'), guard: t('role_guard'), dispatcher: t('role_dispatcher') }
-          state.session = { type: 'staff', role, name: names[role] }
-          saveSession(); closeModal(ov); updateShell(); toast(t('login_success'), 'success')
-        } catch (e) { errEl.textContent = t('err_server') }
-      }
-      ov.querySelector('#sl_go').onclick = go
-      ov.querySelector('#sl_pin').addEventListener('keydown', e => { if (e.key === 'Enter') go() })
-    }
-  )
-}
+function showOwnerLogin() { showLogin() }
+function showStaffLogin() { showLogin() }
 
 // ── View render dispatch ──
 async function renderView() {
