@@ -636,11 +636,136 @@ function allVideos() {
             vids.push({ id: v.id, ch: c.key, title: v.title });
         });
     });
+    if (embedFilterOn()) {
+        const status = getEmbedStatus();
+        return vids.filter((v) => status[v.id] !== 'blocked');
+    }
     return vids;
 }
 
 function findVideoById(id) {
     return allVideos().find((v) => v.id === id) || null;
+}
+
+/* ────────────────────────────────────────
+   VISIT COUNTER & EMBED FILTER
+──────────────────────────────────────── */
+function bumpVisits() {
+    const k = 'utube-visits';
+    let n = parseInt(localStorage.getItem(k) || '0', 10) || 0;
+    n++;
+    localStorage.setItem(k, String(n));
+    return n;
+}
+
+function embedFilterOn() {
+    return localStorage.getItem('utube-embed-filter') === '1';
+}
+
+function setEmbedFilterOn(on) {
+    localStorage.setItem('utube-embed-filter', on ? '1' : '0');
+}
+
+function getEmbedStatus() {
+    try {
+        const map = JSON.parse(localStorage.getItem('utube-embed') || '{}');
+        return (map && typeof map === 'object') ? map : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveEmbedStatus(map) {
+    localStorage.setItem('utube-embed', JSON.stringify(map));
+}
+
+function blockedVideoIds() {
+    return Object.entries(getEmbedStatus())
+        .filter(([, s]) => s === 'blocked')
+        .map(([id]) => id);
+}
+
+function oembedUrl(id) {
+    return `https://www.youtube.com/oembed?url=${encodeURIComponent('https://www.youtube.com/watch?v=' + id)}&format=json`;
+}
+
+async function checkEmbeddable(id) {
+    try {
+        const res = await fetch(oembedUrl(id));
+        return res.ok;
+    } catch (e) {
+        return true;
+    }
+}
+
+let embedCheckActive = false;
+let embedCheckTotal = 0;
+let embedCheckDone = 0;
+
+function allVideoIds() {
+    const ids = [];
+    const seen = new Set();
+    [...VIDEOS, ...getCustomChannels().flatMap((c) => (c.videos || []).map((v) => ({ id: v.id })))]
+        .forEach((v) => {
+            if (!seen.has(v.id)) { seen.add(v.id); ids.push(v.id); }
+        });
+    return ids;
+}
+
+function updateEmbedProgress() {
+    const el = $('#embedProgress');
+    if (!el) return;
+    if (embedCheckActive) {
+        el.textContent = `${t('checkingVideos')} ${embedCheckDone}/${embedCheckTotal}...`;
+        return;
+    }
+    if (!embedFilterOn()) {
+        el.textContent = t('filterOffNote');
+        return;
+    }
+    const blocked = blockedVideoIds().length;
+    el.textContent = blocked > 0 ? `${t('hiddenVideos')}: ${blocked}` : t('noHiddenVideos');
+}
+
+async function runEmbedCheck(force = false) {
+    if (embedCheckActive) return;
+    embedCheckActive = true;
+    try {
+        let status = getEmbedStatus();
+        if (force) {
+            status = {};
+            saveEmbedStatus(status);
+        }
+        const ids = allVideoIds();
+        const toCheck = ids.filter((id) => status[id] === undefined);
+        embedCheckTotal = toCheck.length;
+        embedCheckDone = 0;
+        updateEmbedProgress();
+        const CONC = 5;
+        for (let i = 0; i < toCheck.length; i += CONC) {
+            const batch = toCheck.slice(i, i + CONC);
+            let foundBlocked = false;
+            await Promise.all(batch.map(async (id) => {
+                const ok = await checkEmbeddable(id);
+                status[id] = ok ? 'ok' : 'blocked';
+                if (!ok) foundBlocked = true;
+                embedCheckDone++;
+            }));
+            saveEmbedStatus(status);
+            updateEmbedProgress();
+            if (foundBlocked && embedFilterOn()) {
+                renderHero();
+                renderGrid();
+            }
+        }
+        saveEmbedStatus(status);
+        updateEmbedProgress();
+        renderHero();
+        renderGrid();
+    } finally {
+        embedCheckActive = false;
+        updateEmbedProgress();
+    }
 }
 
 /* ────────────────────────────────────────
@@ -689,6 +814,16 @@ const I18N = {
         errNoVideos: 'Saluran ini tiada video boleh dimainkan.',
         errDuplicate: 'Saluran ini sudah pun tersedia.',
         keySaved: 'Kunci API disimpan.',
+        statsTitle: 'Statistik',
+        visitCount: 'Halaman ini dibuka %s kali pada peranti ini.',
+        videoFilterTitle: 'Video',
+        embedFilterLabel: 'Sembunyikan video yang tidak boleh dimainkan',
+        embedFilterHelp: 'Video yang melarang penanaman (embed) atau tiada di luar YouTube akan disembunyikan secara automatik.',
+        recheckBtn: 'Semak Semula',
+        checkingVideos: 'Menyemak video',
+        hiddenVideos: 'Video disorokkan',
+        noHiddenVideos: 'Tiada video disorokkan',
+        filterOffNote: 'Penapis video dimatikan',
     },
     en: {
         brandSub: 'Kids',
@@ -725,6 +860,16 @@ const I18N = {
         errNoVideos: 'This channel has no playable videos.',
         errDuplicate: 'This channel is already available.',
         keySaved: 'API key saved.',
+        statsTitle: 'Stats',
+        visitCount: 'This page has been opened %s times on this device.',
+        videoFilterTitle: 'Videos',
+        embedFilterLabel: 'Hide videos that cannot be played',
+        embedFilterHelp: 'Videos that block embedding or are unavailable outside YouTube will be hidden automatically.',
+        recheckBtn: 'Re-check',
+        checkingVideos: 'Checking videos',
+        hiddenVideos: 'Videos hidden',
+        noHiddenVideos: 'No videos hidden',
+        filterOffNote: 'Video filter is off',
     },
     zh: {
         brandSub: '儿童',
@@ -761,6 +906,16 @@ const I18N = {
         errNoVideos: '此频道没有可播放的视频。',
         errDuplicate: '此频道已经存在。',
         keySaved: 'API 密钥已保存。',
+        statsTitle: '统计',
+        visitCount: '此页面已在本设备打开 %s 次。',
+        videoFilterTitle: '视频',
+        embedFilterLabel: '隐藏无法播放的视频',
+        embedFilterHelp: '禁止嵌入或无法在 YouTube 之外播放的视频将被自动隐藏。',
+        recheckBtn: '重新检查',
+        checkingVideos: '正在检查视频',
+        hiddenVideos: '已隐藏视频',
+        noHiddenVideos: '没有隐藏视频',
+        filterOffNote: '视频过滤器已关闭',
     },
     ta: {
         brandSub: 'குழந்தைகள்',
@@ -797,6 +952,16 @@ const I18N = {
         errNoVideos: 'இந்த சேனலில் இயக்கக்கூடிய வீடியோக்கள் இல்லை.',
         errDuplicate: 'இந்த சேனல் ஏற்கனவே உள்ளது.',
         keySaved: 'API விசை சேமிக்கப்பட்டது.',
+        statsTitle: 'புள்ளிவிவரம்',
+        visitCount: 'இந்தப் பக்கம் இந்த சாதனத்தில் %s முறை திறக்கப்பட்டது.',
+        videoFilterTitle: 'வீடியோக்கள்',
+        embedFilterLabel: 'இயக்க முடியாத வீடியோக்களை மறை',
+        embedFilterHelp: 'உட்பொதித்தலைத் தடுக்கும் அல்லது YouTube வெளியே கிடைக்காத வீடியோக்கள் தானாக மறைக்கப்படும்.',
+        recheckBtn: 'மீண்டும் சரிபார்',
+        checkingVideos: 'வீடியோக்களை சரிபார்க்கிறது',
+        hiddenVideos: 'மறைக்கப்பட்ட வீடியோக்கள்',
+        noHiddenVideos: 'மறைக்கப்பட்ட வீடியோக்கள் இல்லை',
+        filterOffNote: 'வீடியோ வடிகட்டி முடக்கப்பட்டுள்ளது',
     },
 };
 
@@ -978,6 +1143,7 @@ function applyI18n() {
     // Re-render dynamic text
     renderTabs();
     renderChannelList();
+    refreshSettingsStats();
     renderHero();
     renderGrid();
 }
@@ -999,9 +1165,19 @@ function initTheme() {
 ──────────────────────────────────────── */
 function openSettings() {
     $('#apiKeyInput').value = getApiKey();
+    refreshSettingsStats();
     renderChannelList();
     hideFeedback();
     $('#settingsModal').classList.add('open');
+}
+
+function refreshSettingsStats() {
+    const n = parseInt(localStorage.getItem('utube-visits') || '0', 10) || 0;
+    const vc = $('#visitCount');
+    if (vc) vc.textContent = t('visitCount').replace('%s', String(n));
+    const tg = $('#embedFilterToggle');
+    if (tg) tg.checked = embedFilterOn();
+    updateEmbedProgress();
 }
 
 function closeSettings() {
@@ -1147,6 +1323,7 @@ async function addChannel() {
         renderChannelList();
         renderHero();
         renderGrid();
+        if (embedFilterOn()) runEmbedCheck();
         showFeedback(t('added'), true);
     } catch (e) {
         showFeedback(t('errNetwork'), false);
@@ -1159,6 +1336,7 @@ async function addChannel() {
 function initSettings() {
     $('#apiKeyInput').value = getApiKey();
     renderChannelList();
+    refreshSettingsStats();
 }
 
 /* ────────────────────────────────────────
@@ -1190,6 +1368,16 @@ function bindEvents() {
     $('#saveApiKeyBtn').addEventListener('click', () => {
         setApiKey($('#apiKeyInput').value);
         showFeedback(t('keySaved'), true);
+    });
+    $('#embedFilterToggle').addEventListener('change', (e) => {
+        setEmbedFilterOn(e.target.checked);
+        renderHero();
+        renderGrid();
+        updateEmbedProgress();
+        if (e.target.checked) runEmbedCheck();
+    });
+    $('#embedRecheckBtn').addEventListener('click', () => {
+        runEmbedCheck(true);
     });
     $('#addChannelBtn').addEventListener('click', addChannel);
     $('#customChannelInput').addEventListener('keydown', (e) => {
@@ -1234,6 +1422,7 @@ function bindEvents() {
 (function init() {
     const savedLang = localStorage.getItem('utube-lang');
     if (savedLang && LANGS.some((l) => l.code === savedLang)) lang = savedLang;
+    bumpVisits();
     initTheme();
     initSettings();
     renderTabs();
@@ -1241,4 +1430,5 @@ function bindEvents() {
     applyI18n();
     renderHero();
     renderGrid();
+    if (embedFilterOn()) runEmbedCheck();
 })();

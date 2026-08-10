@@ -108,6 +108,11 @@
             <div class="settings-body">
 
                 <section class="settings-section">
+                    <h4 class="settings-title" data-i18n="statsTitle">Statistik</h4>
+                    <p class="settings-stat" id="visitCount">—</p>
+                </section>
+
+                <section class="settings-section">
                     <h4 class="settings-title" data-i18n="apiKeyLabel">Kunci API YouTube</h4>
                     <input type="text" id="apiKeyInput" class="settings-input" data-i18n-ph="apiKeyPh" placeholder="Paste kunci API di sini..." autocomplete="off" spellcheck="false" />
                     <p class="settings-hint" data-i18n="apiKeyHelp">Diperlukan untuk mengesahkan saluran. Dapatkan secara percuma di Google Cloud Console (dayakan "YouTube Data API v3").</p>
@@ -117,6 +122,20 @@
                 <section class="settings-section">
                     <h4 class="settings-title" data-i18n="linkedChannels">Saluran Terhubung</h4>
                     <div class="channel-list" id="channelList"><!-- injected by JS --></div>
+                </section>
+
+                <section class="settings-section">
+                    <h4 class="settings-title" data-i18n="videoFilterTitle">Video</h4>
+                    <label class="switch-row">
+                        <input type="checkbox" id="embedFilterToggle" />
+                        <span class="switch"></span>
+                        <span data-i18n="embedFilterLabel">Sembunyikan video yang tidak boleh dimainkan</span>
+                    </label>
+                    <p class="settings-hint" data-i18n="embedFilterHelp">Video yang melarang penanaman (embed) atau tiada di luar YouTube akan disembunyikan secara automatik.</p>
+                    <div class="settings-row">
+                        <span class="settings-stat" id="embedProgress"></span>
+                        <button id="embedRecheckBtn" class="btn-play btn-small" data-i18n="recheckBtn">Semak Semula</button>
+                    </div>
                 </section>
 
                 <section class="settings-section">
