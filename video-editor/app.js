@@ -8,9 +8,9 @@
 /* ────────────────────────────────────────
    CONSTANTS
 ──────────────────────────────────────── */
-const FFMPEG_WRAPPER = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js';
-const FFMPEG_UTIL    = 'https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js';
-const FFMPEG_CORE    = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd';
+const FFMPEG_WRAPPER = './vendor/ffmpeg/index.js';
+const FFMPEG_UTIL    = './vendor/util/index.js';
+const FFMPEG_CORE    = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm';
 
 const PRESETS = { ultra:{crf:18}, high:{crf:23}, medium:{crf:28}, low:{crf:32} };
 const CRF_BR = [[18,9000],[20,6500],[23,4500],[25,3400],[28,2500],[30,1900],[32,1400],[35,1000],[38,750],[42,550],[45,420]];
