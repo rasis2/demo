@@ -66,6 +66,9 @@ create table if not exists public.visitors (
   checked_in_at timestamptz,
   checked_out_at timestamptz
 );
+-- If visitors already existed, add any missing columns safely
+alter table public.visitors add column if not exists vehicle_type text not null default '';
+alter table public.visitors add column if not exists vehicle_plate text not null default '';
 
 -- ─────────────────────────────────────────────
 --  MAINTENANCE (fault reports)
