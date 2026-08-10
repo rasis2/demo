@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoSlim — Pemampat Video Dalam Pelayar</title>
+    <meta name="description" content="Mampat, potong, ubah saiz, tukar format dan ekstrak audio video anda secara percuma — semua berlaku dalam pelayar, tanpa muat naik.">
+    <meta name="theme-color" content="#12161c">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e8a13d'/%3E%3Ctext x='32' y='46' font-family='Arial' font-size='38' font-weight='bold' fill='%2312161c' text-anchor='middle'%3E%E2%96%B6%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top-bar">
+    <div class="brand">
+        <a href="../index.html" class="portal-btn" data-i18n-title="portal" title="Portal Demo" aria-label="Portal Demo">↩</a>
+        <div class="brand-logo">🎬</div>
+        <div class="brand-text">
+            <span class="brand-title">VideoSlim</span>
+            <span class="brand-sub" data-i18n="brandSub">Pemampat Video Dalam Pelayar</span>
+        </div>
+    </div>
+    <div class="topbar-right">
+        <span class="privacy-badge" data-i18n="privacy">🔒 100% Setempat</span>
+        <button id="langBtn" class="lang-btn" data-i18n-title="langTitle" title="Bahasa">BM</button>
+        <button id="themeBtn" class="theme-btn" data-i18n-title="theme" title="Gelap/Terang" aria-label="Gelap/Terang">🌙</button>
+    </div>
+</header>
+
+<main class="app">
+
+    <!-- ═══════════ STEP 1: UPLOAD ═══════════ -->
+    <section id="uploadStep" class="step">
+        <div class="hero-text">
+            <h1 data-i18n="dropTitle">Mampat Video Anda, Terus Dalam Pelayar</h1>
+            <p data-i18n="dropSub">Tiada muat naik, tiada pelayan, tiada had. Video anda tidak pernah meninggalkan peranti anda.</p>
+        </div>
+        <div class="dropzone" id="dropZone" tabindex="0" role="button" aria-label="Muat naik video">
+            <input type="file" id="fileInput" accept="video/*,.mkv,.mov,.avi,.mp4,.webm,.m4v,.mpeg,.mpg,.ts,.flv,.wmv,.3gp" hidden>
+            <div class="dz-icon">📼</div>
+            <h2 data-i18n="browse">Seret & lepas video di sini</h2>
+            <p class="dz-sub" data-i18n="dropHint">atau klik untuk pilih fail</p>
+            <button class="btn-browse" data-i18n="chooseBtn">Pilih Video</button>
+            <p class="dz-note" data-i18n="supported">Sokongan: MP4 · WebM · MOV · AVI · MKV · M4V · MPEG · 3GP dan banyak lagi</p>
+        </div>
+        <div class="features-strip">
+            <div class="f-item"><span>📦</span><b data-i18n="f1t">Mampat Kecil</b><p data-i18n="f1d">Kurangkan saiz fail sehingga 90%</p></div>
+            <div class="f-item"><span>✂️</span><b data-i18n="f2t">Potong & Edit</b><p data-i18n="f2d">Trim, ubah saiz, kelajuan & FPS</p></div>
+            <div class="f-item"><span>🎵</span><b data-i18n="f3t">Audio Pintar</b><p data-i18n="f3d">Ekstrak MP3 atau buang audio</p></div>
+            <div class="f-item"><span>🔒</span><b data-i18n="f4t">Privasi Dijaga</b><p data-i18n="f4d">Pemprosesan 100% setempat</p></div>
+        </div>
+    </section>
+
+    <!-- ═══════════ STEP 2: EDITOR ═══════════ -->
+    <section id="editorStep" class="step" hidden>
+        <div class="workspace">
+
+            <div class="panel file-panel">
+                <div class="panel-head">
+                    <h3 data-i18n="fileInfo">Maklumat Fail</h3>
+                    <button class="btn-reset" id="resetBtn" data-i18n="resetBtn">↺ Ganti Video</button>
+                </div>
+                <video id="previewVideo" controls preload="metadata" playsinline></video>
+                <div class="meta-grid">
+                    <div class="meta-cell"><span class="m-label" data-i18n="name">Nama</span><span class="m-value" id="metaName">—</span></div>
+                    <div class="meta-cell"><span class="m-label" data-i18n="size">Saiz</span><span class="m-value" id="metaSize">—</span></div>
+                    <div class="meta-cell"><span class="m-label" data-i18n="resolution">Resolusi</span><span class="m-value" id="metaRes">—</span></div>
+                    <div class="meta-cell"><span class="m-label" data-i18n="duration">Tempoh</span><span class="m-value" id="metaDur">—</span></div>
+                </div>
+            </div>
+
+            <div class="panel settings-panel">
+                <div class="panel-head">
+                    <h3 data-i18n="settingsTitle">Tetapan</h3>
+                </div>
+
+                <div class="setting">
+                    <label class="s-label" data-i18n="preset">Preset Kualiti</label>
+                    <select id="presetSelect">
+                        <option value="ultra" data-i18n="pUltra">Ultra — Kualiti Tertinggi</option>
+                        <option value="high" selected data-i18n="pHigh">High — Seimbang (Disyorkan)</option>
+                        <option value="medium" data-i18n="pMedium">Medium — Saiz Kecil</option>
+                        <option value="low" data-i18n="pLow">Low — Saiz Paling Kecil</option>
+                        <option value="custom" data-i18n="pCustom">Custom — Manual</option>
+                    </select>
+                </div>
+
+                <div class="setting" id="crfRow" hidden>
+                    <label class="s-label" data-i18n="crf">CRF (Kualiti Video)</label>
+                    <div class="crf-row">
+                        <input type="range" id="crfSlider" min="18" max="45" value="28" step="1">
+                        <span class="crf-val" id="crfVal">28</span>
+                    </div>
+                    <div class="crf-scale"><span data-i18n="crfHigh">Kualiti Tinggi</span><span data-i18n="crfLow">Fail Kecil</span></div>
+                </div>
+
+                <div class="setting">
+                    <label class="s-label" data-i18n="resolution">Resolusi</label>
+                    <select id="resSelect">
+                        <option value="0" selected data-i18n="rOriginal">Asal</option>
+                        <option value="1080">1080p</option>
+                        <option value="720">720p</option>
+                        <option value="480">480p</option>
+                        <option value="360">360p</option>
+                        <option value="240">240p</option>
+                    </select>
+                </div>
+
+                <div class="setting">
+                    <label class="s-label" data-i18n="fps">Frame Rate (FPS)</label>
+                    <select id="fpsSelect">
+                        <option value="0" selected data-i18n="fpsSame">Sama seperti asal</option>
+                        <option value="60">60</option>
+                        <option value="30">30</option>
+                        <option value="24">24</option>
+                        <option value="15">15</option>
+                    </select>
+                </div>
+
+                <div class="setting">
+                    <label class="s-label" data-i18n="speed">Kelajuan</label>
+                    <select id="speedSelect">
+                        <option value="1" selected>1.00×</option>
+                        <option value="0.5">0.50×</option>
+                        <option value="0.75">0.75×</option>
+                        <option value="1.25">1.25×</option>
+                        <option value="1.5">1.50×</option>
+                        <option value="2">2.00×</option>
+                        <option value="3">3.00×</option>
+                        <option value="4">4.00×</option>
+                    </select>
+                </div>
+
+                <div class="setting" id="trimRow">
+                    <label class="s-label" data-i18n="trim">Potong Masa</label>
+                    <div class="trim-row">
+                        <input type="range" id="trimStart" min="0" max="100" value="0" step="0.1">
+                        <input type="range" id="trimEnd" min="0" max="100" value="100" step="0.1">
+                    </div>
+                    <div class="trim-labels">
+                        <span data-i18n="trimStart">Mula</span>
+                        <span id="trimStartVal">00:00</span>
+                        <span id="trimEndVal">00:00</span>
+                        <span data-i18n="trimEnd">Tamat</span>
+                    </div>
+                </div>
+
+                <div class="setting">
+                    <label class="s-label" data-i18n="audio">Audio</label>
+                    <div class="radio-row">
+                        <label class="radio"><input type="radio" name="audioMode" value="keep" checked><span data-i18n="aKeep">Kekal</span></label>
+                        <label class="radio"><input type="radio" name="audioMode" value="mute"><span data-i18n="aMute">Buang Audio</span></label>
+                        <label class="radio"><input type="radio" name="audioMode" value="extract"><span data-i18n="aExtract">Ekstrak MP3</span></label>
+                    </div>
+                </div>
+
+                <div class="setting" id="abrRow">
+                    <label class="s-label" data-i18n="audioBitrate">Kualiti Audio (Bitrate)</label>
+                    <select id="abrSelect">
+                        <option value="128" data-i18n="abr128">128 kbps — Tinggi</option>
+                        <option value="96" selected data-i18n="abr96">96 kbps — Seimbang</option>
+                        <option value="64" data-i18n="abr64">64 kbps — Sederhana</option>
+                        <option value="32" data-i18n="abr32">32 kbps — Kecil</option>
+                    </select>
+                </div>
+
+                <div class="setting" id="fmtRow">
+                    <label class="s-label" data-i18n="formatOut">Format Output</label>
+                    <div class="radio-row">
+                        <label class="radio"><input type="radio" name="formatSel" value="mp4" checked><span>MP4</span></label>
+                        <label class="radio"><input type="radio" name="formatSel" value="webm"><span>WebM</span></label>
+                    </div>
+                </div>
+
+                <div class="estimate" id="estimateRow">
+                    <span data-i18n="estimate">Anggaran saiz output</span>
+                    <b id="estimateVal">—</b>
+                </div>
+
+                <div class="actions">
+                    <button class="btn-run" id="runBtn" data-i18n="runBtn">▶ Mampat Video</button>
+                    <button class="btn-cancel" id="cancelBtn" hidden data-i18n="cancelBtn">■ Batal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ PROGRESS ═══════════ -->
+        <div class="panel progress-panel" id="progressPanel" hidden>
+            <div class="progress-top">
+                <span id="progressLabel" data-i18n="processing">Sedang memproses…</span>
+                <span id="progressPct">0%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <pre class="log-box" id="logBox"></pre>
+        </div>
+
+        <!-- ═══════════ RESULT ═══════════ -->
+        <div class="panel result-panel" id="resultPanel" hidden>
+            <div class="panel-head">
+                <h3 data-i18n="resultTitle">Hasil Sedia ✓</h3>
+            </div>
+            <video id="resultVideo" controls playsinline></video>
+            <div class="compare">
+                <div class="c-item"><span class="c-label" data-i18n="before">Sebelum</span><b id="cmpBefore">—</b></div>
+                <div class="c-arrow">→</div>
+                <div class="c-item"><span class="c-label" data-i18n="after">Selepas</span><b id="cmpAfter">—</b></div>
+                <div class="c-item c-saved"><span class="c-label" data-i18n="saved">Jimat</span><b id="cmpSaved">—</b></div>
+            </div>
+            <div class="actions">
+                <a class="btn-download" id="downloadBtn" data-i18n="download" download>⬇ Muat Turun</a>
+                <button class="btn-again" id="againBtn" data-i18n="againBtn">↺ Mampat Video Lain</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="privacy-note" id="privacyNote">
+        <span data-i18n="noteLocal">⚙️ Enjin FFmpeg dimuat dari CDN (sekali sahaja, kemudian dicache). Fail anda diproses sepenuhnya di dalam pelayar anda.</span>
+        <span class="privacy-muted" data-i18n="noteMemory">💡 Petua: filem bersaiz besar (>300MB) memerlukan lebih memori — cuba fail yang lebih kecil dahulu.</span>
+    </div>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <span class="footer-brand">VideoSlim<span>.</span></span>
+        <span class="footer-tagline" data-i18n="footText">Alat pemampat video percuma — dibina dengan FFmpeg.wasm, berjalan sepenuhnya dalam pelayar anda.</span>
+        <a class="footer-back" href="../index.html" data-i18n="backPortal">← Kembali ke Portal Demo</a>
+    </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
