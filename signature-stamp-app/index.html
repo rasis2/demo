@@ -159,6 +159,19 @@
     box-shadow: 0 20px 60px rgba(0,0,0,.6);
   }
   .modal h2 { margin: 0 0 14px; font-size: 16px; }
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color .15s, border-color .15s;
+  }
+  .back-link:hover { color: var(--text); border-color: var(--accent); }
   .pad-wrap {
     background: #fff; border-radius: 8px; overflow: hidden;
     border: 1px solid var(--border); touch-action: none; cursor: crosshair;
@@ -170,7 +183,8 @@
 <header>
   <h1>Stamp Signature</h1>
   <span class="badge">Letak tandatangan pada setiap muka surat</span>
-  <div style="margin-left:auto">
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <a class="back-link" href="../">← Demo</a>
     <button id="resetBtn" style="font-size:13px">↺ Reset / Clear</button>
   </div>
 </header>
