@@ -250,9 +250,11 @@ async function kjAnnouncements() {
 }
 async function kjAddAnnouncement(a) {
   const attachment = await kjUploadFile('notices', a.file, 'n')
-  const { data, error } = await kjSb().from('announcements').insert({
-    title: a.title, category: a.category, body: a.body || '', pinned: !!a.pinned, author: a.author || 'JMB Kesuma', attachment,
-  }).select().single()
+  const row = {
+    title: a.title, category: a.category, body: a.body || '', pinned: !!a.pinned, author: a.author || 'JMB Kesuma',
+  }
+  if (attachment) row.attachment = attachment
+  const { data, error } = await kjSb().from('announcements').insert(row).select().single()
   if (error) throw error
   return data
 }

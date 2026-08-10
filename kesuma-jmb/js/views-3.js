@@ -133,7 +133,9 @@ VIEWS.vehicles = {
         let photoUrl = ''
         const f = $('vv_photo').files[0]
         if (f) photoUrl = await kjUploadFile('vehicles', f, 'v')
-        await kjUpdateOwner(unit, { vehicle_plate: plate, vehicle_model: $('vv_model').value.trim(), parking_lot: $('vv_lot').value.trim().toUpperCase(), vehicle_photo: photoUrl })
+        const patch = { vehicle_plate: plate, vehicle_model: $('vv_model').value.trim(), parking_lot: $('vv_lot').value.trim().toUpperCase() }
+        if (photoUrl) patch.vehicle_photo = photoUrl
+        await kjUpdateOwner(unit, patch)
         toast(t('veh_success'), 'success'); $('vv_plate').value = ''; $('vv_model').value = ''; $('vv_lot').value = ''; $('vv_photo').value = ''
         if (staffU) $('vv_unit').value = ''
         await loadVeh()
