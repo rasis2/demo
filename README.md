@@ -5,7 +5,7 @@ This is a demo repo where projects are being cast here
 
 | Demo | Folder | Jenis |
 |------|--------|-------|
-| Stamp Signature | `signature-stamp-app/` | Flask + PyMuPDF (perlukan server: `python app.py`) |
+| Stamp Signature | `signature-stamp-app/` | Static (pdf.js + pdf-lib, client-side) |
 | VideoSlim | `video-editor/` | Static |
 | RK1 | `kesuma-jmb/` | Static (Supabase) |
 | Dear Resume | `resume/` | Static |
@@ -14,4 +14,4 @@ This is a demo repo where projects are being cast here
 | Zoo Radio | `zoo-radio/` | Static |
 | UTube Maheera | `utube/` | Static |
 
-Nota: `signature-stamp-app` tidak boleh berjalan sebagai halaman statik — ia memerlukan Python (Flask + PyMuPDF + Pillow). Gunakan `run.bat` (Windows) atau `pip install -r requirements.txt` kemudian `python app.py`.
+Semua demo berjalan sepenuhnya dalam pelayar (static). `signature-stamp-app` memproses PDF secara client-side dengan pdf.js (preview) dan pdf-lib (embed tandatangan) — tiada server diperlukan.
