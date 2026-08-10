@@ -182,6 +182,7 @@ function onHash() {
   let view = VIEWS[h] ? h : 'dashboard'
   if (!canAccess(view)) view = defaultView()
   state.view = view
+  try { if ((location.hash || '').replace('#', '') !== view) history.replaceState(null, '', '#' + view) } catch (e) {}
   updateShell()
   renderView()
 }
