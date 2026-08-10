@@ -36,7 +36,12 @@
     <nav class="channel-tabs" id="channelTabs">
         <button class="ch-tab active" data-channel="all"><span class="ch-icon">✨</span><span data-i18n="tabAll">Semua</span></button>
         <button class="ch-tab" data-channel="monsta"><span class="ch-icon">⚡</span><span>MONSTA</span></button>
-        <button class="ch-tab" data-channel="durioo"><span class="ch-icon">🌙</span><span>Durioo+</span></button>
+        <button class="ch-tab" data-channel="papazola"><span class="ch-icon">🍕</span><span>Papa Zola</span></button>
+        <button class="ch-tab" data-channel="upinipin"><span class="ch-icon">🌙</span><span>Upin &amp; Ipin</span></button>
+        <button class="ch-tab" data-channel="ejenali"><span class="ch-icon">🕵️</span><span>Ejen Ali</span></button>
+        <button class="ch-tab" data-channel="didi"><span class="ch-icon">🐤</span><span>Didi &amp; Friends</span></button>
+        <button class="ch-tab" data-channel="durioo"><span class="ch-icon">🕌</span><span>Durioo+</span></button>
+        <button class="ch-tab" data-channel="msrachel"><span class="ch-icon">🎓</span><span>Ms Rachel</span></button>
     </nav>
 
     <!-- ═══════════ CONTENT ═══════════ -->
@@ -80,12 +85,20 @@
                 <h3 class="player-title" id="playerTitle">—</h3>
                 <button class="close-btn" id="closeBtn" aria-label="Tutup">✕</button>
             </div>
-            <div class="player-frame">
-                <iframe id="playerFrame" src="" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
-            <div class="player-meta">
-                <span class="player-channel" id="playerChannel">—</span>
-                <span class="player-desc" id="playerDesc">—</span>
+            <div class="player-body">
+                <div class="player-main">
+                    <div class="player-frame">
+                        <iframe id="playerFrame" src="" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <div class="player-meta">
+                        <span class="player-channel" id="playerChannel">—</span>
+                        <span class="player-desc" id="playerDesc">—</span>
+                    </div>
+                </div>
+                <aside class="suggest-panel">
+                    <h4 class="suggest-title" data-i18n="next">Tonton Seterusnya</h4>
+                    <div class="suggest-box" id="suggestBox"><!-- suggestions injected by JS --></div>
+                </aside>
             </div>
         </div>
     </div>

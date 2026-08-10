@@ -14,8 +14,13 @@
    and embeds are derived from the YouTube ID.
 ──────────────────────────────────────── */
 const CHANNELS = {
-    monsta: { label: 'MONSTA',  cls: 'ch-monsta', color: '#e63946' },
-    durioo: { label: 'Durioo+', cls: 'ch-durioo', color: '#6d28d9' },
+    monsta:    { label: 'MONSTA',       cls: 'ch-monsta',    color: '#e63946' },
+    papazola:  { label: 'Papa Zola',    cls: 'ch-papazola',  color: '#f97316' },
+    upinipin:  { label: 'Upin & Ipin',  cls: 'ch-upinipin',  color: '#10b981' },
+    ejenali:   { label: 'Ejen Ali',     cls: 'ch-ejenali',   color: '#2563eb' },
+    didi:      { label: 'Didi & Friends', cls: 'ch-didi',    color: '#f59e0b' },
+    durioo:    { label: 'Durioo+',      cls: 'ch-durioo',    color: '#6d28d9' },
+    msrachel:  { label: 'Ms Rachel',    cls: 'ch-msrachel',  color: '#ec4899' },
 };
 
 const VIDEOS = [
@@ -31,6 +36,39 @@ const VIDEOS = [
     { id: 'wgFtH1bCeEU', ch: 'monsta', title: 'MONSTA 2020 — Era Baharu!' },
     { id: 'RKZzcpipqx8', ch: 'monsta', title: 'Papa Pipi Pindah' },
 
+    // ── PAPA ZOLA 🍕 ──
+    { id: 'hP7Hj2NQ-wk', ch: 'papazola', title: 'Papa Zola The Movie — Treler Antarabangsa' },
+    { id: 'fxTGE4vtS3A', ch: 'papazola', title: 'Treler Rasmi Esok | Papa Zola The Movie' },
+
+    // ── UPIN & IPIN 🌙 (Les' Copaque) ──
+    { id: 'zM78QaUshxE', ch: 'upinipin', title: 'Upin & Ipin Ramadan Raya — Episod Penuh' },
+    { id: 'ST0b5RDuETQ', ch: 'upinipin', title: 'Musim 15 — Rajin Menyimpan Bijak Belanja' },
+    { id: 'ZYMI8adms7c', ch: 'upinipin', title: 'Musim 18 — Minyak Sawit (Episod Penuh)' },
+    { id: 'iDhlqk0cx9s', ch: 'upinipin', title: 'Upin & Ipin — Beli, Pakai, Suka' },
+    { id: 'qFX65RVb5X8', ch: 'upinipin', title: 'Upin & Ipin — Bahaya Jerebu' },
+    { id: 'aIf28Et_0Xw', ch: 'upinipin', title: 'Musim 16 — Keselamatan Dan Kecekapan Tenaga' },
+    { id: '2liJ78gn9Z0', ch: 'upinipin', title: 'Musim 6 — Sedia Menyelamat' },
+    { id: 'SwVeuFAYfC0', ch: 'upinipin', title: 'Upin & Ipin — Perangi Rasuah' },
+
+    // ── EJEN ALI 🕵️ (Wau Animation) ──
+    { id: '2W7-oo7P8So', ch: 'ejenali', title: 'Ejen Ali Musim 3 — Treler Rasmi' },
+    { id: 'tn-4DkIz6As', ch: 'ejenali', title: 'Ejen Ali Musim 3 — Treler Rasmi' },
+    { id: 'FB6jX_6pQJY', ch: 'ejenali', title: 'Ejen Ali Musim 3 — Sampel Muzik' },
+    { id: 'PVnOrj1j6C4', ch: 'ejenali', title: 'Profil Ejen — Ejen Aleks' },
+    { id: 'WpBkIKBoPNc', ch: 'ejenali', title: 'Profil Ejen — Ejen Rizka' },
+    { id: 'o9iJbM3v5fg', ch: 'ejenali', title: 'Profil Ejen — Ejen Sam' },
+    { id: 'vFKTU1xKTS0', ch: 'ejenali', title: 'Profil Ejen — Ejen Kim' },
+
+    // ── DIDI & FRIENDS 🐤 (Digital Durian) ──
+    { id: 'MQ1kVt0fGs0', ch: 'didi', title: 'Rescue Squad — Fire! Fire!' },
+    { id: 'ieMXOP6GhMc', ch: 'didi', title: 'Rescue Squad — Tia\'s Fallen!' },
+    { id: '-EGbr3OGBM4', ch: 'didi', title: 'Rescue Squad — I\'m Stuck!' },
+    { id: 'OrrLx3fudPs', ch: 'didi', title: 'Rescue Squad — The Elevator\'s Broken' },
+    { id: '5TizIExM67U', ch: 'didi', title: 'Rescue Squad — A Landslide (Part 1)' },
+    { id: 'Yi4sEyNkTF0', ch: 'didi', title: 'Rescue Squad — A Landslide (Part 2)' },
+    { id: 'MobGDQp3UEg', ch: 'didi', title: 'Rescue Squad — I\'m Trapped' },
+    { id: '5aLZNbybfQc', ch: 'didi', title: 'Rescue Squad — Episod 1-5' },
+
     // ── DURIOO+ / OMAR & HANA 🌙 ──
     { id: 'Nlm6YpcCri0', ch: 'durioo', title: '[Baru] Omar & Hana English X Durioo+' },
     { id: 'kJ7SgIoAaXQ', ch: 'durioo', title: 'Teater Islamik — Oh No My... (Omar & Hana)' },
@@ -40,6 +78,10 @@ const VIDEOS = [
     { id: 'wW5NwX_Ex5E', ch: 'durioo', title: '1 Jam Kompilasi (Bismillah, Alhamdulillah)' },
     { id: 's2IQifq4eDk', ch: 'durioo', title: 'Alhamdulillah, Puasa Pertama | Mina Mila' },
     { id: 'pp1m_EQWYXI', ch: 'durioo', title: 'Sharing is Caring | Omar & Hana (No Music)' },
+
+    // ── MS RACHEL 🎓 ──
+    { id: 'EOjPNtVZghU', ch: 'msrachel', title: 'Belajar Dengan Ms Rachel — Wheels On The Bus' },
+    { id: 'oVtzNpzuvoA', ch: 'msrachel', title: 'Belajar Membaca — Lagu Phonics Bersama Ms Rachel' },
 ];
 
 /* ────────────────────────────────────────
@@ -61,8 +103,9 @@ const I18N = {
         watch: 'Tonton',
         recent: 'Video',
         noResults: 'Tiada video dijumpai. Cuba cari perkataan lain.',
-        adNote: 'Tanpa iklan — hanya video rasmi dari saluran Monsta & Durioo+.',
+        adNote: 'Tanpa iklan — hanya video rasmi dari saluran kanak-kanak tempatan & antarabangsa.',
         close: 'Tutup',
+        next: 'Tonton Seterusnya',
     },
     en: {
         brandSub: 'Kids',
@@ -72,8 +115,9 @@ const I18N = {
         watch: 'Watch',
         recent: 'Videos',
         noResults: 'No videos found. Try a different word.',
-        adNote: 'No ads — only official videos from Monsta & Durioo+ channels.',
+        adNote: 'No ads — only official videos from local & international kids channels.',
         close: 'Close',
+        next: 'Watch Next',
     },
     zh: {
         brandSub: '儿童',
@@ -83,8 +127,9 @@ const I18N = {
         watch: '观看',
         recent: '视频',
         noResults: '没有找到视频，请换一个词试试。',
-        adNote: '无广告 — 仅来自 Monsta 和 Durioo+ 频道的官方视频。',
+        adNote: '无广告 — 仅来自本地和国际儿童频道的官方视频。',
         close: '关闭',
+        next: '接下来观看',
     },
     ta: {
         brandSub: 'குழந்தைகள்',
@@ -94,8 +139,9 @@ const I18N = {
         watch: 'பார்க்க',
         recent: 'வீடியோக்கள்',
         noResults: 'வீடியோ எதுவும் கிடைக்கவில்லை. வேறு வார்த்தை முயற்சிக்கவும்.',
-        adNote: 'விளம்பரம் இல்லை — Monsta & Durioo+ சேனல்களின் அதிகாரப்பூர்வ வீடியோக்கள் மட்டும்.',
+        adNote: 'விளம்பரம் இல்லை — உள்நாட்டு & சர்வதேச குழந்தைகள் சேனல்களின் அதிகாரப்பூர்வ வீடியோக்கள் மட்டும்.',
         close: 'மூடு',
+        next: 'அடுத்து பார்க்க',
     },
 };
 
@@ -115,9 +161,10 @@ const t = (key) => (I18N[lang] && I18N[lang][key]) || I18N.ms[key] || key;
 
 function thumb(v) { return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`; }
 
-function embedUrl(v) {
+function embedUrl(v, autoplay = false) {
     // youtube-nocookie: no tracking cookies. rel=0: no unrelated rabbit-holes.
-    return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white`;
+    const ap = autoplay ? '&autoplay=1' : '';
+    return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white${ap}`;
 }
 
 function watchUrl(v) { return `https://www.youtube.com/watch?v=${v.id}`; }
@@ -179,12 +226,39 @@ function renderGrid() {
 /* ────────────────────────────────────────
    PLAYER MODAL
 ──────────────────────────────────────── */
-function openPlayer(v) {
+function renderSuggestions(current) {
+    const box = $('#suggestBox');
+    const list = VIDEOS
+        .filter((v) => v.ch === current.ch && v.id !== current.id)
+        .concat(VIDEOS.filter((v) => v.ch !== current.ch && v.id !== current.id))
+        .slice(0, 8);
+    box.innerHTML = '';
+    list.forEach((v) => {
+        const item = document.createElement('div');
+        item.className = 'sug-item';
+        item.innerHTML = `
+            <img src="${thumb(v)}" alt="${v.title}" loading="lazy">
+            <div class="sug-info">
+                <div class="sug-title">${v.title}</div>
+                <div class="sug-channel">${CHANNELS[v.ch].label}</div>
+            </div>`;
+        item.addEventListener('click', () => loadVideo(v));
+        box.appendChild(item);
+    });
+}
+
+function loadVideo(v) {
     $('#playerTitle').textContent = v.title;
     $('#playerChannel').textContent = CHANNELS[v.ch].label;
     $('#playerDesc').textContent = `https://youtu.be/${v.id}`;
     const frame = $('#playerFrame');
-    frame.src = embedUrl(v);
+    frame.src = embedUrl(v, true);
+    renderSuggestions(v);
+    frame.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function openPlayer(v) {
+    loadVideo(v);
     $('#playerModal').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
