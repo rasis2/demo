@@ -234,6 +234,17 @@ async function kjPaymentsByUnit(unit) {
   if (error) throw error
   return data || []
 }
+// Card auto-deduct: if owner has auto-debit on + card saved and current month unpaid, create payment (mock deduction)
+async function kjAutoDeduct(unit) {
+  const o = await kjOwner(unit)
+  if (!o || !o.auto_debit || !o.card_last4) return { deducted: false }
+  const month = new Date().toLocaleDateString('ms-MY', { month: 'long', year: 'numeric' })
+  const existing = await kjPaymentsByUnit(unit)
+  if (existing.some(p => p.period === month)) return { deducted: false }
+  const fees = await kjGetSettings()
+  const p = await kjAddPayment({ unit, period: month, amount: fees.monthly, method: 'Auto-Debit' })
+  return { deducted: true, payment: p }
+}
 
 // ── Announcements ──
 async function kjUploadFile(bucket, file, prefix) {

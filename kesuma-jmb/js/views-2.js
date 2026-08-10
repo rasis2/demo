@@ -100,7 +100,7 @@ VIEWS.payments = {
           (ownerU
             ? '<div class="field"><label data-i18n="pay_period"></label><input class="input" id="pm_period" placeholder="' + t('pay_period_ph') + '"></div>' +
               '<div class="form-row">' +
-                '<div class="field"><label data-i18n="pay_method"></label><select class="select" id="pm_method">' + ['FPX','DuitNow','Cash','Bank Transfer','JomPAY'].map(m => '<option>' + esc(m) + '</option>').join('') + '</select></div>' +
+                '<div class="field"><label data-i18n="pay_method"></label><select class="select" id="pm_method">' + ['FPX','DuitNow','Bank Transfer','JomPAY'].map(m => '<option>' + esc(m) + '</option>').join('') + '</select></div>' +
                 '<div class="field"><label data-i18n="pay_amount"></label><input class="input mono" id="pm_amount" value="' + fee + '" readonly></div>' +
               '</div>' +
               '<button class="btn btn-primary btn-block btn-lg" id="pm_go">' + t('pay_submit') + '</button>'
@@ -117,7 +117,17 @@ VIEWS.payments = {
               : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="payLogin">' + t('login') + '</button></div>'))
         + '</div></div>' +
         '<div class="card"><div class="card-head"><h3>' + t('pay_history') + '</h3></div><div class="card-body" id="payList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
-      '</div>'
+      '</div>' +
+      (ownerU ? '<div class="card"><div class="card-head"><h3>💳 ' + t('card_title') + '</h3></div><div class="card-body">' +
+        '<div class="form-row">' +
+          '<div class="field grow"><label data-i18n="card_num"></label><input class="input mono" id="pc_num" placeholder="•••• •••• •••• ••••" maxlength="19" inputmode="numeric"></div>' +
+          '<div class="field" style="flex:0 0 96px"><label data-i18n="card_exp"></label><input class="input mono" id="pc_exp" placeholder="MM/YY" maxlength="5"></div>' +
+          '<div class="field" style="flex:0 0 84px"><label data-i18n="card_cvv"></label><input class="input mono" id="pc_cvv" placeholder="•••" maxlength="4" type="password"></div>' +
+        '</div>' +
+        '<div class="flex-between mt-8"><label class="check"><input type="checkbox" id="pc_auto"> ' + t('auto_debit') + '</label>' +
+        '<button class="btn btn-primary" id="pc_go">' + t('card_save') + '</button></div>' +
+        '<p class="small muted mt-8" id="pc_status"></p>' +
+      '</div></div>' : '')
 
     const payLogin = $('payLogin'); if (payLogin) payLogin.onclick = showLogin
     const pmGo = $('pm_go')
@@ -173,8 +183,39 @@ VIEWS.payments = {
       toast(t('pay_saved'), 'success')
     }
 
+    if (ownerU) {
+      // Card setup + auto-deduct
+      const pcGo = $('pc_go')
+      if (pcGo) pcGo.onclick = async () => {
+        const num = ($('pc_num').value || '').replace(/\D/g, '')
+        const exp = $('pc_exp').value.trim()
+        const cvv = $('pc_cvv').value.trim()
+        const statusEl = $('pc_status'); statusEl.textContent = ''
+        if (num.length < 16 || !exp || !cvv) { toast(t('required'), 'error'); return }
+        const last4 = num.slice(-4)
+        await kjUpdateOwner(state.session.unit, { card_last4: '•••• ' + last4, auto_debit: $('pc_auto').checked })
+        statusEl.textContent = t('card_setup_done') + (last4 ? ' · ' + t('card_last4') + ': •••• ' + last4 : '')
+        toast(t('card_setup_done'), 'success')
+        $('pc_num').value = ''; $('pc_exp').value = ''; $('pc_cvv').value = ''
+        if ($('pc_auto').checked) {
+          const r = await kjAutoDeduct(state.session.unit)
+          if (r.deducted) { toast(t('auto_deducted'), 'success'); renderView() }
+        }
+      }
+      // show saved card + auto-deduct for current month
+      const o = await kjOwner(state.session.unit)
+      const pcAuto = $('pc_auto'), pcStatus = $('pc_status')
+      if (o && pcAuto) {
+        pcAuto.checked = !!o.auto_debit
+        if (o.card_last4) pcStatus.textContent = t('card_last4') + ': ' + o.card_last4
+      }
+      const r = await kjAutoDeduct(state.session.unit)
+      if (r.deducted) { toast(t('auto_deducted'), 'success'); renderView() }
+    }
+
     async function loadPayments() {
       const el = $('payList')
+      if (!el) return
       const list = ownerU ? payments : await kjPayments()
       if (!list.length) { el.innerHTML = '<div class="empty"><div class="ei">🧾</div><p>' + t('pay_empty') + '</p></div>'; return }
       el.innerHTML = list.slice(0, 30).map(p =>

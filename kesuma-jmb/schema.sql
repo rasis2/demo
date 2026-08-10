@@ -32,6 +32,8 @@ alter table public.owners add column if not exists vehicle_plate text default ''
 alter table public.owners add column if not exists vehicle_model text default '';
 alter table public.owners add column if not exists parking_lot text default '';
 alter table public.owners add column if not exists vehicle_photo text default '';
+alter table public.owners add column if not exists card_last4 text default '';
+alter table public.owners add column if not exists auto_debit boolean not null default false;
 alter table public.owners add column if not exists created_at timestamptz not null default now();
 
 -- ─────────────────────────────────────────────
