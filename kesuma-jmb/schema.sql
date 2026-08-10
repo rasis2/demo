@@ -31,6 +31,7 @@ alter table public.owners add column if not exists ic_no text default '';
 alter table public.owners add column if not exists vehicle_plate text default '';
 alter table public.owners add column if not exists vehicle_model text default '';
 alter table public.owners add column if not exists parking_lot text default '';
+alter table public.owners add column if not exists vehicle_photo text default '';
 alter table public.owners add column if not exists created_at timestamptz not null default now();
 
 -- ─────────────────────────────────────────────
@@ -106,8 +107,11 @@ create table if not exists public.announcements (
   body text not null default '',
   pinned boolean not null default false,
   author text not null default 'JMB Kesuma',
+  attachment text not null default '',
   created_at timestamptz not null default now()
 );
+-- If announcements already existed, add the attachment column safely
+alter table public.announcements add column if not exists attachment text not null default '';
 
 -- ─────────────────────────────────────────────
 --  FACILITIES + BOOKINGS
@@ -280,12 +284,16 @@ begin
 end $$;
 
 -- ─────────────────────────────────────────────
---  STORAGE BUCKET (run separately in Storage → New bucket)
---  Name: parcel-images  ·  Public bucket: ON
+--  STORAGE BUCKETS (run separately in Storage → New bucket, each PUBLIC: ON)
+--  parcel-images · notices · vehicles
 --  Then run these policies in SQL Editor:
 -- ─────────────────────────────────────────────
--- insert into storage.buckets (id, name, public) values ('parcel-images', 'parcel-images', true) on conflict do nothing;
--- create policy "public read" on storage.objects for select using (bucket_id = 'parcel-images');
--- create policy "public insert" on storage.objects for insert with check (bucket_id = 'parcel-images');
--- create policy "public update" on storage.objects for update using (bucket_id = 'parcel-images');
--- create policy "public delete" on storage.objects for delete using (bucket_id = 'parcel-images');
+-- insert into storage.buckets (id, name, public) values
+--   ('parcel-images', 'parcel-images', true),
+--   ('notices', 'notices', true),
+--   ('vehicles', 'vehicles', true)
+-- on conflict do nothing;
+-- create policy "public read" on storage.objects for select using (bucket_id in ('parcel-images','notices','vehicles'));
+-- create policy "public insert" on storage.objects for insert with check (bucket_id in ('parcel-images','notices','vehicles'));
+-- create policy "public update" on storage.objects for update using (bucket_id in ('parcel-images','notices','vehicles'));
+-- create policy "public delete" on storage.objects for delete using (bucket_id in ('parcel-images','notices','vehicles'));

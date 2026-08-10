@@ -6,7 +6,8 @@
 VIEWS.bookings = {
   key: 'nav_bookings', icon: '📅',
   render: async (wrap) => {
-    const ownerU = isOwner(), admin = isAdmin()
+    const ownerU = isOwner(), staffU = isStaff(), admin = isAdmin()
+    const canBook = ownerU || staffU
     const facs = await kjFacilities()
     wrap.innerHTML =
       '<div class="page-head"><h1>📅 ' + t('bk_title') + '</h1><p>' + t('bk_success') + '</p></div>' +
@@ -15,19 +16,20 @@ VIEWS.bookings = {
           '<div class="quick-grid" id="bkFacs" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">' +
             facs.map(f => '<div class="quick-link" style="cursor:pointer" data-fid="' + f.id + '"><span class="qi">' + esc(f.icon) + '</span><span>' + esc(f.name) + '</span><span class="small muted" style="font-weight:500">' + t('bk_capacity') + ': ' + f.capacity + (f.cost > 0 ? ' · ' + fmtMoney(f.cost) : ' · ' + t('bk_free')) + '</span></div>').join('') +
           '</div>' +
-          (ownerU ? '<div class="divider"></div>' +
+          (canBook ? '<div class="divider"></div>' +
+            (staffU ? '<div class="field"><label data-i18n="unit_lbl"></label><input class="input mono" id="bk_unit" placeholder="' + t('unit_ph') + '"></div>' : '') +
             '<div class="form-row">' +
               '<div class="field grow"><label data-i18n="bk_date"></label><input class="input" type="date" id="bk_date"></div>' +
               '<div class="field"><label data-i18n="bk_start"></label><input class="input" type="time" id="bk_start" value="10:00"></div>' +
               '<div class="field"><label data-i18n="bk_end"></label><input class="input" type="time" id="bk_end" value="12:00"></div>' +
             '</div>' +
             '<button class="btn btn-primary btn-block btn-lg" id="bk_go">' + t('bk_book') + '</button>'
-          : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="bkLogin">' + t('login_owner') + '</button></div>')
+          : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="bkLogin">' + t('login') + '</button></div>')
         + '</div></div>' +
         '<div class="card"><div class="card-head"><h3>' + (ownerU ? t('bk_my') : admin ? t('bk_manage') : t('bk_my')) + '</h3></div><div class="card-body" id="bkList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
       '</div>'
 
-    const bkLogin = $('bkLogin'); if (bkLogin) bkLogin.onclick = showOwnerLogin
+    const bkLogin = $('bkLogin'); if (bkLogin) bkLogin.onclick = showLogin
     let selFac = null
     $('bkFacs').querySelectorAll('[data-fid]').forEach(c => c.addEventListener('click', () => {
       $('bkFacs').querySelectorAll('[data-fid]').forEach(x => x.style.borderColor = '')
@@ -37,13 +39,21 @@ VIEWS.bookings = {
     const bkGo = $('bk_go')
     if (bkGo) bkGo.onclick = async () => {
       if (!selFac) { toast(t('bk_facility'), 'error'); return }
+      let unit = state.session.unit
+      if (staffU) {
+        unit = $('bk_unit').value.trim()
+        if (!unit) { toast(t('unit_lbl'), 'error'); return }
+        const o = await kjOwner(unit)
+        if (!o) { toast(t('unit_not_found'), 'error'); return }
+      }
       const date = $('bk_date').value, start = $('bk_start').value, end = $('bk_end').value
       if (!date || !start || !end || end <= start) { toast(t('bk_conflict'), 'error'); return }
       const busy = await slotBusy(selFac, date, start, end)
       if (busy) { toast(t('bk_conflict'), 'error'); return }
       const fac = facs.find(f => f.id === selFac)
-      await kjAddBooking({ unit: state.session.unit, facility_id: selFac, facility_name: fac.name, date, start, end })
+      await kjAddBooking({ unit, facility_id: selFac, facility_name: fac.name, date, start, end })
       toast(t('bk_success'), 'success')
+      if (staffU) $('bk_unit').value = ''
       await loadBookings()
     }
     async function slotBusy(fid, date, start, end) {
@@ -79,22 +89,15 @@ VIEWS.vehicles = {
 
     // Register form: owners register their own unit; staff/guard register on behalf (with unit field)
     let form
-    if (ownerU) {
+    if (ownerU || staffU) {
       form =
+        (staffU ? '<div class="field"><label data-i18n="unit_lbl"></label><input class="input mono" id="vv_unit" placeholder="' + t('unit_ph') + '"></div>' : '') +
         '<div class="form-row">' +
           '<div class="field grow"><label data-i18n="veh_plate"></label><input class="input mono" id="vv_plate" placeholder="' + t('veh_plate_ph') + '" style="text-transform:uppercase"></div>' +
           '<div class="field"><label data-i18n="veh_lot"></label><input class="input mono" id="vv_lot" placeholder="' + t('veh_lot_ph') + '"></div>' +
         '</div>' +
         '<div class="field"><label data-i18n="veh_model"></label><input class="input" id="vv_model" placeholder="' + t('veh_model_ph') + '"></div>' +
-        '<button class="btn btn-primary btn-block btn-lg" id="vv_go">' + t('veh_submit') + '</button>'
-    } else if (staffU) {
-      form =
-        '<div class="field"><label data-i18n="unit_lbl"></label><input class="input mono" id="vv_unit" placeholder="' + t('unit_ph') + '"></div>' +
-        '<div class="form-row">' +
-          '<div class="field grow"><label data-i18n="veh_plate"></label><input class="input mono" id="vv_plate" placeholder="' + t('veh_plate_ph') + '" style="text-transform:uppercase"></div>' +
-          '<div class="field"><label data-i18n="veh_lot"></label><input class="input mono" id="vv_lot" placeholder="' + t('veh_lot_ph') + '"></div>' +
-        '</div>' +
-        '<div class="field"><label data-i18n="veh_model"></label><input class="input" id="vv_model" placeholder="' + t('veh_model_ph') + '"></div>' +
+        '<div class="field"><label data-i18n="veh_photo"></label><input type="file" class="input" id="vv_photo" accept="image/*" capture="environment" style="padding:8px"><p class="small muted mt-8">' + t('veh_photo_hint') + '</p></div>' +
         '<button class="btn btn-primary btn-block btn-lg" id="vv_go">' + t('veh_submit') + '</button>'
     } else {
       form = '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p>' +
@@ -106,11 +109,14 @@ VIEWS.vehicles = {
       '<div class="page-head"><h1>🚗 ' + t('veh_title') + '</h1><p>' + t('veh_success') + '</p></div>' +
       '<div class="grid-2">' +
         '<div class="card"><div class="card-head"><h3>➕ ' + t('veh_register') + '</h3></div><div class="card-body">' + form + '</div></div>' +
-        '<div class="card"><div class="card-head"><h3>' + t('veh_list') + '</h3></div><div class="card-body" id="vvList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
+        '<div class="card"><div class="card-head"><h3>' + t('veh_list') + '</h3></div><div class="card-body" style="padding:14px 20px">' +
+          '<input class="input" id="vv_search" placeholder="' + t('veh_search_ph') + '" style="margin-bottom:12px">' +
+          '<div id="vvList"></div></div></div>' +
       '</div>'
 
     const vvLoginOwner = $('vvLoginOwner'); if (vvLoginOwner) vvLoginOwner.onclick = showOwnerLogin
     const vvLoginStaff = $('vvLoginStaff'); if (vvLoginStaff) vvLoginStaff.onclick = showStaffLogin
+    const searchEl = $('vv_search'); if (searchEl) searchEl.addEventListener('input', loadVeh)
     const vvGo = $('vv_go')
     if (vvGo) vvGo.onclick = async () => {
       const plate = $('vv_plate').value.trim().toUpperCase()
@@ -122,26 +128,37 @@ VIEWS.vehicles = {
         const o = await kjOwner(unit)
         if (!o) { toast(t('unit_not_found'), 'error'); return }
       }
-      await kjUpdateOwner(unit, { vehicle_plate: plate, vehicle_model: $('vv_model').value.trim(), parking_lot: $('vv_lot').value.trim().toUpperCase() })
-      toast(t('veh_success'), 'success'); $('vv_plate').value = ''; $('vv_model').value = ''; $('vv_lot').value = ''
-      if (staffU) $('vv_unit').value = ''
-      await loadVeh()
+      const btn = vvGo; btn.disabled = true; btn.textContent = '⏳ ' + t('loading')
+      try {
+        let photoUrl = ''
+        const f = $('vv_photo').files[0]
+        if (f) photoUrl = await kjUploadFile('vehicles', f, 'v')
+        await kjUpdateOwner(unit, { vehicle_plate: plate, vehicle_model: $('vv_model').value.trim(), parking_lot: $('vv_lot').value.trim().toUpperCase(), vehicle_photo: photoUrl })
+        toast(t('veh_success'), 'success'); $('vv_plate').value = ''; $('vv_model').value = ''; $('vv_lot').value = ''; $('vv_photo').value = ''
+        if (staffU) $('vv_unit').value = ''
+        await loadVeh()
+      } catch (e) { toast(t('err_server'), 'error') }
+      btn.disabled = false; btn.textContent = t('veh_submit')
     }
     async function loadVeh() {
       const owners = await kjAllOwners()
-      const all = owners.filter(o => o.vehicle_plate)
-      const list = ownerU ? all.filter(o => o.unit === state.session.unit) : all
+      const q = (searchEl && searchEl.value || '').trim().toLowerCase()
+      let all = owners.filter(o => o.vehicle_plate)
+      if (ownerU) all = all.filter(o => o.unit === state.session.unit)
+      if (q) all = all.filter(o => (o.vehicle_plate || '').toLowerCase().includes(q) || (o.vehicle_model || '').toLowerCase().includes(q) || (o.unit || '').toLowerCase().includes(q))
       const el = $('vvList')
-      if (!list.length) { el.innerHTML = '<div class="empty"><div class="ei">🚗</div><p>' + t('veh_empty') + '</p></div>'; return }
-      el.innerHTML = list.map(o =>
+      if (!all.length) { el.innerHTML = '<div class="empty"><div class="ei">🚗</div><p>' + t('veh_empty') + '</p></div>'; return }
+      el.innerHTML = all.map(o =>
         '<div class="list-item">' +
-          '<div class="avatar" style="background:var(--blue-dim);color:var(--blue)">🚗</div>' +
+          (o.vehicle_photo
+            ? '<img src="' + esc(o.vehicle_photo) + '" style="width:46px;height:46px;object-fit:cover;border-radius:10px;border:1px solid var(--border);cursor:zoom-in" onclick="window.open(\'' + esc(o.vehicle_photo) + '\')">'
+            : '<div class="avatar" style="background:var(--blue-dim);color:var(--blue)">🚗</div>') +
           '<div class="grow"><div class="li-title mono">' + esc(o.vehicle_plate) + '</div>' +
           '<div class="li-sub">' + (ownerU ? '' : 'Unit ' + esc(o.unit) + ' · ') + esc(o.vehicle_model || '—') + (o.parking_lot ? ' · ' + t('veh_lot') + ': ' + esc(o.parking_lot) : '') + '</div></div>' +
           (ownerU || staffU ? '<button class="icon-btn-sm danger" onclick="vrm(\'' + esc(o.unit) + '\')">🗑</button>' : '') +
         '</div>'
       ).join('')
-      window.vrm = async (unit) => { await kjUpdateOwner(unit, { vehicle_plate: '', vehicle_model: '', parking_lot: '' }); toast(t('veh_removed'), 'success'); loadVeh() }
+      window.vrm = async (unit) => { await kjUpdateOwner(unit, { vehicle_plate: '', vehicle_model: '', parking_lot: '', vehicle_photo: '' }); toast(t('veh_removed'), 'success'); loadVeh() }
     }
     await loadVeh()
   },
@@ -231,8 +248,46 @@ VIEWS.residents = {
 VIEWS.settings = {
   key: 'nav_settings', icon: '⚙️',
   render: async (wrap) => {
+    // Owner / tenant: edit their own profile
+    if (isOwner()) {
+      const o = await kjOwner(state.session.unit)
+      wrap.innerHTML =
+        '<div class="page-head"><h1>👤 ' + t('profile_title') + '</h1><p>' + t('role_owner') + ' · <span class="mono">' + esc(state.session.unit) + '</span></p></div>' +
+        '<div class="card" style="max-width:520px"><div class="card-body">' +
+          '<div class="field"><label data-i18n="res_name"></label><input class="input" id="pr_name" value="' + esc(o.name || '') + '"></div>' +
+          '<div class="form-row">' +
+            '<div class="field"><label data-i18n="res_email"></label><input class="input" id="pr_email" value="' + esc(o.email || '') + '"></div>' +
+            '<div class="field"><label data-i18n="res_phone"></label><input class="input" id="pr_phone" value="' + esc(o.phone || '') + '"></div>' +
+          '</div>' +
+          '<div class="field"><label data-i18n="res_ic"></label><input class="input" id="pr_ic" value="' + esc(o.ic_no || '') + '"></div>' +
+          '<button class="btn btn-primary btn-block btn-lg" id="pr_go">' + t('profile_save') + '</button>' +
+        '</div></div>'
+      $('pr_go').onclick = async () => {
+        await kjUpdateOwner(state.session.unit, { name: $('pr_name').value.trim(), email: $('pr_email').value.trim(), phone: $('pr_phone').value.trim(), ic_no: $('pr_ic').value.trim() })
+        state.session.name = $('pr_name').value.trim() || state.session.unit
+        saveSession()
+        toast(t('profile_saved'), 'success')
+        updateShell()
+      }
+      return
+    }
+
     const s = await kjGetSettings()
     const cfg = kjGetConfig()
+    const admin = isAdmin()
+
+    if (!admin) {
+      // Guard / dispatcher: connection info only
+      wrap.innerHTML =
+        '<div class="page-head"><h1>⚙️ ' + t('set_title') + '</h1><p>' + t('set_about') + '</p></div>' +
+        '<div class="card" style="max-width:640px"><div class="card-head"><h3>🔌 ' + t('set_connection') + '</h3></div><div class="card-body">' +
+          '<div class="flex"><span class="state-pill">✅ ' + esc(cfg.supabaseUrl || '—') + '</span></div>' +
+          '<p class="small muted mt-8">' + t('set_about') + '</p>' +
+        '</div></div>'
+      return
+    }
+
+    // Admin: full settings
     wrap.innerHTML =
       '<div class="page-head"><h1>⚙️ ' + t('set_title') + '</h1><p>' + t('set_about') + '</p></div>' +
       '<div class="grid-2">' +
@@ -258,8 +313,8 @@ VIEWS.settings = {
         '<span id="st_status" class="state-pill"></span></div>' +
       '</div></div>' +
       '<div class="card"><div class="card-head"><h3>🌱 ' + t('set_seed') + '</h3></div><div class="card-body flex-between">' +
-        '<div class="small muted">' + t('set_schema_hint') + '<br><a href="schema.sql" target="_blank" style="color:var(--accent);font-weight:600">schema.sql ↗</a></div>' +
-        '<button class="btn btn-ghost" id="st_schema" onclick="window.open(\'schema.sql\')">' + t('set_schema') + '</button>' +
+        '<div class="small muted">' + t('set_schema_hint') + '</div>' +
+        '<button class="btn btn-ghost" onclick="window.open(\'schema.sql\')">' + t('set_schema') + '</button>' +
       '</div></div>'
 
     const saveAll = async () => {

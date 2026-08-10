@@ -153,6 +153,10 @@ async function kjMarkParcelDone(id) {
   const { error } = await kjSb().from('parcels').update({ status: 'Done', collected_at: new Date().toISOString() }).eq('id', id)
   if (error) throw error
 }
+async function kjReopenParcel(id) {
+  const { error } = await kjSb().from('parcels').update({ status: 'Pending', collected_at: null }).eq('id', id)
+  if (error) throw error
+}
 
 // ── Visitors ──
 function kjGenRef() {
@@ -231,14 +235,23 @@ async function kjPaymentsByUnit(unit) {
 }
 
 // ── Announcements ──
+async function kjUploadFile(bucket, file, prefix) {
+  if (!file) return ''
+  const ext = (file.name || 'f').split('.').pop().toLowerCase()
+  const path = prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext
+  const { error } = await kjSb().storage.from(bucket).upload(path, file)
+  if (error) throw error
+  return kjSb().storage.from(bucket).getPublicUrl(path).data.publicUrl
+}
 async function kjAnnouncements() {
   const { data, error } = await kjSb().from('announcements').select('*').order('pinned', { ascending: false }).order('created_at', { ascending: false })
   if (error) throw error
   return data || []
 }
 async function kjAddAnnouncement(a) {
+  const attachment = await kjUploadFile('notices', a.file, 'n')
   const { data, error } = await kjSb().from('announcements').insert({
-    title: a.title, category: a.category, body: a.body || '', pinned: !!a.pinned, author: a.author || 'JMB Kesuma',
+    title: a.title, category: a.category, body: a.body || '', pinned: !!a.pinned, author: a.author || 'JMB Kesuma', attachment,
   }).select().single()
   if (error) throw error
   return data

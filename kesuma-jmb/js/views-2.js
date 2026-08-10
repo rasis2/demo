@@ -6,31 +6,41 @@
 VIEWS.maintenance = {
   key: 'nav_maintenance', icon: '🔧',
   render: async (wrap) => {
-    const ownerU = isOwner()
+    const ownerU = isOwner(), staffU = isStaff()
+    const canReport = ownerU || staffU
     wrap.innerHTML =
       '<div class="page-head"><h1>🔧 ' + t('mnt_title') + '</h1><p>' + t('mnt_report') + '</p></div>' +
       '<div class="grid-2">' +
         '<div class="card"><div class="card-head"><h3>➕ ' + t('mnt_report') + '</h3></div><div class="card-body">' +
-          (ownerU
-            ? '<div class="field"><label data-i18n="mnt_category"></label>' +
+          (canReport
+            ? (staffU ? '<div class="field"><label data-i18n="unit_lbl"></label><input class="input mono" id="mm_unit" placeholder="' + t('unit_ph') + '"></div>' : '') +
+              '<div class="field"><label data-i18n="mnt_category"></label>' +
                 '<select class="select" id="mm_cat">' + ['Elektrik','Paip','Lif','Kebocoran','Kebersihan','Keselamatan','Lain-lain'].map(c => '<option>' + esc(c) + '</option>').join('') + '</select></div>' +
               '<div class="field"><label data-i18n="mnt_title_lbl"></label><input class="input" id="mm_title" maxlength="80"></div>' +
               '<div class="field"><label data-i18n="mnt_desc_lbl"></label><textarea class="textarea" id="mm_desc"></textarea></div>' +
               '<div class="field"><label data-i18n="mnt_priority"></label>' +
                 '<select class="select" id="mm_prio">' + ['Low','Medium','High'].map(p => '<option>' + esc(p) + '</option>').join('') + '</select></div>' +
               '<button class="btn btn-primary btn-block btn-lg" id="mm_go">' + t('mnt_submit') + '</button>'
-            : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="mm_login">' + t('login_owner') + '</button></div>')
+            : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="mm_login">' + t('login') + '</button></div>')
         + '</div></div>' +
         '<div class="card"><div class="card-head"><h3>' + t('mnt_list') + '</h3></div><div class="card-body" id="mmList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
       '</div>'
 
-    const login = $('mm_login'); if (login) login.onclick = showOwnerLogin
+    const login = $('mm_login'); if (login) login.onclick = showLogin
     const goBtn = $('mm_go')
     if (goBtn) goBtn.onclick = async () => {
       const title = $('mm_title').value.trim()
       if (!title) { toast(t('required'), 'error'); return }
-      await kjAddMaintenance({ unit: state.session.unit, category: $('mm_cat').value, title, description: $('mm_desc').value.trim(), priority: $('mm_prio').value })
+      let unit = state.session ? state.session.unit : ''
+      if (staffU) {
+        unit = $('mm_unit').value.trim()
+        if (!unit) { toast(t('unit_lbl'), 'error'); return }
+        const o = await kjOwner(unit)
+        if (!o) { toast(t('unit_not_found'), 'error'); return }
+      }
+      await kjAddMaintenance({ unit, category: $('mm_cat').value, title, description: $('mm_desc').value.trim(), priority: $('mm_prio').value })
       toast(t('mnt_success'), 'success'); $('mm_title').value = ''; $('mm_desc').value = ''
+      if (staffU) $('mm_unit').value = ''
       await loadMaint()
     }
     await loadMaint()
@@ -69,15 +79,21 @@ VIEWS.payments = {
     const ownerU = isOwner(), staffU = isStaff()
     const s = await kjGetSettings()
     const fee = s.monthlyFee
-    let payments = [], ownerPaid = 0
+    let payments = [], ownerPaid = 0, totalCollected = 0
     if (ownerU) { payments = await kjPaymentsByUnit(state.session.unit); ownerPaid = payments.reduce((a, p) => a + Number(p.amount || 0), 0) }
+    else { payments = await kjPayments(); totalCollected = payments.reduce((a, p) => a + Number(p.amount || 0), 0) }
 
     wrap.innerHTML =
       '<div class="page-head"><h1>💰 ' + t('pay_title') + '</h1><p>' + t('pay_history') + '</p></div>' +
+      (isAdmin() ? '<div class="card"><div class="card-head"><h3>⚙️ ' + t('pay_fee_config') + '</h3></div><div class="card-body flex">' +
+        '<div class="field grow mb-8"><label data-i18n="pay_monthly_fee"></label><input class="input mono" id="pf_fee" type="number" value="' + fee + '"></div>' +
+        '<button class="btn btn-soft mt-16" id="pf_go">' + t('pay_set_fee') + '</button></div></div>' : '') +
       '<div class="stat-grid">' +
         '<div class="stat-card"><div class="sc-ico">💳</div><div class="sc-val">' + fmtMoney(fee) + '</div><div class="sc-lbl">' + t('pay_monthly_fee') + '</div></div>' +
-        '<div class="stat-card tone-green"><div class="sc-ico">✅</div><div class="sc-val">' + fmtMoney(ownerU ? ownerPaid : s.paymentsCount) + '</div><div class="sc-lbl">' + t('pay_paid') + '</div></div>' +
-        (ownerU ? '<div class="stat-card tone-red"><div class="sc-ico">⚠️</div><div class="sc-val">' + fmtMoney(Math.max(0, fee - ownerPaid)) + '</div><div class="sc-lbl">' + t('pay_outstanding') + '</div></div>' : '') +
+        '<div class="stat-card tone-green"><div class="sc-ico">✅</div><div class="sc-val">' + fmtMoney(ownerU ? ownerPaid : totalCollected) + '</div><div class="sc-lbl">' + t('pay_paid') + '</div></div>' +
+        (ownerU
+          ? '<div class="stat-card tone-red"><div class="sc-ico">⚠️</div><div class="sc-val">' + fmtMoney(Math.max(0, fee - ownerPaid)) + '</div><div class="sc-lbl">' + t('pay_outstanding') + '</div></div>'
+          : '<div class="stat-card tone-blue"><div class="sc-ico">🧾</div><div class="sc-val">' + payments.length + '</div><div class="sc-lbl">' + t('dash_payments_count') + '</div></div>') +
       '</div>' +
       '<div class="grid-2">' +
         '<div class="card"><div class="card-head"><h3>' + (ownerU ? '💳 ' + t('pay_make') : t('pay_record')) + '</h3></div><div class="card-body">' +
@@ -98,15 +114,12 @@ VIEWS.payments = {
                   '<div class="field"><label data-i18n="pay_amount"></label><input class="input mono" type="number" id="pa_amount"></div>' +
                 '</div>' +
                 '<button class="btn btn-primary btn-block btn-lg" id="pa_go">' + t('pay_record') + '</button>'
-              : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="payLogin">' + t('login_owner') + '</button></div>'))
+              : '<div class="empty"><div class="ei">🔐</div><p>' + t('dash_login_hint') + '</p><button class="btn btn-primary mt-16" id="payLogin">' + t('login') + '</button></div>'))
         + '</div></div>' +
         '<div class="card"><div class="card-head"><h3>' + t('pay_history') + '</h3></div><div class="card-body" id="payList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
-      '</div>' +
-      (isAdmin() ? '<div class="card"><div class="card-head"><h3>⚙️ ' + t('pay_fee_config') + '</h3></div><div class="card-body flex">' +
-        '<div class="field grow mb-8"><label data-i18n="pay_monthly_fee"></label><input class="input mono" id="pf_fee" type="number" value="' + fee + '"></div>' +
-        '<button class="btn btn-soft mt-16" id="pf_go">' + t('pay_set_fee') + '</button></div></div>' : '')
+      '</div>'
 
-    const payLogin = $('payLogin'); if (payLogin) payLogin.onclick = showOwnerLogin
+    const payLogin = $('payLogin'); if (payLogin) payLogin.onclick = showLogin
     const pmGo = $('pm_go')
     if (pmGo) pmGo.onclick = async () => {
       const period = $('pm_period').value.trim()
@@ -161,6 +174,7 @@ VIEWS.announcements = {
           '<div class="field"><label data-i18n="ann_category"></label><select class="select" id="an_cat">' + ['Penting','AGM','Penyelenggaraan','Kemudahan','Acara','Keselamatan'].map(c => '<option>' + esc(c) + '</option>').join('') + '</select></div>' +
         '</div>' +
         '<div class="field"><label data-i18n="ann_body_lbl"></label><textarea class="textarea" id="an_body"></textarea></div>' +
+        '<div class="field"><label data-i18n="ann_attach"></label><input type="file" class="input" id="an_file" accept="image/*,.pdf" style="padding:8px"><p class="small muted mt-8">' + t('ann_attach_hint') + '</p></div>' +
         '<div class="flex-between"><label class="check"><input type="checkbox" id="an_pin"> ' + t('ann_pinned') + '</label>' +
         '<button class="btn btn-primary" id="an_go">' + t('ann_publish') + '</button></div>' +
       '</div></div>' : '') +
@@ -170,25 +184,37 @@ VIEWS.announcements = {
     if (anGo) anGo.onclick = async () => {
       const title = $('an_title').value.trim()
       if (!title) { toast(t('required'), 'error'); return }
-      await kjAddAnnouncement({ title, category: $('an_cat').value, body: $('an_body').value.trim(), pinned: $('an_pin').checked })
-      toast(t('ann_success'), 'success'); $('an_title').value = ''; $('an_body').value = ''
+      const btn = anGo; btn.disabled = true; btn.textContent = '⏳ ' + t('loading')
+      try {
+        await kjAddAnnouncement({ title, category: $('an_cat').value, body: $('an_body').value.trim(), pinned: $('an_pin').checked, file: $('an_file').files[0] })
+        toast(t('ann_success'), 'success'); $('an_title').value = ''; $('an_body').value = ''; $('an_file').value = ''
+      } catch (e) { toast(t('err_server'), 'error') }
+      btn.disabled = false; btn.textContent = t('ann_publish')
       await loadAnns()
     }
     async function loadAnns() {
       const list = await kjAnnouncements()
       const el = $('anList')
       if (!list.length) { el.innerHTML = '<div class="empty"><div class="ei">📢</div><p>' + t('ann_empty') + '</p></div>'; return }
-      el.innerHTML = list.map(a =>
-        '<div class="list-item" style="align-items:flex-start">' +
+      el.innerHTML = list.map(a => {
+        let attach = ''
+        if (a.attachment) {
+          const isImg = /\.(png|jpe?g|gif|webp|svg)$/i.test(a.attachment)
+          attach = isImg
+            ? '<a class="mt-8" style="display:inline-block" href="' + esc(a.attachment) + '" target="_blank" rel="noopener"><img src="' + esc(a.attachment) + '" style="max-width:180px;border-radius:10px;border:1px solid var(--border);cursor:zoom-in"></a>'
+            : '<a class="btn btn-soft btn-sm mt-8" href="' + esc(a.attachment) + '" target="_blank" rel="noopener">📎 ' + t('doc_view') + ' ↗</a>'
+        }
+        return '<div class="list-item" style="align-items:flex-start">' +
           '<div class="grow"><div class="li-title">' + (a.pinned ? '📌 ' : '') + esc(a.title) + '</div>' +
           '<div class="li-sub">' + esc(a.author) + ' · ' + fmtDate(a.created_at) + ' · ' + timeAgo(a.created_at) + '</div>' +
           (a.body ? '<div class="ann-body small muted mt-8" id="annb-' + a.id + '" style="display:none;white-space:pre-wrap">' + esc(a.body) + '</div>' : '') +
+          attach +
           (a.body ? '<button class="btn btn-ghost btn-sm mt-8" id="annt-' + a.id + '" onclick="annToggle(\'' + a.id + '\')">' + t('ann_expand') + '</button>' : '') +
           '</div>' +
           '<span class="badge gold">' + esc(a.category) + '</span>' +
           (admin ? '<button class="icon-btn-sm danger" onclick="adel(\'' + a.id + '\')">🗑</button>' : '') +
         '</div>'
-      ).join('')
+      }).join('')
       window.annToggle = (id) => {
         const body = document.getElementById('annb-' + id)
         const btn = document.getElementById('annt-' + id)

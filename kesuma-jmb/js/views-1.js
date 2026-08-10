@@ -115,9 +115,17 @@ async function loadParcels(wrap) {
         '<div class="li-sub">' + fmtDate(p.created_at) + ' · ' + timeAgo(p.created_at) + '</div></div>' +
         badge(p.status) +
         (p.status === 'Pending' && isOwnerU ? '<button class="btn btn-green btn-sm" onclick="kd(\'' + p.id + '\')">' + t('par_mark_done') + '</button>' : '') +
+        (isStaffU ? '<select class="select" style="width:auto;padding:6px 8px;font-size:11px" onchange="pset(\'' + p.id + '\', this.value)">' +
+          ['Pending','Done'].map(s => '<option value="' + s + '"' + (p.status === s ? ' selected' : '') + '>' + t(s === 'Pending' ? 'par_pending' : 'par_done') + '</option>').join('') +
+          '</select>' : '') +
       '</div>'
     ).join('')
   window.kd = async (id) => { await kjMarkParcelDone(id); toast(t('par_collected'), 'success'); await loadParcels(wrap) }
+  window.pset = async (id, status) => {
+    if (status === 'Done') await kjMarkParcelDone(id)
+    else await kjReopenParcel(id)
+    toast(t('mnt_update'), 'success'); await loadParcels(wrap)
+  }
 }
 
 /* ─────────────────────────────── VISITORS ─────────────────────────────── */

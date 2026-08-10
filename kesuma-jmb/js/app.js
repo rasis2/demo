@@ -102,11 +102,12 @@ const NAV = [
   { id: 'documents', icon: '📄', key: 'nav_documents', roles: null },
   { id: 'residents', icon: '👥', key: 'nav_residents', roles: ['admin'] },
   { id: 'tenants', icon: '🏠', key: 'nav_tenants', roles: ['admin'] },
-  { id: 'settings', icon: '⚙️', key: 'nav_settings', roles: ['admin'] },
+  { id: 'settings', icon: '⚙️', key: 'nav_settings', roles: ['auth'] },
 ]
 
 function navVisible(item) {
   if (!item.roles) return true
+  if (item.roles.includes('auth') && (isStaff() || isOwner())) return true
   if (item.roles.includes('admin') && isAdmin()) return true
   return false
 }
