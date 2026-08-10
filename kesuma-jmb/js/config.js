@@ -7,7 +7,7 @@
 //  Then run schema.sql in your Supabase SQL Editor once.
 // ═══════════════════════════════════════════════════════
 const KJ_CONFIG = {
-  appName: 'Kesuma JMB',
+  appName: 'RK1',
   appTagline: 'Sistem Pengurusan Harta',
   supabaseUrl: 'https://zoxrgkiuamxaxysmcgby.supabase.co',
   supabaseAnon: 'sb_publishable_mKtVCxB2ltjwsnZaK7UuCA_tf12Xdg4',

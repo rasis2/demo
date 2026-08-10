@@ -256,9 +256,30 @@ VIEWS.dashboard = {
 
     const hello = new Date().toLocaleDateString(lang === 'en' ? 'en-MY' : 'ms-MY', { weekday: 'long', day: 'numeric', month: 'long' })
 
-    // Owner sees only their own dashboard
+    // Full stats are admin-only. Staff/owners get their own; guests get none.
     let statsHtml = ''
-    if (isOwner()) {
+    if (isAdmin()) {
+      const s = await kjStats()
+      statsHtml =
+        '<div class="stat-grid">' +
+          stat('🏢', s.units, t('dash_units')) +
+          stat('📦', s.parcelsPending, t('dash_pending_parcels'), 'tone-orange') +
+          stat('🪪', s.visitorsToday, t('dash_today_visitors'), 'tone-blue') +
+          stat('🔧', s.maintOpen, t('dash_open_maintenance'), 'tone-red') +
+          stat('💰', fmtMoney(s.paymentsTotal), t('dash_collected'), 'tone-green') +
+          stat('📅', s.bookingsPending, t('dash_bookings_pending'), 'tone-purple') +
+        '</div>'
+    } else if (isStaff()) {
+      const [vis, par] = await Promise.all([kjVisitors(), kjParcels()])
+      const today = new Date().toDateString()
+      statsHtml =
+        '<div class="stat-grid">' +
+          stat('🪪', vis.filter(v => v.status === 'Pending').length, t('dash_pending_visitors'), 'tone-blue') +
+          stat('🚶', vis.filter(v => v.created_at && new Date(v.created_at).toDateString() === today).length, t('dash_today_visitors')) +
+          stat('✅', vis.filter(v => v.status === 'Approved').length, t('st_approved'), 'tone-green') +
+          stat('📦', par.filter(p => p.status === 'Pending').length, t('dash_pending_parcels'), 'tone-orange') +
+        '</div>'
+    } else if (isOwner()) {
       const unit = state.session.unit
       const [myParcels, allVis, myPay, myMaint, myBook] = await Promise.all([
         kjParcelsByUnit(unit), kjVisitors(), kjPaymentsByUnit(unit), kjMaintenance(), kjBookings(),
@@ -274,23 +295,20 @@ VIEWS.dashboard = {
           stat('📅', myBook.filter(b => b.unit === unit && b.status === 'Pending').length, t('dash_bookings_pending'), 'tone-purple') +
         '</div>'
     } else {
-      const s = await kjStats()
+      // Guest: no data stats — just a friendly welcome + login prompt
       statsHtml =
-        '<div class="stat-grid">' +
-          stat('🏢', s.units, t('dash_units')) +
-          stat('📦', s.parcelsPending, t('dash_pending_parcels'), 'tone-orange') +
-          stat('🪪', s.visitorsToday, t('dash_today_visitors'), 'tone-blue') +
-          stat('🔧', s.maintOpen, t('dash_open_maintenance'), 'tone-red') +
-          stat('💰', fmtMoney(s.paymentsTotal), t('dash_collected'), 'tone-green') +
-          stat('📅', s.bookingsPending, t('dash_bookings_pending'), 'tone-purple') +
-        '</div>'
+        '<div class="card" style="padding:0;overflow:hidden;margin-bottom:16px"><div class="card-body" style="text-align:center;padding:34px 22px">' +
+          '<div class="ei" style="font-size:44px">🏢</div>' +
+          '<h2 style="font-family:var(--font-display);font-weight:800;font-size:20px;margin:10px 0 6px">RK1</h2>' +
+          '<p class="muted small" style="max-width:420px;margin:0 auto">' + t('dash_guest') + '</p>' +
+          '<button class="btn btn-primary btn-lg mt-16" id="dashLogin">🔐 ' + t('login') + '</button>' +
+        '</div></div>'
     }
 
     wrap.innerHTML =
       '<div class="page-head page-head-row">' +
         '<div><h1>' + (sessions ? t('dash_welcome') + ', ' + esc(sessions.name || '') : t('dash_welcome')) + ' 👋</h1>' +
         '<p>' + esc(hello) + ' · ' + esc(t('dash_overview')) + '</p></div>' +
-        (!sessions ? '<button class="btn btn-primary" id="dashLogin">🔐 ' + t('login') + '</button>' : '') +
       '</div>' +
       statsHtml +
       '<div class="grid-2">' +
@@ -305,7 +323,7 @@ VIEWS.dashboard = {
         '</div>' +
       '</div>'
 
-    const loginBtn = $('dashLogin'); if (loginBtn) loginBtn.onclick = showOwnerLogin
+    const loginBtn = $('dashLogin'); if (loginBtn) loginBtn.onclick = showLogin
 
     const annEl = $('dashAnns')
     if (!anns.length) annEl.innerHTML = '<div class="empty" style="padding:22px 0"><div class="ei">📢</div><p>' + t('dash_no_ann') + '</p></div>'
@@ -339,6 +357,9 @@ function boot() {
     const order = ['ms', 'en', 'zh', 'ta']
     const cur = getLang()
     setLang(order[(order.indexOf(cur) + 1) % order.length])
+    $('langBtn').textContent = langLabel[getLang()] || '🇲🇾'
+    updateShell()
+    renderView()
   }
   $('hamburger').onclick = () => { $('sidebar').classList.add('open'); $('backdrop').classList.add('show') }
   $('backdrop').onclick = () => { $('sidebar').classList.remove('open'); $('backdrop').classList.remove('show') }
