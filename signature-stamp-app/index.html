@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stamp Signature — PDF Signature Web App</title>
+<style>
+  :root { --bg:#0f172a; --panel:#1e293b; --panel2:#273449; --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --border:#334155; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Segoe UI", system-ui, sans-serif; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .card { max-width:520px; width:92%; background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:34px 30px; text-align:center; }
+  .ico { font-size:46px; margin-bottom:14px; }
+  h1 { font-size:22px; margin:0 0 8px; }
+  p { color:var(--muted); font-size:14px; line-height:1.6; margin:0 0 20px; }
+  code { background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:2px 7px; font-size:12.5px; color:var(--accent); }
+  .step { text-align:left; background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-size:13px; color:var(--text); line-height:1.7; margin-bottom:14px; }
+  .step b { color:var(--accent); }
+  .spinner { width:34px; height:34px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; margin:10px auto 16px; animation:spin 1s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  #offline { display:none; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div id="loading">
+      <div class="ico">✍️</div>
+      <h1>Stamp Signature</h1>
+      <p>Menyemak server demo…</p>
+      <div class="spinner"></div>
+    </div>
+    <div id="offline">
+      <div class="ico">🖥️</div>
+      <h1>Demo Memerlukan Server</h1>
+      <p>Demo ini berjalan dengan server Python (Flask) untuk memproses PDF. Ia tidak boleh berjalan sebagai halaman statik.</p>
+      <div class="step">
+        <b>1.</b> Buka folder demo dan jalankan:<br>
+        <code>cd signature-stamp-app</code><br>
+        <code>pip install -r requirements.txt</code><br>
+        <code>python app.py</code>
+      </div>
+      <div class="step">
+        <b>2.</b> Kemudian buka <code>http://127.0.0.1:5000</code><br>
+        (Windows: double-click <code>run.bat</code> terus buka app)
+      </div>
+      <p>Selepas server jalan, muat semula halaman ini.</p>
+    </div>
+  </div>
+<script>
+(async () => {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 2500);
+    const res = await fetch('/api/upload', { method: 'POST', signal: ctrl.signal });
+    clearTimeout(t);
+    // Flask returns 400 for missing file -> server is running
+    if (res.status === 400) {
+      location.replace('/static/index.html');
+      return;
+    }
+    showOffline();
+  } catch (e) {
+    showOffline();
+  }
+  function showOffline() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('offline').style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>
