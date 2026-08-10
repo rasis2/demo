@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════
-   UTUBE — KANAK-KANAK — app.js
+   UTube Maheera — KANAK-KANAK — app.js
    Kids-safe video browser: only official videos
-   from Monsta & Durioo+ channels. No ads, no
+   from popular Malay kids channels. No ads, no
    related-video rabbit holes (rel=0), no comments.
 ═══════════════════════════════════════════ */
 
@@ -21,6 +21,9 @@ const CHANNELS = {
     didi:      { label: 'Didi & Friends', cls: 'ch-didi',    color: '#f59e0b' },
     durioo:    { label: 'Durioo+',      cls: 'ch-durioo',    color: '#6d28d9' },
     msrachel:  { label: 'Ms Rachel',    cls: 'ch-msrachel',  color: '#ec4899' },
+    alifsofia: { label: 'Alif & Sofia', cls: 'ch-alifsofia', color: '#ec4899' },
+    omarhana:  { label: 'Omar & Hana',  cls: 'ch-omarhana',  color: '#16a34a' },
+    learnwithzakaria: { label: 'Learn with Zakaria', cls: 'ch-zakaria', color: '#0891b2' },
 };
 
 const VIDEOS = [
@@ -69,15 +72,33 @@ const VIDEOS = [
     { id: 'MobGDQp3UEg', ch: 'didi', title: 'Rescue Squad — I\'m Trapped' },
     { id: '5aLZNbybfQc', ch: 'didi', title: 'Rescue Squad — Episod 1-5' },
 
-    // ── DURIOO+ / OMAR & HANA 🌙 ──
-    { id: 'Nlm6YpcCri0', ch: 'durioo', title: '[Baru] Omar & Hana English X Durioo+' },
-    { id: 'kJ7SgIoAaXQ', ch: 'durioo', title: 'Teater Islamik — Oh No My... (Omar & Hana)' },
+    // ── DURIOO+ / LITTLE AMMAR 🕌 ──
     { id: 'YOOQ_hCiCjs', ch: 'durioo', title: 'Little Ammar — Time for School (Kompilasi)' },
     { id: 'FLOAV2dc4MM', ch: 'durioo', title: 'Little Ammar — Lagu-Lagu (Kompilasi)' },
     { id: 'opWNDoHcwoM', ch: 'durioo', title: 'Kembali ke Sekolah — Kompilasi 95 Minit' },
-    { id: 'wW5NwX_Ex5E', ch: 'durioo', title: '1 Jam Kompilasi (Bismillah, Alhamdulillah)' },
     { id: 's2IQifq4eDk', ch: 'durioo', title: 'Alhamdulillah, Puasa Pertama | Mina Mila' },
-    { id: 'pp1m_EQWYXI', ch: 'durioo', title: 'Sharing is Caring | Omar & Hana (No Music)' },
+
+    // ── OMAR & HANA 🌙 ──
+    { id: 'Nlm6YpcCri0', ch: 'omarhana', title: '[Baru] Omar & Hana English X Durioo+' },
+    { id: 'kJ7SgIoAaXQ', ch: 'omarhana', title: 'Teater Islamik — Oh No My... (Omar & Hana)' },
+    { id: 'wW5NwX_Ex5E', ch: 'omarhana', title: '1 Jam Kompilasi (Bismillah, Alhamdulillah)' },
+    { id: 'pp1m_EQWYXI', ch: 'omarhana', title: 'Sharing is Caring | Omar & Hana (No Music)' },
+
+    // ── ALIF & SOFIA 🌸 ──
+    { id: '9eMypZeaDDo', ch: 'alifsofia', title: 'Alif & Sofia — Hari Merdeka' },
+    { id: 'cH4EEOfexPg', ch: 'alifsofia', title: 'Alif & Sofia — Hari Kanak-Kanak Sedunia' },
+    { id: 'B2vorH0y-1w', ch: 'alifsofia', title: 'Alif & Sofia — Kompilasi 15 Minit' },
+    { id: '-ZBM0PDkFgU', ch: 'alifsofia', title: 'Alif & Sofia — Lagu 20 Sifat Allah' },
+    { id: 'Ug1uYVmgStE', ch: 'alifsofia', title: 'Alif & Sofia — Jom Kreatif: Bunga Kertas' },
+    { id: 'E8CTMCJHCTA', ch: 'alifsofia', title: 'Alif & Sofia — Jom Kreatif: Doh Mainan' },
+
+    // ── LEARN WITH ZAKARIA 🎨 ──
+    { id: 'Qs0ycO_OyVc', ch: 'learnwithzakaria', title: 'Learn with Zakaria — Kompilasi Belajar' },
+    { id: 'yHYI7apORwY', ch: 'learnwithzakaria', title: 'Belajar Mengira 1-10 — Lagu Nombor & Haiwan' },
+    { id: 'IIo3Mrj-RXc', ch: 'learnwithzakaria', title: 'Lagu Nombor 1-10 dengan Haiwan' },
+    { id: 'KTrWtWVDaVQ', ch: 'learnwithzakaria', title: 'Belajar Perkataan & Nombor — Kompilasi' },
+    { id: 'pYuOEEYupRU', ch: 'learnwithzakaria', title: 'Belajar Haiwan — Kompilasi Terbaik' },
+    { id: 'OcNaG6V18CA', ch: 'learnwithzakaria', title: 'Belajar Nombor & Warna — Kompilasi' },
 
     // ── MS RACHEL 🎓 ──
     { id: 'EOjPNtVZghU', ch: 'msrachel', title: 'Belajar Dengan Ms Rachel — Wheels On The Bus' },
