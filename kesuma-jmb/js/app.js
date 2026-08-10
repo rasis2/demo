@@ -44,6 +44,10 @@ function timeAgo(ts) {
   return Math.floor(d / 86400) + 'd'
 }
 
+function emptyState(icon, msg) {
+  return '<div class="empty"><div class="ei">' + icon + '</div><p>' + esc(msg) + '</p></div>'
+}
+
 // ── Badges ──
 const STATUS_MAP = {
   Pending: ['gold', 'vis_pending'], 'In Progress': ['orange', 'mnt_progress'], Open: ['red', 'mnt_open'],
