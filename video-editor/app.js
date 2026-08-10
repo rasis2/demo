@@ -403,11 +403,15 @@ const logBox = $('logBox');
 function log(msg){ logBox.textContent += msg + '\n'; logBox.scrollTop = logBox.scrollHeight; }
 function clearLog(){ logBox.textContent = ''; }
 
+let fetchFileRef = null;
+
 async function getFFmpeg(){
     if (state.ffmpeg && state.ffmpeg.loaded) return state.ffmpeg;
     setProgressLabel(t('loadingEngine'));
     const { FFmpeg } = await import(FFMPEG_WRAPPER);
-    const { fetchFile, toBlobURL } = await import(FFMPEG_UTIL);
+    const util = await import(FFMPEG_UTIL);
+    fetchFileRef = util.fetchFile;
+    const { toBlobURL } = util;
     const ffmpeg = new FFmpeg();
     ffmpeg.on('log', ({ message }) => { if (message && message.trim()) log(message); });
     ffmpeg.on('progress', ({ progress }) => {
@@ -504,7 +508,7 @@ async function run(){
         setProgressLabel(t('preparing'));
         const inName = 'input' + (state.file.name.match(/\.[^.]{1,10}$/) || ['.mp4'])[0].toLowerCase();
         const outName = 'output.' + ext;
-        await ffmpeg.writeFile(inName, await fetchFile(state.file));
+        await ffmpeg.writeFile(inName, await fetchFileRef(state.file));
 
         const args = buildArgs(inName, outName, ext, s);
         log('$ ffmpeg ' + args.join(' '));
