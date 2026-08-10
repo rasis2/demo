@@ -195,6 +195,7 @@ insert into public.settings (key, value) values
   ('pin_admin', '1125'),
   ('pin_guard', '1125'),
   ('pin_dispatcher', '1125'),
+  ('guard_phone', '011-2345 6789'),
   ('seeded', 'true')
 on conflict (key) do nothing;
 

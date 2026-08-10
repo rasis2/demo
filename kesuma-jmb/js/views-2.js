@@ -121,12 +121,41 @@ VIEWS.payments = {
 
     const payLogin = $('payLogin'); if (payLogin) payLogin.onclick = showLogin
     const pmGo = $('pm_go')
-    if (pmGo) pmGo.onclick = async () => {
+    if (pmGo) pmGo.onclick = () => {
       const period = $('pm_period').value.trim()
       if (!period) { toast(t('required'), 'error'); return }
-      await kjAddPayment({ unit: state.session.unit, period, amount: fee, method: $('pm_method').value })
-      toast(t('pay_success'), 'success'); $('pm_period').value = ''
-      await loadPayments()
+      const method = $('pm_method').value
+      openModal(
+        '<div class="modal-head"><h3>💳 ' + t('pay_make') + '</h3><button class="icon-btn-sm" id="mlclose">✕</button></div>' +
+        '<div class="modal-body">' +
+          '<div style="text-align:center;padding:6px 0 14px">' +
+            '<div class="muted small">' + esc(period) + ' · ' + esc(method) + '</div>' +
+            '<div style="font-size:30px;font-weight:800;font-family:var(--font-mono);margin-top:4px">' + fmtMoney(fee) + '</div>' +
+          '</div>' +
+          '<div class="field"><label data-i18n="pay_method"></label>' +
+            '<select class="select" id="gp_bank">' + ['Maybank2u','CIMB Clicks','Public Bank','Hong Leong Connect','RHB Now','Bank Islam','Touch \'n Go eWallet','GrabPay','DuitNow'].map(b => '<option>' + esc(b) + '</option>').join('') + '</select></div>' +
+          '<div class="state-pill" style="width:100%;justify-content:center">🔒 <span id="gp_status">' + t('pay_secure') + '</span></div>' +
+          '<div class="error-text" id="gp_err" style="margin-bottom:8px"></div>' +
+        '</div>' +
+        '<div class="modal-foot"><button class="btn btn-ghost" id="gp_cancel">' + t('cancel') + '</button>' +
+        '<button class="btn btn-green" id="gp_confirm">✓ ' + t('pay_confirm') + '</button></div>',
+        ov => {
+          ov.querySelector('#mlclose').onclick = () => closeModal(ov)
+          ov.querySelector('#gp_cancel').onclick = () => closeModal(ov)
+          ov.querySelector('#gp_confirm').onclick = async () => {
+            const btn = ov.querySelector('#gp_confirm'); btn.disabled = true; btn.textContent = '⏳ ' + t('loading')
+            ov.querySelector('#gp_status').textContent = t('pay_processing')
+            await new Promise(r => setTimeout(r, 1200))
+            try {
+              await kjAddPayment({ unit: state.session.unit, period, amount: fee, method })
+              ov.classList.remove('show'); setTimeout(() => ov.remove(), 200)
+              toast(t('pay_success') + ' · ' + esc(period), 'success')
+              $('pm_period').value = ''
+              renderView() // full refresh → shows latest payment + updated balance
+            } catch (e) { ov.querySelector('#gp_err').textContent = t('err_server'); btn.disabled = false; btn.textContent = '✓ ' + t('pay_confirm'); ov.querySelector('#gp_status').textContent = t('pay_secure') }
+          }
+        }
+      )
     }
     const paGo = $('pa_go')
     if (paGo) paGo.onclick = async () => {
@@ -201,7 +230,7 @@ VIEWS.announcements = {
         if (a.attachment) {
           const isImg = /\.(png|jpe?g|gif|webp|svg)$/i.test(a.attachment)
           attach = isImg
-            ? '<a class="mt-8" style="display:inline-block" href="' + esc(a.attachment) + '" target="_blank" rel="noopener"><img src="' + esc(a.attachment) + '" style="max-width:180px;border-radius:10px;border:1px solid var(--border);cursor:zoom-in"></a>'
+            ? '<img class="mt-8" src="' + esc(a.attachment) + '" style="max-width:180px;border-radius:10px;border:1px solid var(--border);cursor:zoom-in" onclick="showImage(\'' + esc(a.attachment) + '\')">'
             : '<a class="btn btn-soft btn-sm mt-8" href="' + esc(a.attachment) + '" target="_blank" rel="noopener">📎 ' + t('doc_view') + ' ↗</a>'
         }
         return '<div class="list-item" style="align-items:flex-start">' +

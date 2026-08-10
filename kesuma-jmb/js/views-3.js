@@ -303,6 +303,7 @@ VIEWS.settings = {
           '<div class="field"><label data-i18n="set_pin_admin"></label><input class="input mono" id="st_pa" value="' + esc(s.pinAdmin) + '"></div>' +
           '<div class="field"><label data-i18n="set_pin_guard"></label><input class="input mono" id="st_pg" value="' + esc(s.pinGuard) + '"></div>' +
           '<div class="field"><label data-i18n="set_pin_dispatcher"></label><input class="input mono" id="st_pd" value="' + esc(s.pinDispatcher) + '"></div>' +
+          '<div class="field"><label data-i18n="set_guard_phone"></label><input class="input mono" id="st_gp" value="' + esc(s.guardPhone) + '"></div>' +
           '<button class="btn btn-soft" id="st_save2">' + t('save') + '</button>' +
         '</div></div>' +
       '</div>' +
@@ -322,6 +323,7 @@ VIEWS.settings = {
       await kjSetSetting('pin_admin', $('st_pa').value)
       await kjSetSetting('pin_guard', $('st_pg').value)
       await kjSetSetting('pin_dispatcher', $('st_pd').value)
+      await kjSetSetting('guard_phone', $('st_gp').value)
       toast(t('set_saved'), 'success')
     }
     $('st_save1').onclick = saveAll

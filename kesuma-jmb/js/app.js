@@ -89,6 +89,37 @@ function closeModal(ov) {
   if (ov) { ov.classList.remove('show'); setTimeout(() => ov.remove(), 220) }
 }
 
+// Full-screen image viewer (lightbox)
+function showImage(url) {
+  const ov = document.createElement('div')
+  ov.className = 'modal-overlay show'
+  ov.style.cssText = 'background:rgba(0,0,0,.92);place-items:center;padding:20px;cursor:zoom-out'
+  ov.innerHTML = '<img src="' + esc(url) + '" style="max-width:94vw;max-height:90vh;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.6)">'
+  ov.addEventListener('click', () => { ov.classList.remove('show'); setTimeout(() => ov.remove(), 200) })
+  document.body.appendChild(ov)
+}
+
+// Emergency / guardhouse quick-call modal
+async function showEmergency() {
+  let guardPhone = '011-2345 6789'
+  try { const s = await kjGetSettings(); if (s.guardPhone) guardPhone = s.guardPhone } catch (e) {}
+  const call = (label, icon, num) =>
+    '<a href="tel:' + esc(String(num).replace(/[^0-9+]/g, '')) + '" style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;text-decoration:none;color:inherit;background:var(--surface2)">' +
+    '<span style="font-size:22px">' + icon + '</span><span style="flex:1"><b style="font-size:14px">' + label + '</b><div class="muted small">' + esc(num) + '</div></span>' +
+    '<span class="btn btn-green btn-sm">📞 ' + t('call') + '</span></a>'
+  openModal(
+    '<div class="modal-head"><h3>🆘 ' + t('emergency_title') + '</h3><button class="icon-btn-sm" id="mlclose">✕</button></div>' +
+    '<div class="modal-body">' +
+      '<p class="muted small mb-8">' + t('emergency_desc') + '</p>' +
+      call(t('guardhouse'), '🏢', guardPhone) +
+      call(t('police'), '👮', '999') +
+      call(t('ambulance'), '🚑', '999') +
+      call(t('fire'), '🚒', '994') +
+    '</div>',
+    ov => { ov.querySelector('#mlclose').onclick = () => closeModal(ov) }
+  )
+}
+
 // ── Nav / shell ──
 const NAV = [
   { id: 'dashboard', icon: '📊', key: 'nav_dashboard', roles: null },
@@ -116,9 +147,17 @@ const STAFF_ACCESS = {
   guard: ['parcels', 'visitors', 'vehicles'],
 }
 
+// Guests (not logged in) → public modules only
+const GUEST_ACCESS = ['dashboard', 'parcels', 'visitors', 'announcements', 'documents']
+
 function canAccess(viewId) {
   const item = NAV.find(n => n.id === viewId)
   if (!item) return false
+  if (!state.session) {
+    // guest: only public modules, no role-gated items
+    if (item.roles) return false
+    return GUEST_ACCESS.includes(viewId)
+  }
   if (isStaff()) {
     const allowed = STAFF_ACCESS[state.session.role]
     if (allowed === null) return true
@@ -171,6 +210,10 @@ function updateShell() {
   // Topbar title
   const v = VIEWS[state.view]
   $('topbarTitle').textContent = v ? t(v.key) : ''
+
+  // Emergency button — only for owners/tenants
+  const eb = $('emergencyBtn')
+  if (eb) eb.style.display = isOwner() ? 'grid' : 'none'
 }
 
 // ── Router ──
@@ -240,6 +283,7 @@ async function renderView() {
   if (!v) return
   try {
     await v.render(wrap)
+    applyI18n(wrap) // translate any data-i18n labels/placeholders inside the view
   } catch (e) {
     if (e && e.message === 'NOT_CONFIGURED') { showSetup(); return }
     const noSchema = e && /PGRST205|could not find the table/i.test(e.message)
@@ -346,10 +390,7 @@ VIEWS.dashboard = {
         '<div class="card"><div class="card-head"><h3>📢 ' + t('dash_recent_ann') + '</h3></div><div class="card-body" id="dashAnns" style="padding:8px 20px"></div></div>' +
         '<div><div class="card"><div class="card-head"><h3>⚡ ' + t('dash_quick_actions') + '</h3></div><div class="card-body">' +
           '<div class="quick-grid">' +
-            qlink('📦', t('nav_parcels'), 'parcels') + qlink('🪪', t('nav_visitors'), 'visitors') +
-            qlink('🔧', t('nav_maintenance'), 'maintenance') + qlink('💰', t('nav_payments'), 'payments') +
-            qlink('📢', t('nav_announcements'), 'announcements') + qlink('📅', t('nav_bookings'), 'bookings') +
-            qlink('🚗', t('nav_vehicles'), 'vehicles') + qlink('📄', t('nav_documents'), 'documents') +
+            NAV.filter(n => canAccess(n.id)).map(n => qlink(n.icon, t(n.key), n.id)).join('') +
           '</div></div></div>' +
         '</div>' +
       '</div>'
@@ -394,6 +435,7 @@ function boot() {
   }
   $('hamburger').onclick = () => { $('sidebar').classList.add('open'); $('backdrop').classList.add('show') }
   $('backdrop').onclick = () => { $('sidebar').classList.remove('open'); $('backdrop').classList.remove('show') }
+  const eb = $('emergencyBtn'); if (eb) eb.onclick = showEmergency
   document.addEventListener('click', e => {
     const g = e.target.closest('[data-goto]')
     if (g) goto(g.dataset.goto)

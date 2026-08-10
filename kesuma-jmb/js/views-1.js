@@ -14,7 +14,17 @@ VIEWS.parcels = {
   render: async (wrap) => {
     const isStaffU = isStaff(), isOwnerU = isOwner()
 
-    // Register form: STAFF ONLY. Owner only collects; guest prompted to log in.
+    if (isOwnerU) {
+      // Owner: just their parcel list to collect — no register form, no hints
+      wrap.innerHTML =
+        '<div class="page-head"><h1>📦 ' + t('par_my') + '</h1><p>' + t('par_added') + '</p></div>' +
+        '<div class="card"><div class="card-head"><h3>📦 ' + t('par_my') + '</h3></div>' +
+          '<div class="card-body" id="parList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>'
+      await loadParcels(wrap)
+      return
+    }
+
+    // Register form: STAFF ONLY. Guests prompted to log in.
     let leftCol
     if (isStaffU) {
       leftCol =
@@ -32,12 +42,6 @@ VIEWS.parcels = {
             '<p class="small muted mt-8">' + t('par_photo_hint') + '</p>' +
           '</div>' +
           '<button class="btn btn-primary btn-block btn-lg" id="pf_submit">📦 ' + t('par_submit') + '</button>' +
-        '</div></div>'
-    } else if (isOwnerU) {
-      leftCol =
-        '<div class="card"><div class="card-body" style="text-align:center;padding:26px 20px">' +
-          '<div class="ei" style="font-size:38px">📦</div>' +
-          '<p class="muted small mt-8">' + t('par_owner_hint') + '</p>' +
         '</div></div>'
     } else {
       leftCol =

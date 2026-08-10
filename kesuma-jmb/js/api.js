@@ -45,6 +45,7 @@ async function kjGetSettings() {
     pinAdmin: map.pin_admin || '1125',
     pinGuard: map.pin_guard || '1125',
     pinDispatcher: map.pin_dispatcher || '1125',
+    guardPhone: map.guard_phone || '011-2345 6789',
   }
 }
 async function kjSetSetting(key, value) {
