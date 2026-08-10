@@ -658,6 +658,48 @@ function bumpVisits() {
     return n;
 }
 
+const GLOBAL_VISITS_KEY = 'utube-global-visits';
+
+function getCachedGlobalVisits() {
+    try {
+        const v = JSON.parse(localStorage.getItem(GLOBAL_VISITS_KEY) || 'null');
+        return v && typeof v.count === 'number' ? v.count : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function setCachedGlobalVisits(count) {
+    localStorage.setItem(GLOBAL_VISITS_KEY, JSON.stringify({ count, ts: Date.now() }));
+}
+
+function updateGlobalVisitsUI() {
+    const el = $('#globalVisitCount');
+    if (!el) return;
+    const count = getCachedGlobalVisits();
+    el.textContent = count != null
+        ? t('globalVisitors').replace('%s', String(count))
+        : t('globalVisitorsErr');
+}
+
+async function refreshGlobalVisits() {
+    try {
+        const res = await fetch('https://api.visitorbadge.io/api/visitors?path=utube-maheera&label=');
+        if (!res.ok) throw new Error('bad status ' + res.status);
+        const svg = await res.text();
+        const m = svg.match(/aria-label="([\d,.]+)"/);
+        if (m) {
+            const count = parseInt(m[1].replace(/,/g, ''), 10);
+            if (!isNaN(count)) {
+                setCachedGlobalVisits(count);
+                updateGlobalVisitsUI();
+            }
+        }
+    } catch (e) {
+        console.error('[visits] global fetch failed:', e.message);
+    }
+}
+
 function embedFilterOn() {
     return localStorage.getItem('utube-embed-filter') === '1';
 }
@@ -815,6 +857,8 @@ const I18N = {
         errDuplicate: 'Saluran ini sudah pun tersedia.',
         keySaved: 'Kunci API disimpan.',
         statsTitle: 'Statistik',
+        globalVisitors: 'Pelawat (semua pengguna): %s',
+        globalVisitorsErr: 'Tidak dapat memuatkan bilangan pelawat global.',
         visitCount: 'Halaman ini dibuka %s kali pada peranti ini.',
         videoFilterTitle: 'Video',
         embedFilterLabel: 'Sembunyikan video yang tidak boleh dimainkan',
@@ -861,6 +905,8 @@ const I18N = {
         errDuplicate: 'This channel is already available.',
         keySaved: 'API key saved.',
         statsTitle: 'Stats',
+        globalVisitors: 'Visitors (all users): %s',
+        globalVisitorsErr: 'Could not load global visitor count.',
         visitCount: 'This page has been opened %s times on this device.',
         videoFilterTitle: 'Videos',
         embedFilterLabel: 'Hide videos that cannot be played',
@@ -907,6 +953,8 @@ const I18N = {
         errDuplicate: '此频道已经存在。',
         keySaved: 'API 密钥已保存。',
         statsTitle: '统计',
+        globalVisitors: '访客（所有用户）：%s',
+        globalVisitorsErr: '无法加载全球访客数量。',
         visitCount: '此页面已在本设备打开 %s 次。',
         videoFilterTitle: '视频',
         embedFilterLabel: '隐藏无法播放的视频',
@@ -953,6 +1001,8 @@ const I18N = {
         errDuplicate: 'இந்த சேனல் ஏற்கனவே உள்ளது.',
         keySaved: 'API விசை சேமிக்கப்பட்டது.',
         statsTitle: 'புள்ளிவிவரம்',
+        globalVisitors: 'பார்வையாளர்கள் (அனைத்து பயனர்கள்): %s',
+        globalVisitorsErr: 'உலகளாவிய பார்வையாளர்களின் எண்ணிக்கையை ஏற்ற முடியவில்லை.',
         visitCount: 'இந்தப் பக்கம் இந்த சாதனத்தில் %s முறை திறக்கப்பட்டது.',
         videoFilterTitle: 'வீடியோக்கள்',
         embedFilterLabel: 'இயக்க முடியாத வீடியோக்களை மறை',
@@ -1175,6 +1225,7 @@ function refreshSettingsStats() {
     const n = parseInt(localStorage.getItem('utube-visits') || '0', 10) || 0;
     const vc = $('#visitCount');
     if (vc) vc.textContent = t('visitCount').replace('%s', String(n));
+    updateGlobalVisitsUI();
     const tg = $('#embedFilterToggle');
     if (tg) tg.checked = embedFilterOn();
     updateEmbedProgress();
@@ -1423,6 +1474,7 @@ function bindEvents() {
     const savedLang = localStorage.getItem('utube-lang');
     if (savedLang && LANGS.some((l) => l.code === savedLang)) lang = savedLang;
     bumpVisits();
+    refreshGlobalVisits();
     initTheme();
     initSettings();
     renderTabs();
