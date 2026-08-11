@@ -686,12 +686,29 @@ function findVideoById(id) {
 const OAUTH_STORE = 'utube-oauth';
 const OAUTH_CHANNELS_STORE = 'utube-oauth-channels';
 const OAUTH_VERIFIER_STORE = 'utube-oauth-pending';
+const OAUTH_CREDS_STORE = 'utube-oauth-creds';
 const YT_SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
 
 function getOAuth() {
     try { return JSON.parse(localStorage.getItem(OAUTH_STORE) || 'null'); } catch (e) { return null; }
 }
 function setOAuth(o) { localStorage.setItem(OAUTH_STORE, JSON.stringify(o)); }
+
+function getOAuthCreds() {
+    try { return JSON.parse(localStorage.getItem(OAUTH_CREDS_STORE) || 'null'); } catch (e) { return null; }
+}
+
+function handleOAuthSetupParams() {
+    // Sekali sahaja: simpan kredensial OAuth dari URL ke localStorage (bukan ke repo).
+    const p = new URLSearchParams(window.location.search);
+    const cid = p.get('oauthClientId');
+    if (!cid) return;
+    localStorage.setItem(OAUTH_CREDS_STORE, JSON.stringify({
+        clientId: cid.trim(),
+        clientSecret: (p.get('oauthSecret') || '').trim(),
+    }));
+    history.replaceState({}, '', window.location.pathname);
+}
 
 function getOAuthChannels() {
     try { return JSON.parse(localStorage.getItem(OAUTH_CHANNELS_STORE) || '[]') || []; } catch (e) { return []; }
@@ -726,8 +743,9 @@ function oauthRedirectUri() {
 }
 
 async function oauthAuthorize() {
-    const clientId = $('#oauthClientIdInput').value.trim();
-    const clientSecret = $('#oauthSecretInput').value.trim();
+    const creds = getOAuthCreds() || {};
+    const clientId = ($('#oauthClientIdInput').value || creds.clientId || '').trim();
+    const clientSecret = ($('#oauthSecretInput').value || creds.clientSecret || '').trim();
     if (!clientId) {
         showFeedback(t('oauthNoClientId'), false);
         return;
@@ -887,6 +905,12 @@ function updateOAuthUI() {
         const o = getOAuth();
         if (ci && !ci.value) ci.value = o.clientId || '';
         if (cs && !cs.value) cs.value = o.clientSecret || '';
+    } else {
+        const creds = getOAuthCreds();
+        if (creds) {
+            if (ci && !ci.value) ci.value = creds.clientId || '';
+            if (cs && !cs.value) cs.value = creds.clientSecret || '';
+        }
     }
     if (ci) ci.disabled = connected;
     if (cs) cs.disabled = connected;
@@ -1871,6 +1895,7 @@ function bindEvents() {
     renderHero();
     renderGrid();
     if (embedFilterOn()) runEmbedCheck();
+    handleOAuthSetupParams();
     handleOAuthCallback();
 })();
 
