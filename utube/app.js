@@ -637,7 +637,7 @@ function allVideos() {
     const vids = VIDEOS.slice();
     getCustomChannels().forEach((c) => {
         (c.videos || []).forEach((v) => {
-            vids.push({ id: v.id, ch: c.key, title: v.title });
+            vids.push({ id: v.id, ch: c.key, title: v.title, lang: v.lang || undefined });
         });
     });
     if (embedFilterOn()) {
@@ -1044,6 +1044,30 @@ function embedUrl(v, autoplay = false) {
 
 function watchUrl(v) { return `https://www.youtube.com/watch?v=${v.id}`; }
 
+/* Bahasa video: mula-mula semak tag v.lang (dari YouTube API), kemudian
+   heuristik tajuk, akhir sekali bahasa saluran. */
+const MS_TITLE_HINTS = [
+    'bahasa melayu', 'bahasa malaysia', 'melayu', 'lagu kanak', 'kanak kanak',
+    'anak yu', 'boboiboy', 'upin', 'ipin', 'ejen ali', 'didi & friends', 'didi and friends',
+    'omar & hana', 'omar and hana', 'little ammar', 'kikako', 'musim', 'episod',
+    'ramadan', 'raya', 'eid', 'jom', 'kita', 'mari', 'saya', 'belajar', 'buku',
+];
+
+function msTitleScore(title) {
+    const tl = title.toLowerCase();
+    let score = 0;
+    MS_TITLE_HINTS.forEach((k) => { if (tl.includes(k)) score += 1; });
+    return score;
+}
+
+function videoLang(v) {
+    if (v.lang) return v.lang;
+    const chMeta = allChannels()[v.ch] || {};
+    const byChannel = chMeta.lang || '';
+    const byTitle = msTitleScore(v.title) >= 2 ? 'ms' : '';
+    return byTitle || byChannel || '';
+}
+
 function filterVideos() {
     const q = query.toLowerCase().trim();
     const chs = allChannels();
@@ -1054,9 +1078,9 @@ function filterVideos() {
         const qOk = !q || v.title.toLowerCase().includes(q) || chLabel.includes(q);
         return chOk && qOk;
     });
-    // Fokus bahasa Melayu: utamakan saluran tempatan/BM dulu
-    const msRank = (v) => ((chs[v.ch] || {}).lang === 'ms' ? 0 : 1);
-    list.sort((a, b) => msRank(a) - msRank(b));
+    // Fokus bahasa Melayu: video BM dulu, kemudian video lain.
+    list.forEach((v) => { v._ms = videoLang(v) === 'ms' ? 0 : 1; });
+    list.sort((a, b) => a._ms - b._ms);
     return list;
 }
 
@@ -1136,18 +1160,13 @@ function shuffle(arr) {
 function renderSuggestions(current) {
     const box = $('#suggestBox');
     const pool = allVideos().filter((v) => v.id !== current.id);
-    const byChannel = {};
-    pool.forEach((v) => { (byChannel[v.ch] = byChannel[v.ch] || []).push(v); });
-    const picked = [];
-    shuffle(Object.keys(byChannel)).forEach((ch) => {
-        if (picked.length >= 8) return;
-        const list = byChannel[ch];
-        picked.push(list[Math.floor(Math.random() * list.length)]);
+    // Utamakan video bahasa Melayu dahulu, kemudian yang lain.
+    const sorted = pool.slice().sort((a, b) => {
+        const msA = videoLang(a) === 'ms' ? 0 : 1;
+        const msB = videoLang(b) === 'ms' ? 0 : 1;
+        return msA - msB;
     });
-    while (picked.length < 8 && pool.length) {
-        const v = pool[Math.floor(Math.random() * pool.length)];
-        if (!picked.includes(v)) picked.push(v);
-    }
+    const picked = sorted.slice(0, 8);
     box.innerHTML = '';
     picked.forEach((v) => {
         const item = document.createElement('div');
@@ -1349,9 +1368,32 @@ async function fetchChannelVideos(channelId, key) {
     const resp = await fetch(url);
     const data = await resp.json();
     if (data.error) return [];
-    return (data.items || [])
+    const videos = (data.items || [])
         .filter((it) => it.id && it.id.videoId)
         .map((it) => ({ id: it.id.videoId, title: it.snippet.title }));
+
+    // Cuba ambil bahasa audio sebenar setiap video (videos.list, batch 50).
+    try {
+        const ids = videos.map((v) => v.id).join(',');
+        const vurl = `${YT_API_BASE}/videos?part=snippet&id=${encodeURIComponent(ids)}&key=${encodeURIComponent(key)}`;
+        const vresp = await fetch(vurl);
+        const vdata = await vresp.json();
+        if (!vdata.error && Array.isArray(vdata.items)) {
+            const langById = {};
+            vdata.items.forEach((it) => {
+                const sn = it.snippet || {};
+                const l = (sn.defaultAudioLanguage || sn.defaultLanguage || '').toLowerCase().split('-')[0];
+                if (l) langById[it.id] = l;
+            });
+            videos.forEach((v) => {
+                if (langById[v.id]) v.lang = langById[v.id];
+                else if (msTitleScore(v.title) >= 2) v.lang = 'ms';
+            });
+        }
+    } catch (e) {
+        videos.forEach((v) => { if (msTitleScore(v.title) >= 2) v.lang = 'ms'; });
+    }
+    return videos;
 }
 
 async function addChannel() {
