@@ -25,8 +25,6 @@ const CHANNELS = {
     lescopaque: { label: 'Les\' Copaque', cls: 'ch-cx3', color: '#10b981', icon: '🧢' },
     lalala: { label: 'lalala Kids Songs', cls: 'ch-cx4', color: '#d946ef', icon: '🎶' },
     dawood: { label: 'Dawood Kids TV', cls: 'ch-cx5', color: '#6d28d9', icon: '🕌' },
-    pinkfongid: { label: 'Baby Shark Indonesia', cls: 'ch-cx6', color: '#22d3ee', icon: '🦈' },
-    omarhanaurdu: { label: 'Omar & Hana Urdu', cls: 'ch-cx7', color: '#4ade80', icon: '🌙' },
     emmie: { label: 'Emmie\'s Wonder Wardrobe', cls: 'ch-cx0', color: '#ec4899', icon: '👗' },
     neurotic: { label: 'Neurotic Studio', cls: 'ch-cx1', color: '#64748b', icon: '🎵' },
 };
@@ -482,68 +480,8 @@ const VIDEOS = [
     { id: 'OuKN1VbuZxg', ch: 'dawood', title: 'سورة المطففين -تعليم القرآن للأطفال-أحلى قرائة لسورة المطففين-قناة داوود Quran for Kids Al Mutafifin' },
 
     // Baby Shark Indonesia
-    { id: '00JysgLq1cE', ch: 'pinkfongid', title: 'Cicak cicak di dinding | Lagu Anak Indonesia | Pinkfong Baby Shark' },
-    { id: 'KW32wTs1cvo', ch: 'pinkfongid', title: 'Baby Shark Dance dan lain-lain | Kumpulan Lagu Anak | Baby Shark Pinkfong Indonesia' },
-    { id: 'ie77MHp34eE', ch: 'pinkfongid', title: 'Lari! Ada Hiu! | Kumpulan Series Main Bareng Hoi | Kartun Anak | Pinkfong Indonesia' },
-    { id: 'ArZ_9sSaT7o', ch: 'pinkfongid', title: 'Pelajari Warna tentang Halloween | Kumpulan Lagu Anak | Pinkfong Indonesia' },
-    { id: 'zWykLOqxfSQ', ch: 'pinkfongid', title: 'Baby Shark Remix & Baby Shark Dance | Lagu Baby Shark | Pinkfong Baby Shark' },
-    { id: '9FHuWHW0ozE', ch: 'pinkfongid', title: 'Aduh, Petugas Polisi Terluka! | Kartun Anak | Main Rumah Sakit | Baby Shark Indonesia' },
-    { id: 'e-VNBDFitRU', ch: 'pinkfongid', title: 'Cicak cicak di dinding | Lagu Anak | Baby Shark Pinkfong Indonesia' },
-    { id: 'LrR46qEMhsc', ch: 'pinkfongid', title: 'Bebefinn Baby Shark Dance dan lain-lain | Lagu Anak | @Bebefinn_Indonesian' },
-    { id: 'wa3WCcGRztE', ch: 'pinkfongid', title: 'Wheels on the Bus dan lain-lain | Lagu Bahasa Inggris | Kumpulan Lagu Mobil 3D | Pinkfong Indonesia' },
-    { id: 'o11bfW7qPvk', ch: 'pinkfongid', title: 'Cicak Cicak di Dinding & Pok Ame-ame | Lagu Anak Indonesia | Pinkfong Baby Shark untuk Anak anak' },
-    { id: '-gMLaCGj_g8', ch: 'pinkfongid', title: 'Ayo menyelamatkan William Bareng Mobil Baby Shark | Kumpulan Lagu Mobil 3D | Pinkfong Indonesia' },
-    { id: 'I7VSN41mdbY', ch: 'pinkfongid', title: '[Ep. 1~5] Pinkfong Sekolah Dino | Mengenal Warna, Angka | Kartun Dinosaurus | Pinkfong Indonesia' },
-    { id: 'aE-j8lspEdI', ch: 'pinkfongid', title: 'Aduh! Petugas Polisi Terluka! | Kumpulan Kartun Rumah Sakit Bayi Hiu | Baby Shark Indonesia' },
-    { id: 'K0cDZLAmY0c', ch: 'pinkfongid', title: 'Ayo menyelamatkan William dengan Baby Shark! | Cars 3D | Pinkfong Indonesia' },
-    { id: 'IeqK0TStkLc', ch: 'pinkfongid', title: 'Petak Umpet bersama Keluarga Hiu | Kartun Baby Shark Anak | Keluarga Hiu | Pinkfong & Baby Shark' },
-    { id: 'fQdHuq7zxaU', ch: 'pinkfongid', title: 'Bis Monster dan Keluarga Jari Hiu Zombie | Kumpulan Kartun Halloween Anak | Pinkfong Indonesia' },
-    { id: 'fOpb7Qh-Nxk', ch: 'pinkfongid', title: '[Versi EDM] Cicak di Dinding | Lagu Anak Indonesia | Pinkfong Indonesia' },
-    { id: '2soPIWPZU2w', ch: 'pinkfongid', title: 'Lima Cicak Kecil | Five Little Cicak | Lima cicak kecil lompat-lompat | Pinkfong Indonesia' },
-    { id: 'nnyG_TumU8w', ch: 'pinkfongid', title: 'Inilah Sabana | Mengenal Nama Binatang | Kumpulan Lagu Hewan | Lagu Anak | Pinkfong dan Baby Shark' },
-    { id: 'nF3xR1o9YMY', ch: 'pinkfongid', title: 'Tulangku Patah! | Kartun Anak | Main Rumah Sakit | Baby Shark Indonesia' },
-    { id: 'BQiwWTK40yo', ch: 'pinkfongid', title: 'Rumah Sakit Anak | Kartun Anak | Main Rumah Sakit | Baby Shark Indonesia' },
-    { id: 'xMnE7hv2cWY', ch: 'pinkfongid', title: 'Baby Shark 1 Jam | Lagu Baby Shark original | Pinkfong Baby Shark' },
-    { id: 'MtEOmKDdHtM', ch: 'pinkfongid', title: '[ALL] Kumpulan Lagu Mobil | Lagu Anak | Mobil Balap Truk dan lain-lain | Pinkfong dan Baby Shark' },
-    { id: '2ccfuAb68YI', ch: 'pinkfongid', title: 'Tim Truk Besar | Kumpulan Lagu Mobil | Kartun & Lagu Anak Bahasa Indonesia | Pinkfong dan Baby Shark' },
-    { id: 'ddNuYxKc1IU', ch: 'pinkfongid', title: 'Yuk, Makan Es Krim di Truk Es Krim Pinkfong | Kartun Anak | Pinkfong Baby Shark Indonesia' },
-    { id: 'Rd9_O9_e2QE', ch: 'pinkfongid', title: 'Bayi Hiu, Lagi dan Lagi | Baby Shark Month Spesial | Pinkfong Indonesia' },
-    { id: 'Hwi19bX2eo8', ch: 'pinkfongid', title: 'Lagu Cicak | Cicak di dinding, Lima Cicak Lompat, Cicak EDM | Pinkfong Lagu Anak Indonesia' },
-    { id: 'TlJpJOb2iak', ch: 'pinkfongid', title: 'Petak Umpet Halloween Bersama Keluarga Hiu | Kartun & Lagu Halloween | Pinkfong Indonesia' },
-    { id: 'YczY5Nt1wCs', ch: 'pinkfongid', title: 'Kumpulan Kartun Mobil | Es Krim Truk Pinkfong, Cuci Mobil Pinkfong | Kartun | Pinkfong Indonesia' },
-    { id: 'xJhUpcUlypQ', ch: 'pinkfongid', title: '[NEW] Lagu Untuk Anakku | Lagu dari Ibu, Ayah | Baby Shark Pinkfong Indonesia' },
 
     // Omar & Hana Urdu
-    { id: 'otbSVGrzls8', ch: 'omarhanaurdu', title: 'Azaan | #OmarandHana Urdu | Islamic Cartoon for Kids | Urdu' },
-    { id: 'KdI24J1zvfM', ch: 'omarhanaurdu', title: 'Pyara Raju | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'rzseAsjrdF0', ch: 'omarhanaurdu', title: 'Meri Pehli Cycle | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'XsP548hcnB8', ch: 'omarhanaurdu', title: 'Special Compilation | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'mZp78JwgI7U', ch: 'omarhanaurdu', title: 'Please Mama Ko Mat Btana | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'V8ftqPG77Eo', ch: 'omarhanaurdu', title: 'Paani Kahan Gaya? | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: '3aIToVQTXu8', ch: 'omarhanaurdu', title: 'Compilation of Series | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: '1EC3wGRgSaE', ch: 'omarhanaurdu', title: '[NO INSTRUMENTS] Compilation of Series | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'bv2om9LQqBA', ch: 'omarhanaurdu', title: 'Compilation of Songs | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: '-HenD-8A2uo', ch: 'omarhanaurdu', title: 'Ramadan Special Compilation 😍 | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'GZrJlldhRgM', ch: 'omarhanaurdu', title: 'Omar and Hana Urdu | Compilation of Series | Islamic Cartoon | #Kids' },
-    { id: 'JFMZ6WwdfaA', ch: 'omarhanaurdu', title: 'Chalo Ghoomnay Chalein | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 's8azvdfLb5Y', ch: 'omarhanaurdu', title: 'Omar Aur Hana Milay Dada Dadi Sey | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'ov2JRa4HCBU', ch: 'omarhanaurdu', title: 'Treehouse | Urdu عمر اور ہا نا | Islamic Cartoon' },
-    { id: 'q87iu3joYio', ch: 'omarhanaurdu', title: 'Compilation of Songs | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'G2VGl9VxBoI', ch: 'omarhanaurdu', title: 'Omar Aur Mimi Ki Kahani | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'Df96B3LAGGo', ch: 'omarhanaurdu', title: 'Compilation of Songs & Series | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: '7ypY5SrmK-8', ch: 'omarhanaurdu', title: 'Omar and Hana Urdu | Compilation of Series | Islamic Cartoon | #Kids' },
-    { id: 'nBaPUo3HB6M', ch: 'omarhanaurdu', title: 'Compilation of Series | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'YHt8pye45M8', ch: 'omarhanaurdu', title: 'Papa Key liye Surprise | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'KbIGN6Pv3VA', ch: 'omarhanaurdu', title: 'Omar and Hana Urdu | Ramzan Mission | Omar Aur Hana Ka Phela Roza' },
-    { id: 'vS61KPpDeFo', ch: 'omarhanaurdu', title: 'Compilation of Songs | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'BOa_IorqQmc', ch: 'omarhanaurdu', title: 'Masoom Turtle Ki Madad | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'LTrtltrua0o', ch: 'omarhanaurdu', title: 'Mama Kay Liye Surprise | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'eMzcxRr8OhY', ch: 'omarhanaurdu', title: 'Ami Abu Kahan Chalay Gaye? | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'ojfBIEgYRWU', ch: 'omarhanaurdu', title: 'Compilation of Series & Songs | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'JqX9qDEZCfM', ch: 'omarhanaurdu', title: 'Compilation of Series | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'UpAgeTkXFC0', ch: 'omarhanaurdu', title: '[NO INSTRUMENTS] Compilation of Series | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: 'W-cGbDgEaDg', ch: 'omarhanaurdu', title: 'Compilation of Songs | Omar and Hana Urdu | Islamic Cartoon' },
-    { id: '9EPjtyBlwsY', ch: 'omarhanaurdu', title: 'Special Compilation | Happy New Year | Omar and Hana Urdu | Islamic Cartoon' },
 
     // Emmie's Wonder Wardrobe
     { id: 'G9H2aliqkq8', ch: 'emmie', title: 'Ten in the Bed (Family Edition) | Little Angel Kids Songs & Nursery Rhymes' },
@@ -1089,8 +1027,9 @@ function thumb(v) { return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`; }
 
 function embedUrl(v, autoplay = false) {
     // youtube-nocookie: no tracking cookies. rel=0: no unrelated rabbit-holes.
+    // muted=1: iOS/Safari hanya benarkan autoplay jika video senyap (bunyi boleh dibuka semula).
     // enablejsapi: benarkan postMessage playVideo (fallback autoplay iOS Safari).
-    const ap = autoplay ? '&autoplay=1' : '';
+    const ap = autoplay ? '&autoplay=1&muted=1' : '';
     return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white&enablejsapi=1${ap}`;
 }
 
