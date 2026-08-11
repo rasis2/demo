@@ -117,25 +117,6 @@
                 </section>
 
                 <section class="settings-section">
-                    <h4 class="settings-title" data-i18n="oauthTitle">Sambung YouTube</h4>
-                    <input type="text" id="oauthClientIdInput" class="settings-input" data-i18n-ph="oauthClientIdPh" placeholder="Paste OAuth Client ID di sini..." autocomplete="off" spellcheck="false" />
-                    <input type="password" id="oauthSecretInput" class="settings-input" data-i18n-ph="oauthSecretPh" placeholder="Client Secret (pilihan)" autocomplete="off" spellcheck="false" style="margin-top:8px" />
-                    <p class="settings-hint" data-i18n="oauthHint">Tarik saluran langganan anda secara automatik. Buat "OAuth Client ID" (jenis Web application) di Google Cloud Console dan daftar redirect URI di bawah.</p>
-                    <p class="settings-hint" id="oauthRedirectUri"></p>
-                    <div class="settings-row">
-                        <span class="settings-stat" id="oauthStatus"></span>
-                        <button id="oauthConnectBtn" class="btn-play btn-small" data-i18n="oauthConnect">Sambung</button>
-                        <button id="oauthSyncBtn" class="btn-play btn-small" data-i18n="oauthSync">Segerak</button>
-                        <button id="oauthDisconnectBtn" class="btn-play btn-small" data-i18n="oauthDisconnect">Putuskan</button>
-                    </div>
-                </section>
-
-                <section class="settings-section">
-                    <h4 class="settings-title" data-i18n="linkedChannels">Saluran Terhubung</h4>
-                    <div class="channel-list" id="channelList"><!-- injected by JS --></div>
-                </section>
-
-                <section class="settings-section">
                     <h4 class="settings-title" data-i18n="videoFilterTitle">Video</h4>
                     <label class="switch-row">
                         <input type="checkbox" id="embedFilterToggle" />
@@ -149,20 +130,10 @@
                     </div>
                 </section>
 
-                <section class="settings-section">
-                    <h4 class="settings-title" data-i18n="addChannelTitle">Tambah Saluran</h4>
-                    <div class="settings-row">
-                        <input type="text" id="customChannelInput" class="settings-input" data-i18n-ph="channelPh" placeholder="ID saluran (UC...)" autocomplete="off" spellcheck="false" />
-                        <button id="addChannelBtn" class="btn-play btn-small" data-i18n="addBtn">Tambah</button>
-                    </div>
-                    <p class="settings-hint" data-i18n="addChannelHint">Tiada kunci API diperlukan. Jika saluran tidak dapat dimuatkan, hantar ID saluran kepada pembangun untuk ditambah sebagai saluran tetap.</p>
-                    <div id="settingsFeedback" class="settings-feedback" hidden></div>
-                </section>
-
             </div>
         </div>
     </div>
 
-    <script src="app.js?v=9"></script>
+    <script src="app.js?v=10"></script>
 </body>
 </html>
