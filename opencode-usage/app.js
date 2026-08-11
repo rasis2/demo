@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════
    OPENCODE USAGE — app.js
-   Renders donut charts from real usage data
-   read from opencode.log.
+   Renders donut charts from real usage data.
+   Fixed: correct stroke-dashoffset math, clean
+   SVG + legend rendering.
 ═══════════════════════════════════════════ */
 
 const MODEL_DATA = [
@@ -23,121 +24,123 @@ const TOOL_DATA = [
     { name: 'glob',               value: 9,    color: '#94a3b8' },
 ];
 
-const PALETTE = [
-    '#7c3aed', '#4f46e5', '#3b82f6', '#0ea5a4',
-    '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6', '#8b5cf6',
-];
-
-const RADIUS = 82;
+const RADIUS = 78;
 const CIRC = 2 * Math.PI * RADIUS;
+const GAP = 2.5; // px gap between segments
 
 const $ = (sel) => document.querySelector(sel);
+const fmt = (n) => n.toLocaleString('ms-MY');
 
 function total(arr) { return arr.reduce((s, d) => s + d.value, 0); }
 
+/* Build one donut chart. Returns cleanup for hover state. */
 function donut(container, items) {
     const sum = total(items);
     const svgNS = 'http://www.w3.org/2000/svg';
+
     const svg = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('viewBox', '0 0 210 210');
-    svg.setAttribute('width', '210');
-    svg.setAttribute('height', '210');
+    svg.setAttribute('viewBox', '0 0 200 200');
+    svg.setAttribute('width', '200');
+    svg.setAttribute('height', '200');
+    svg.setAttribute('role', 'img');
 
+    // background track
     const track = document.createElementNS(svgNS, 'circle');
-    track.setAttribute('cx', '105'); track.setAttribute('cy', '105'); track.setAttribute('r', RADIUS);
-    track.setAttribute('stroke', 'var(--border)');
-    container.appendChild(svg);
+    track.setAttribute('class', 'track');
+    track.setAttribute('cx', '100'); track.setAttribute('cy', '100'); track.setAttribute('r', RADIUS);
+    svg.appendChild(track);
 
-    let offset = 0;
+    let start = 0; // cumulative fraction (0..1)
+    const segs = [];
+
     items.forEach((d) => {
         const frac = d.value / sum;
+        const len  = Math.max(0, CIRC * frac - GAP);
         const seg = document.createElementNS(svgNS, 'circle');
-        seg.setAttribute('cx', '105'); seg.setAttribute('cy', '105'); seg.setAttribute('r', RADIUS);
+        seg.setAttribute('class', 'seg');
+        seg.setAttribute('cx', '100'); seg.setAttribute('cy', '100'); seg.setAttribute('r', RADIUS);
         seg.setAttribute('stroke', d.color);
-        seg.setAttribute('stroke-dasharray', `${CIRC * frac} ${CIRC}`);
-        seg.setAttribute('stroke-dashoffset', CIRC - offset * sum);
-        seg.dataset.targetOffset = CIRC - offset * sum;
-        seg.style.strokeDashoffset = CIRC;
-        seg.addEventListener('click', () => toggle(container, seg, d.name));
+        seg.setAttribute('stroke-dasharray', `${len} ${CIRC}`);
+        seg.setAttribute('stroke-dashoffset', -start * CIRC); // shift start by cumulative fraction
+        seg.style.opacity = 0;
         svg.appendChild(seg);
-        offset += frac;
+        segs.push(seg);
+        start += frac;
     });
 
     const center = document.createElement('div');
     center.className = 'donut-center';
-    center.innerHTML = `<div class="num">${sum}</div><div class="cap">Jumlah</div>`;
-    container.appendChild(center);
+    center.innerHTML = `<span class="donut-num">${fmt(sum)}</span><span class="donut-cap">Jumlah</span>`;
 
     const legend = document.createElement('div');
     legend.className = 'legend';
-    items.forEach((d) => {
-        const row = document.createElement('div');
+    items.forEach((d, i) => {
+        const row = document.createElement('button');
         row.className = 'legend-item';
-        row.dataset.name = d.name;
+        row.type = 'button';
         row.innerHTML = `
             <span class="legend-dot" style="background:${d.color}"></span>
-            <span class="legend-name" title="${d.name}">${d.name}</span>
-            <span class="legend-val">${d.value}</span>
+            <span class="legend-name">${esc(d.name)}</span>
+            <span class="legend-val">${fmt(d.value)}</span>
             <span class="legend-pct">${((d.value / sum) * 100).toFixed(1)}%</span>`;
-        row.addEventListener('click', () => {
-            const seg = [...svg.children].find((c) => c.dataset.targetOffset === String(CIRC - (offsetIndex(d.name, items) * sum)));
-            toggle(container, seg || svg.children[0], d.name);
-        });
+
+        row.addEventListener('mouseenter', () => highlight(i, true));
+        row.addEventListener('mouseleave', () => highlight(i, false));
+        row.addEventListener('focus', () => highlight(i, true));
+        row.addEventListener('blur', () => highlight(i, false));
         legend.appendChild(row);
     });
-    container.appendChild(legend);
 
+    container.append(svg, center, legend);
+
+    function highlight(i, on) {
+        const isSmall = items[i].value / sum < 0.05;
+        legend.querySelectorAll('.legend-item').forEach((r, j) => {
+            r.classList.toggle('dim', on && j !== i);
+        });
+        svg.querySelectorAll('.seg').forEach((s, j) => {
+            if (on && j !== i) s.classList.add('dim');
+            else s.classList.remove('dim');
+        });
+        center.querySelector('.donut-num').textContent = on ? fmt(items[i].value) : fmt(sum);
+        center.querySelector('.donut-cap').textContent = on ? items[i].name.split(' · ').pop() : 'Jumlah';
+    }
+
+    // animate in
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            svg.querySelectorAll('circle').forEach((c) => {
-                c.style.strokeDashoffset = c.dataset.targetOffset;
-            });
+            segs.forEach((s) => { s.style.opacity = 1; });
         });
     });
 }
 
-function offsetIndex(name, items) {
-    let offset = 0;
-    for (const d of items) {
-        if (d.name === name) return offset;
-        offset += d.value;
-    }
-    return 0;
-}
-
-function toggle(container, seg, name) {
-    const legend = container.querySelector('.legend');
-    legend.querySelectorAll('.legend-item').forEach((r) => {
-        r.classList.toggle('muted', r.dataset.name !== name);
-    });
-    seg.style.strokeWidth = seg.style.strokeWidth === '34' ? '26' : '34';
+function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 /* ════════════════ BOOT ════════════════ */
-const models = $('.chart-wrap#chartModels');
-const tools = $('.chart-wrap#chartTools');
+const models = $('#chartModels');
+const tools  = $('#chartTools');
 
-if (models) {
-    const div = document.createElement('div');
-    div.className = 'donut';
-    models.appendChild(div);
-    donut(div, MODEL_DATA);
-}
-if (tools) {
-    const div = document.createElement('div');
-    div.className = 'donut';
-    tools.appendChild(div);
-    donut(div, TOOL_DATA);
-}
+if (models) donut(models, MODEL_DATA);
+if (tools)  donut(tools, TOOL_DATA);
 
-$('#statStreams').textContent = total(MODEL_DATA).toLocaleString();
-$('#statTools').textContent = total(TOOL_DATA).toLocaleString();
-$('#statModels').textContent = MODEL_DATA.length;
+$('#statStreams').textContent = fmt(total(MODEL_DATA));
+$('#statTools').textContent   = fmt(total(TOOL_DATA));
+$('#statModels').textContent  = MODEL_DATA.length;
 $('#statToolKinds').textContent = TOOL_DATA.length;
+$('#modelTotal').textContent  = fmt(total(MODEL_DATA));
+$('#toolTotal').textContent   = fmt(total(TOOL_DATA));
 
-$('#nightBtn').addEventListener('click', () => {
-    const on = document.body.classList.toggle('night');
+/* Theme */
+const body = document.body;
+const nightBtn = $('#nightBtn');
+nightBtn.addEventListener('click', () => {
+    const on = body.classList.toggle('night');
     localStorage.setItem('oc-usage-night', on ? '1' : '0');
+    nightBtn.textContent = on ? '☀️' : '🌙';
 });
-
-if (localStorage.getItem('oc-usage-night') === '1') document.body.classList.add('night');
+if (localStorage.getItem('oc-usage-night') === '1') {
+    body.classList.add('night');
+    nightBtn.textContent = '☀️';
+}

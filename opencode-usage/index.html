@@ -3,69 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenCode Usage — Pie Chart</title>
+    <title>OpenCode Usage — Dashboard</title>
+    <meta name="description" content="Dashboard penggunaan OpenCode: pengagihan model LLM dan gunaan alat daripada log sebenar.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="top-bar">
-        <div class="brand">
-            <a href="../index.html" class="portal-btn" title="Portal Demo" aria-label="Portal Demo">↩</a>
-            <div class="brand-logo">◍</div>
-            <div class="brand-text">
-                <span class="brand-title">OpenCode Usage</span>
-                <span class="brand-sub">Dashboard</span>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <a href="../index.html" class="back-btn" title="Kembali ke Portal Demo" aria-label="Kembali ke Portal Demo">←</a>
+                <div class="brand-mark" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">OpenCode Usage</span>
+                    <span class="brand-sub">Dashboard Analitik</span>
+                </div>
             </div>
-        </div>
-        <div class="topbar-right">
-            <button id="nightBtn" class="night-btn" title="Gelap/Terang" aria-label="Gelap">🌙</button>
+            <button id="nightBtn" class="icon-btn" title="Gelap / Terang" aria-label="Tukar tema">🌙</button>
         </div>
     </header>
 
     <main class="content">
+
+        <section class="hero">
+            <h1>Penggunaan <em>OpenCode</em></h1>
+            <p>Ringkasan penggunaan sebenar model LLM dan panggilan alat, dikira daripada <code>opencode.log</code>.</p>
+        </section>
+
         <section class="stats-row">
             <div class="stat-card">
-                <div class="stat-icon">🔮</div>
-                <div class="stat-num" id="statStreams">—</div>
-                <div class="stat-label">Permintaan LLM</div>
+                <span class="stat-icon">🔮</span>
+                <span class="stat-num" id="statStreams">—</span>
+                <span class="stat-label">Permintaan LLM</span>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🛠️</div>
-                <div class="stat-num" id="statTools">—</div>
-                <div class="stat-label">Gunaan Alat</div>
+                <span class="stat-icon">🛠️</span>
+                <span class="stat-num" id="statTools">—</span>
+                <span class="stat-label">Gunaan Alat</span>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🤖</div>
-                <div class="stat-num" id="statModels">—</div>
-                <div class="stat-label">Model Aktif</div>
+                <span class="stat-icon">🤖</span>
+                <span class="stat-num" id="statModels">—</span>
+                <span class="stat-label">Model Aktif</span>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🧰</div>
-                <div class="stat-num" id="statToolKinds">—</div>
-                <div class="stat-label">Jenis Alat</div>
+                <span class="stat-icon">🧰</span>
+                <span class="stat-num" id="statToolKinds">—</span>
+                <span class="stat-label">Jenis Alat</span>
             </div>
         </section>
 
-        <section class="charts-row">
+        <section class="charts-grid">
             <div class="chart-card">
-                <h2 class="chart-title">Pengagihan Model LLM</h2>
-                <p class="chart-sub">Bilangan permintaan stream mengikut model</p>
+                <div class="chart-head">
+                    <h2>Pengagihan Model LLM</h2>
+                    <span class="chart-count" id="modelTotal">—</span>
+                </div>
+                <p class="chart-sub">Permintaan stream mengikut model</p>
                 <div class="chart-wrap" id="chartModels"></div>
             </div>
             <div class="chart-card">
-                <h2 class="chart-title">Gunaan Alat</h2>
+                <div class="chart-head">
+                    <h2>Gunaan Alat</h2>
+                    <span class="chart-count" id="toolTotal">—</span>
+                </div>
                 <p class="chart-sub">Panggilan alat mengikut jenis</p>
                 <div class="chart-wrap" id="chartTools"></div>
             </div>
         </section>
 
-        <div class="note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <span>Data dijana daripada <code>opencode.log</code> — dikira secara automatik daripada penggunaan sebenar.</span>
-        </div>
+        <p class="note">Data dijana daripada <code>opencode.log</code> — dikira secara automatik daripada penggunaan sebenar.</p>
+
     </main>
+
+    <footer class="site-footer">
+        <span>OpenCode Usage · dibina untuk Portal Demo</span>
+    </footer>
 
     <script src="app.js"></script>
 </body>
