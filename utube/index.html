@@ -117,6 +117,20 @@
                 </section>
 
                 <section class="settings-section">
+                    <h4 class="settings-title" data-i18n="oauthTitle">Sambung YouTube</h4>
+                    <input type="text" id="oauthClientIdInput" class="settings-input" data-i18n-ph="oauthClientIdPh" placeholder="Paste OAuth Client ID di sini..." autocomplete="off" spellcheck="false" />
+                    <input type="password" id="oauthSecretInput" class="settings-input" data-i18n-ph="oauthSecretPh" placeholder="Client Secret (pilihan)" autocomplete="off" spellcheck="false" style="margin-top:8px" />
+                    <p class="settings-hint" data-i18n="oauthHint">Tarik saluran langganan anda secara automatik. Buat "OAuth Client ID" (jenis Web application) di Google Cloud Console dan daftar redirect URI di bawah.</p>
+                    <p class="settings-hint" id="oauthRedirectUri"></p>
+                    <div class="settings-row">
+                        <span class="settings-stat" id="oauthStatus"></span>
+                        <button id="oauthConnectBtn" class="btn-play btn-small" data-i18n="oauthConnect">Sambung</button>
+                        <button id="oauthSyncBtn" class="btn-play btn-small" data-i18n="oauthSync">Segerak</button>
+                        <button id="oauthDisconnectBtn" class="btn-play btn-small" data-i18n="oauthDisconnect">Putuskan</button>
+                    </div>
+                </section>
+
+                <section class="settings-section">
                     <h4 class="settings-title" data-i18n="linkedChannels">Saluran Terhubung</h4>
                     <div class="channel-list" id="channelList"><!-- injected by JS --></div>
                 </section>
@@ -149,6 +163,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>

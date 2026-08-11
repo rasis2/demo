@@ -638,12 +638,30 @@ function allChannels() {
             handle: c.handle,
         };
     });
+    const oauth = getOAuthChannels();
+    oauth.forEach((c, i) => {
+        const idx = customs.length + i;
+        chs[c.key] = {
+            label: c.label,
+            cls: 'ch-cx' + (idx % 8),
+            color: '#3b82f6',
+            icon: CUSTOM_ICONS[idx % CUSTOM_ICONS.length],
+            custom: true,
+            oauth: true,
+            handle: c.handle,
+        };
+    });
     return chs;
 }
 
 function allVideos() {
     const vids = VIDEOS.slice();
     getCustomChannels().forEach((c) => {
+        (c.videos || []).forEach((v) => {
+            vids.push({ id: v.id, ch: c.key, title: v.title, lang: v.lang || undefined });
+        });
+    });
+    getOAuthChannels().forEach((c) => {
         (c.videos || []).forEach((v) => {
             vids.push({ id: v.id, ch: c.key, title: v.title, lang: v.lang || undefined });
         });
@@ -657,6 +675,231 @@ function allVideos() {
 
 function findVideoById(id) {
     return allVideos().find((v) => v.id === id) || null;
+}
+
+/* ────────────────────────────────────────
+   YOUTUBE OAUTH — auto-pull subscribed channels
+   Connect the user's YouTube account (Google
+   OAuth, PKCE) and fetch their subscriptions
+   and videos automatically.
+──────────────────────────────────────── */
+const OAUTH_STORE = 'utube-oauth';
+const OAUTH_CHANNELS_STORE = 'utube-oauth-channels';
+const OAUTH_VERIFIER_STORE = 'utube-oauth-pending';
+const YT_SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
+
+function getOAuth() {
+    try { return JSON.parse(localStorage.getItem(OAUTH_STORE) || 'null'); } catch (e) { return null; }
+}
+function setOAuth(o) { localStorage.setItem(OAUTH_STORE, JSON.stringify(o)); }
+
+function getOAuthChannels() {
+    try { return JSON.parse(localStorage.getItem(OAUTH_CHANNELS_STORE) || '[]') || []; } catch (e) { return []; }
+}
+function setOAuthChannels(list) { localStorage.setItem(OAUTH_CHANNELS_STORE, JSON.stringify(list)); }
+
+function oauthConnected() {
+    const o = getOAuth();
+    return !!(o && o.accessToken && o.clientId);
+}
+
+function oauthBase64Url(bytes) {
+    let bin = '';
+    const arr = new Uint8Array(bytes);
+    for (let i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function oauthRandBytes(n) {
+    const a = new Uint8Array(n);
+    crypto.getRandomValues(a);
+    return a;
+}
+
+async function oauthSha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return oauthBase64Url(buf);
+}
+
+function oauthRedirectUri() {
+    return window.location.origin + window.location.pathname;
+}
+
+async function oauthAuthorize() {
+    const clientId = $('#oauthClientIdInput').value.trim();
+    const clientSecret = $('#oauthSecretInput').value.trim();
+    if (!clientId) {
+        showFeedback(t('oauthNoClientId'), false);
+        return;
+    }
+    const verifier = oauthBase64Url(oauthRandBytes(48));
+    const state = oauthBase64Url(oauthRandBytes(24));
+    localStorage.setItem(OAUTH_VERIFIER_STORE, JSON.stringify({ verifier, clientId, clientSecret, state }));
+    const challenge = await oauthSha256(verifier);
+    const params = new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: oauthRedirectUri(),
+        response_type: 'code',
+        scope: YT_SCOPE,
+        code_challenge: challenge,
+        code_challenge_method: 'S256',
+        state,
+        access_type: 'offline',
+        prompt: 'consent',
+    });
+    window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
+}
+
+async function oauthExchangeCode(code, state) {
+    const pending = JSON.parse(localStorage.getItem(OAUTH_VERIFIER_STORE) || 'null');
+    localStorage.removeItem(OAUTH_VERIFIER_STORE);
+    if (!pending || pending.state !== state || !pending.verifier) {
+        return { error: 'state' };
+    }
+    const body = new URLSearchParams({
+        client_id: pending.clientId,
+        code,
+        code_verifier: pending.verifier,
+        grant_type: 'authorization_code',
+        redirect_uri: oauthRedirectUri(),
+    });
+    if (pending.clientSecret) body.set('client_secret', pending.clientSecret);
+    const resp = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+    });
+    const data = await resp.json();
+    if (!data.access_token) {
+        return { error: data.error_description || data.error || 'exchange' };
+    }
+    setOAuth({
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token || '',
+        clientId: pending.clientId,
+        clientSecret: pending.clientSecret || '',
+        expiresAt: Date.now() + (data.expires_in || 3600) * 1000,
+    });
+    return { ok: true };
+}
+
+async function oauthValidToken() {
+    const o = getOAuth();
+    if (!o || !o.clientId) return null;
+    if (o.expiresAt > Date.now() + 60000) return o.accessToken;
+    if (!o.refreshToken) return null;
+    try {
+        const body = new URLSearchParams({
+            client_id: o.clientId,
+            refresh_token: o.refreshToken,
+            grant_type: 'refresh_token',
+        });
+        if (o.clientSecret) body.set('client_secret', o.clientSecret);
+        const resp = await fetch('https://oauth2.googleapis.com/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body,
+        });
+        const data = await resp.json();
+        if (data.access_token) {
+            o.accessToken = data.access_token;
+            o.expiresAt = Date.now() + (data.expires_in || 3600) * 1000;
+            setOAuth(o);
+            return data.access_token;
+        }
+    } catch (e) {
+        console.error('[oauth] refresh failed:', e.message);
+    }
+    return null;
+}
+
+async function oauthFetchSubscriptions(token) {
+    const url = 'https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&mine=true&maxResults=50';
+    const resp = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message || 'subscriptions');
+    return (data.items || []).map((it) => ({
+        channelId: it.snippet.resourceId.channelId,
+        title: it.snippet.title,
+    }));
+}
+
+async function oauthFetchChannelUploads(token, channelId, max = 20) {
+    const playlistId = 'UU' + channelId.slice(2);
+    const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${encodeURIComponent(playlistId)}&maxResults=${max}`;
+    const resp = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message || 'uploads');
+    return (data.items || [])
+        .map((it) => ({ id: it.snippet.resourceId.videoId, title: it.snippet.title }))
+        .filter((v) => v.id);
+}
+
+async function oauthSyncChannels() {
+    const token = await oauthValidToken();
+    if (!token) return { error: 'token' };
+    const statusEl = $('#oauthStatus');
+    if (statusEl) statusEl.textContent = t('oauthSyncing');
+    const subs = await oauthFetchSubscriptions(token);
+    const existing = getOAuthChannels();
+    const byKey = new Map(existing.map((c) => [c.key, c]));
+    const subsByKey = new Map(subs.map((s) => [s.channelId, s]));
+    let changed = false;
+    for (const s of subs) {
+        if (byKey.has(s.channelId)) continue;
+        changed = true;
+        const videos = await oauthFetchChannelUploads(token, s.channelId);
+        byKey.set(s.channelId, { key: s.channelId, label: s.title, handle: '', videos });
+    }
+    if (changed) {
+        setOAuthChannels([...byKey.values()]);
+        renderTabs();
+        renderChannelList();
+        renderHero();
+        renderGrid();
+        if (embedFilterOn()) runEmbedCheck();
+    }
+    return { total: subs.length, count: byKey.size };
+}
+
+function oauthDisconnect() {
+    localStorage.removeItem(OAUTH_STORE);
+    localStorage.removeItem(OAUTH_CHANNELS_STORE);
+    localStorage.removeItem(OAUTH_VERIFIER_STORE);
+    if (activeChannel && activeChannel !== 'all' && !CHANNELS[activeChannel] && !getCustomChannels().some((c) => c.key === activeChannel)) {
+        activeChannel = 'all';
+    }
+    renderTabs();
+    renderChannelList();
+    renderHero();
+    renderGrid();
+}
+
+function updateOAuthUI() {
+    const connected = oauthConnected();
+    const ci = $('#oauthClientIdInput');
+    const cs = $('#oauthSecretInput');
+    const connectBtn = $('#oauthConnectBtn');
+    const syncBtn = $('#oauthSyncBtn');
+    const disconnectBtn = $('#oauthDisconnectBtn');
+    const status = $('#oauthStatus');
+    if (connected) {
+        const o = getOAuth();
+        if (ci && !ci.value) ci.value = o.clientId || '';
+        if (cs && !cs.value) cs.value = o.clientSecret || '';
+    }
+    if (ci) ci.disabled = connected;
+    if (cs) cs.disabled = connected;
+    if (connectBtn) connectBtn.hidden = connected;
+    if (syncBtn) syncBtn.hidden = !connected;
+    if (disconnectBtn) disconnectBtn.hidden = !connected;
+    if (status) {
+        if (connected) {
+            status.textContent = t('oauthStatusConnected').replace('%s', String(getOAuthChannels().length));
+        } else {
+            status.textContent = t('oauthStatusDisconnected');
+        }
+    }
 }
 
 /* ────────────────────────────────────────
@@ -872,6 +1115,20 @@ const I18N = {
         statsTitle: 'Statistik',
         globalVisitors: 'Pelawat (semua pengguna): %s',
         globalVisitorsErr: 'Tidak dapat memuatkan bilangan pelawat global.',
+        oauthTitle: 'Sambung YouTube',
+        oauthClientIdPh: 'Paste OAuth Client ID di sini...',
+        oauthSecretPh: 'Client Secret (pilihan)',
+        oauthHint: 'Tarik saluran langganan anda secara automatik. Buat "OAuth Client ID" (jenis Web/SPA) di Google Cloud Console dan daftar redirect URI di bawah.',
+        oauthConnect: 'Sambung',
+        oauthSync: 'Segerak',
+        oauthDisconnect: 'Putuskan',
+        oauthStatusConnected: 'Disambungkan (%s saluran)',
+        oauthStatusDisconnected: 'Belum disambungkan',
+        oauthBadge: 'YouTube',
+        oauthSyncing: 'Menyegerakkan saluran langganan...',
+        oauthSynced: 'Disegerakkan: %s saluran',
+        oauthSyncFailed: 'Segerakan gagal. Cuba lagi.',
+        oauthNoClientId: 'Sila masukkan OAuth Client ID dahulu.',
         syncTitle: 'Segerakan',
         syncLabel: 'Segerak saluran merentas peranti',
         syncHint: 'Saluran yang anda tambah akan disegerakkan ke semua peranti atau pelayar yang membuka laman ini.',
@@ -928,6 +1185,20 @@ const I18N = {
         statsTitle: 'Stats',
         globalVisitors: 'Visitors (all users): %s',
         globalVisitorsErr: 'Could not load global visitor count.',
+        oauthTitle: 'Connect YouTube',
+        oauthClientIdPh: 'Paste your OAuth Client ID here...',
+        oauthSecretPh: 'Client Secret (optional)',
+        oauthHint: 'Automatically pull your subscribed channels. Create an "OAuth Client ID" (type Web/SPA) in Google Cloud Console and register the redirect URI below.',
+        oauthConnect: 'Connect',
+        oauthSync: 'Sync',
+        oauthDisconnect: 'Disconnect',
+        oauthStatusConnected: 'Connected (%s channels)',
+        oauthStatusDisconnected: 'Not connected',
+        oauthBadge: 'YouTube',
+        oauthSyncing: 'Syncing subscribed channels...',
+        oauthSynced: 'Synced: %s channels',
+        oauthSyncFailed: 'Sync failed. Try again.',
+        oauthNoClientId: 'Please enter your OAuth Client ID first.',
         syncTitle: 'Sync',
         syncLabel: 'Sync channels across devices',
         syncHint: 'Channels you add will sync to every device or browser that opens this page.',
@@ -984,6 +1255,20 @@ const I18N = {
         statsTitle: '统计',
         globalVisitors: '访客（所有用户）：%s',
         globalVisitorsErr: '无法加载全球访客数量。',
+        oauthTitle: '连接 YouTube',
+        oauthClientIdPh: '在此粘贴 OAuth Client ID...',
+        oauthSecretPh: 'Client Secret（可选）',
+        oauthHint: '自动拉取您订阅的频道。在 Google Cloud Console 创建"OAuth Client ID"（类型：Web/SPA），并注册下面的重定向 URI。',
+        oauthConnect: '连接',
+        oauthSync: '同步',
+        oauthDisconnect: '断开',
+        oauthStatusConnected: '已连接（%s 个频道）',
+        oauthStatusDisconnected: '未连接',
+        oauthBadge: 'YouTube',
+        oauthSyncing: '正在同步订阅频道...',
+        oauthSynced: '已同步：%s 个频道',
+        oauthSyncFailed: '同步失败，请重试。',
+        oauthNoClientId: '请先输入 OAuth Client ID。',
         syncTitle: '同步',
         syncLabel: '跨设备同步频道',
         syncHint: '您添加的频道将同步到打开此页面的所有设备或浏览器。',
@@ -1040,6 +1325,20 @@ const I18N = {
         statsTitle: 'புள்ளிவிவரம்',
         globalVisitors: 'பார்வையாளர்கள் (அனைத்து பயனர்கள்): %s',
         globalVisitorsErr: 'உலகளாவிய பார்வையாளர்களின் எண்ணிக்கையை ஏற்ற முடியவில்லை.',
+        oauthTitle: 'YouTube இணைக்க',
+        oauthClientIdPh: 'OAuth Client ID ஐ இங்கே ஒட்டவும்...',
+        oauthSecretPh: 'Client Secret (விருப்பம்)',
+        oauthHint: 'நீங்கள் சந்தா செய்த சேனல்களை தானாக இழுக்கவும். Google Cloud Console இல் "OAuth Client ID" (Web/SPA) உருவாக்கி, கீழே உள்ள திருப்பி வழி URI ஐ பதிவு செய்யவும்.',
+        oauthConnect: 'இணைக்க',
+        oauthSync: 'ஒத்திசை',
+        oauthDisconnect: 'துண்டி',
+        oauthStatusConnected: 'இணைக்கப்பட்டது (%s சேனல்கள்)',
+        oauthStatusDisconnected: 'இணைக்கப்படவில்லை',
+        oauthBadge: 'YouTube',
+        oauthSyncing: 'சந்தா சேனல்களை ஒத்திசைக்கிறது...',
+        oauthSynced: 'ஒத்திசைக்கப்பட்டது: %s சேனல்கள்',
+        oauthSyncFailed: 'ஒத்திசைவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.',
+        oauthNoClientId: 'முதலில் OAuth Client ID ஐ உள்ளிடவும்.',
         syncTitle: 'ஒத்திசைவு',
         syncLabel: 'சேனல்களை சாதனங்களுக்கு இடையே ஒத்திசை',
         syncHint: 'நீங்கள் சேர்க்கும் சேனல்கள் இந்தப் பக்கத்தைத் திறக்கும் ஒவ்வொரு சாதனம் அல்லது உலாவிக்கும் ஒத்திசைக்கப்படும்.',
@@ -1295,6 +1594,9 @@ function initTheme() {
 function openSettings() {
     refreshSettingsStats();
     renderChannelList();
+    const ru = $('#oauthRedirectUri');
+    if (ru) ru.textContent = oauthRedirectUri();
+    updateOAuthUI();
     hideFeedback();
     $('#settingsModal').classList.add('open');
 }
@@ -1304,6 +1606,7 @@ function refreshSettingsStats() {
     const vc = $('#visitCount');
     if (vc) vc.textContent = t('visitCount').replace('%s', String(n));
     updateGlobalVisitsUI();
+    updateOAuthUI();
     const tg = $('#embedFilterToggle');
     if (tg) tg.checked = embedFilterOn();
     updateEmbedProgress();
@@ -1331,7 +1634,9 @@ function hideFeedback() {
 function renderChannelList() {
     const box = $('#channelList');
     const chs = allChannels();
-    const order = Object.keys(CHANNELS).concat(getCustomChannels().map((c) => c.key));
+    const order = Object.keys(CHANNELS)
+        .concat(getCustomChannels().map((c) => c.key))
+        .concat(getOAuthChannels().map((c) => c.key));
     box.innerHTML = '';
     order.forEach((key) => {
         const c = chs[key];
@@ -1342,19 +1647,31 @@ function renderChannelList() {
         const info = `
             <div class="ch-info">
                 <div class="ch-name">${c.label}</div>
-                <div class="ch-handle">${c.handle || ''}</div>
+                <div class="ch-handle">${c.handle || (c.oauth ? t('oauthBadge') : '')}</div>
             </div>`;
         const action = c.custom
-            ? `<button class="ch-remove" data-key="${key}" title="${t('remove')}" aria-label="${t('remove')}">✕</button>`
+            ? `<button class="ch-remove" data-key="${key}" data-oauth="${c.oauth ? '1' : '0'}" title="${t('remove')}" aria-label="${t('remove')}">✕</button>`
             : `<span class="ch-badge-builtin">${t('builtinBadge')}</span>`;
         item.innerHTML = dot + info + action;
         box.appendChild(item);
     });
     box.querySelectorAll('.ch-remove').forEach((btn) => {
         btn.addEventListener('click', () => {
-            if (confirm(t('removeConfirm'))) removeCustomChannel(btn.dataset.key);
+            if (!confirm(t('removeConfirm'))) return;
+            if (btn.dataset.oauth === '1') removeOAuthChannel(btn.dataset.key);
+            else removeCustomChannel(btn.dataset.key);
         });
     });
+}
+
+function removeOAuthChannel(key) {
+    const list = getOAuthChannels().filter((c) => c.key !== key);
+    setOAuthChannels(list);
+    if (activeChannel === key) activeChannel = 'all';
+    renderTabs();
+    renderChannelList();
+    renderHero();
+    renderGrid();
 }
 
 function removeCustomChannel(key) {
@@ -1443,6 +1760,9 @@ async function addChannel() {
 function initSettings() {
     renderChannelList();
     refreshSettingsStats();
+    const ru = $('#oauthRedirectUri');
+    if (ru) ru.textContent = oauthRedirectUri();
+    updateOAuthUI();
 }
 
 /* ────────────────────────────────────────
@@ -1471,6 +1791,23 @@ function bindEvents() {
     $('#settingsModal').addEventListener('click', (e) => {
         if (e.target === $('#settingsModal')) closeSettings();
     });
+    $('#oauthConnectBtn').addEventListener('click', oauthAuthorize);
+    $('#oauthSyncBtn').addEventListener('click', async () => {
+        const btn = $('#oauthSyncBtn');
+        btn.disabled = true;
+        try {
+            const res = await oauthSyncChannels();
+            if (res && res.error) showFeedback(t('oauthSyncFailed'), false);
+            else showFeedback(t('oauthSynced').replace('%s', String(res ? res.count : 0)), true);
+        } catch (e) {
+            console.error('[oauth] sync error:', e.message);
+            showFeedback(t('oauthSyncFailed'), false);
+        } finally {
+            btn.disabled = false;
+            updateOAuthUI();
+        }
+    });
+    $('#oauthDisconnectBtn').addEventListener('click', oauthDisconnect);
     $('#embedFilterToggle').addEventListener('change', (e) => {
         setEmbedFilterOn(e.target.checked);
         renderHero();
@@ -1534,4 +1871,28 @@ function bindEvents() {
     renderHero();
     renderGrid();
     if (embedFilterOn()) runEmbedCheck();
+    handleOAuthCallback();
 })();
+
+async function handleOAuthCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+    if (!code) return;
+    try {
+        const res = await oauthExchangeCode(code, state);
+        if (res && res.error) {
+            console.error('[oauth] exchange failed:', res.error);
+            return;
+        }
+        history.replaceState({}, '', window.location.pathname);
+        await oauthSyncChannels();
+        renderTabs();
+        renderChannelList();
+        renderHero();
+        renderGrid();
+        updateOAuthUI();
+    } catch (e) {
+        console.error('[oauth] callback error:', e.message);
+    }
+}
