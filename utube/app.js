@@ -27,6 +27,7 @@ const CHANNELS = {
     dawood: { label: 'Dawood Kids TV', cls: 'ch-cx5', color: '#6d28d9', icon: '🕌' },
     emmie: { label: 'Emmie\'s Wonder Wardrobe', cls: 'ch-cx0', color: '#ec4899', icon: '👗' },
     neurotic: { label: 'Neurotic Studio', cls: 'ch-cx1', color: '#64748b', icon: '🎵' },
+    hadakiddy: { label: 'HaDa Kiddy', cls: 'ch-cx2', color: '#f59e0b', icon: '\u{1F56F}\uFE0F' },
 };
 
 
@@ -532,6 +533,27 @@ const VIDEOS = [
     { id: 'VJkEkleiAlk', ch: 'neurotic', title: 'HALIM AHMAD × INTEAM • Meriah Raya (Official Music Video)' },
     { id: 'sGR7UGwMNZ0', ch: 'neurotic', title: 'ZIKIR RAMADAN 2026 (Part 3)' },
 
+
+    // HaDa Kiddy
+    { id: 'uUkAAEJqvZo', ch: 'hadakiddy', title: 'Kisah Nabi Syu\'aib A.S. | Azab Penipuan | Cerita Nabi' },
+    { id: 'pu3sOOMJy04', ch: 'hadakiddy', title: 'Kisah Nabi Ismail A.S. | Perintah Menyembelih & Mukjizat Korban' },
+    { id: 'y8l0YNfYVlY', ch: 'hadakiddy', title: 'FULL - Kisah Nabi Yusuf A.S. | Dari Perigi Gelap ke Istana Mesir' },
+    { id: 'heMbG6WWORQ', ch: 'hadakiddy', title: 'Rahsia Air Zamzam Keluar Dari Tanah | Mukjizat Nabi Ismail A.S.' },
+    { id: 'nNFQzSXpjwM', ch: 'hadakiddy', title: 'Mimpi Nabi Yusuf Akhirnya Menjadi Kenyataan | 11 Bintang Bersujud' },
+    { id: 'NUAelzJar1s', ch: 'hadakiddy', title: 'Nabi Yusuf A.S. Dijual?! | Momen Paling Menyedihkan - Part 2' },
+    { id: 'SjxeXr1NYgU', ch: 'hadakiddy', title: 'Kisah Nabi Yusuf A.S. | Dari Perigi Gelap ke Istana Raja - Part 1' },
+    { id: '7LEJ7gMA_1c', ch: 'hadakiddy', title: 'Macam Mana Batu Boleh Terbelah Keluar Unta? | Mukjizat Nabi Saleh A.S.' },
+    { id: 'zAz6RNonmB8', ch: 'hadakiddy', title: 'Nabi Yunus A.S. Ditelan Ikan Gergasi | Rahsia Yang Ramai Tak Tahu' },
+    { id: 'Z9C6kzzfJpI', ch: 'hadakiddy', title: 'Nabi Musa A.S. Melawan Firaun! | Tongkat Jadi Ular & Laut Terbelah' },
+    { id: 'MUwdXMfjdbw', ch: 'hadakiddy', title: 'Semut Bercakap Dengan Nabi Sulaiman?! | Kisah Ajaib Kuasa Allah' },
+    { id: 'vFIBdHQlm7I', ch: 'hadakiddy', title: 'Nabi Ibrahim Dilempar Ke Dalam Api Tapi Tak Terbakar!' },
+    { id: 'XTRoG0hw3vQ', ch: 'hadakiddy', title: 'Nabi Nuh A.S. Bahtera Penyelamat dari Banjir Besar | Cerita Nabi' },
+    { id: 'CHL6AajEi6w', ch: 'hadakiddy', title: 'Seluruh Kaum Nabi Yunus Menyesal. Tapi Kenapa?' },
+    { id: 'MncP9Soipxc', ch: 'hadakiddy', title: 'Kenapa Nabi Yunus Meninggalkan Kaumnya?' },
+    { id: 'rk_Iw84Y8bA', ch: 'hadakiddy', title: 'Nabi Yunus | Ketika Umat Menolak Ajakan ke Jalan Allah' },
+    { id: 'Kfw4dzPUi38', ch: 'hadakiddy', title: 'Apa yang Sebenarnya Berlaku Kepada Nabi Yunus?' },
+    { id: 'fD-y-pnqdx8', ch: 'hadakiddy', title: 'Rahasia di Balik 10 Muharam yang Jarang Diketahui' },
+    { id: 'LV4ZUa5AJUg', ch: 'hadakiddy', title: 'Hikmah di Sebalik Kisah Nabi Nuh dan Banjir Besar' },
 ];
 
 /* ────────────────────────────────────────
