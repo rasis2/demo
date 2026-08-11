@@ -1027,9 +1027,8 @@ function thumb(v) { return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`; }
 
 function embedUrl(v, autoplay = false) {
     // youtube-nocookie: no tracking cookies. rel=0: no unrelated rabbit-holes.
-    // mute=1: iOS/Safari hanya benarkan autoplay jika video senyap (bunyi boleh dibuka semula).
-    // enablejsapi: benarkan postMessage playVideo (fallback autoplay iOS Safari).
-    const ap = autoplay ? '&autoplay=1&mute=1' : '';
+    // enablejsapi: benarkan postMessage (autoplay fallback & auto-play next).
+    const ap = autoplay ? '&autoplay=1' : '';
     return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white&enablejsapi=1${ap}`;
 }
 
@@ -1148,6 +1147,8 @@ function shuffle(arr) {
     return a;
 }
 
+let currentSuggestions = [];
+
 function renderSuggestions(current) {
     const box = $('#suggestBox');
     const pool = allVideos().filter((v) => v.id !== current.id);
@@ -1158,6 +1159,7 @@ function renderSuggestions(current) {
         return msA - msB;
     });
     const picked = sorted.slice(0, 8);
+    currentSuggestions = picked;
     box.innerHTML = '';
     picked.forEach((v) => {
         const item = document.createElement('div');
@@ -1170,6 +1172,27 @@ function renderSuggestions(current) {
             </div>`;
         item.addEventListener('click', () => loadVideo(v));
         box.appendChild(item);
+    });
+}
+
+function playNext() {
+    if (!currentSuggestions.length) return;
+    const next = currentSuggestions[0];
+    if (next && next.id !== ($('#playerFrame').dataset.videoId || '')) {
+        loadVideo(next);
+    }
+}
+
+function bindPlayerEvents() {
+    // Auto-play video seterusnya apabila video semasa tamat (YouTube IFrame API state 0 = ENDED).
+    window.addEventListener('message', (e) => {
+        let data = e.data;
+        if (typeof data === 'string') {
+            try { data = JSON.parse(data); } catch (err) { return; }
+        }
+        if (data && data.event === 'onStateChange' && data.info === 0) {
+            playNext();
+        }
     });
 }
 
@@ -1186,6 +1209,7 @@ function loadVideo(v) {
         } catch (e) { /* ignore */ }
     };
     frame.src = embedUrl(v, true);
+    frame.dataset.videoId = v.id;
     renderSuggestions(v);
     frame.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -1346,6 +1370,7 @@ function bindEvents() {
     initSettings();
     renderTabs();
     bindEvents();
+    bindPlayerEvents();
     applyI18n();
     renderHero();
     renderGrid();
