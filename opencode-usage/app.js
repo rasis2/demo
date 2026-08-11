@@ -91,7 +91,10 @@ function donut(container, items) {
         legend.appendChild(row);
     });
 
-    container.append(svg, center, legend);
+    const wrap = document.createElement('div');
+    wrap.className = 'donut';
+    wrap.append(svg, center);
+    container.append(wrap, legend);
 
     function highlight(i, on) {
         const isSmall = items[i].value / sum < 0.05;
