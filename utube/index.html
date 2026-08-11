@@ -117,27 +117,6 @@
                 </section>
 
                 <section class="settings-section">
-                    <h4 class="settings-title" data-i18n="syncTitle">Segerakan</h4>
-                    <label class="switch-row">
-                        <input type="checkbox" id="syncToggle" />
-                        <span class="switch"></span>
-                        <span data-i18n="syncLabel">Segerak saluran merentas peranti</span>
-                    </label>
-                    <p class="settings-hint" data-i18n="syncHint">Saluran yang anda tambah akan disegerakkan ke semua peranti atau pelayar yang membuka laman ini.</p>
-                    <div class="settings-row">
-                        <span class="settings-stat" id="syncStatus"></span>
-                        <button id="syncNowBtn" class="btn-play btn-small" data-i18n="syncNow">Segerak Sekarang</button>
-                    </div>
-                </section>
-
-                <section class="settings-section">
-                    <h4 class="settings-title" data-i18n="apiKeyLabel">Kunci API YouTube</h4>
-                    <input type="text" id="apiKeyInput" class="settings-input" data-i18n-ph="apiKeyPh" placeholder="Paste kunci API di sini..." autocomplete="off" spellcheck="false" />
-                    <p class="settings-hint" data-i18n="apiKeyHelp">Diperlukan untuk mengesahkan saluran. Dapatkan secara percuma di Google Cloud Console (dayakan "YouTube Data API v3").</p>
-                    <button id="saveApiKeyBtn" class="btn-play btn-small" data-i18n="saveBtn">Simpan</button>
-                </section>
-
-                <section class="settings-section">
                     <h4 class="settings-title" data-i18n="linkedChannels">Saluran Terhubung</h4>
                     <div class="channel-list" id="channelList"><!-- injected by JS --></div>
                 </section>
@@ -159,9 +138,10 @@
                 <section class="settings-section">
                     <h4 class="settings-title" data-i18n="addChannelTitle">Tambah Saluran</h4>
                     <div class="settings-row">
-                        <input type="text" id="customChannelInput" class="settings-input" data-i18n-ph="channelPh" placeholder="@handle, pautan atau ID saluran..." autocomplete="off" spellcheck="false" />
+                        <input type="text" id="customChannelInput" class="settings-input" data-i18n-ph="channelPh" placeholder="ID saluran (UC...)" autocomplete="off" spellcheck="false" />
                         <button id="addChannelBtn" class="btn-play btn-small" data-i18n="addBtn">Tambah</button>
                     </div>
+                    <p class="settings-hint" data-i18n="addChannelHint">Tiada kunci API diperlukan. Jika saluran tidak dapat dimuatkan, hantar ID saluran kepada pembangun untuk ditambah sebagai saluran tetap.</p>
                     <div id="settingsFeedback" class="settings-feedback" hidden></div>
                 </section>
 
@@ -169,6 +149,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=7"></script>
 </body>
 </html>

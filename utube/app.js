@@ -610,8 +610,6 @@ const VIDEOS = [
    CUSTOM CHANNELS (user-added, localStorage)
 ──────────────────────────────────────── */
 const CUSTOM_KEY = 'utube-custom-channels';
-const API_KEY_STORE = 'utube-ytkey';
-const YT_API_BASE = 'https://www.googleapis.com/youtube/v3';
 
 function getCustomChannels() {
     try {
@@ -625,14 +623,6 @@ function getCustomChannels() {
 
 function saveCustomChannels(list) {
     localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-}
-
-function getApiKey() {
-    return (localStorage.getItem(API_KEY_STORE) || '').trim();
-}
-
-function setApiKey(key) {
-    localStorage.setItem(API_KEY_STORE, (key || '').trim());
 }
 
 function allChannels() {
@@ -667,99 +657,6 @@ function allVideos() {
 
 function findVideoById(id) {
     return allVideos().find((v) => v.id === id) || null;
-}
-
-/* ────────────────────────────────────────
-   CROSS-DEVICE SYNC (custom channels)
-   Syncs the user-added channels through a
-   shared JSON blob so they appear on any
-   device/browser that opens this page.
-──────────────────────────────────────── */
-const SYNC_KEY = 'utube-sync';
-const SYNC_BIN = '019ff1b4-4ead-7ed2-b6ea-558b9bcb1e11';
-const SYNC_URL = `https://jsonblob.com/api/jsonBlob/${SYNC_BIN}`;
-
-function syncEnabled() {
-    return localStorage.getItem(SYNC_KEY) !== '0';
-}
-
-function setSyncEnabled(on) {
-    localStorage.setItem(SYNC_KEY, on ? '1' : '0');
-}
-
-function mergeChannels(a, b) {
-    const merged = [];
-    const seen = new Set();
-    [...b, ...a].forEach((c) => {
-        if (c && c.key && !seen.has(c.key)) { seen.add(c.key); merged.push(c); }
-    });
-    return merged;
-}
-
-async function syncPull() {
-    if (!syncEnabled()) return false;
-    try {
-        let res = await fetch(SYNC_URL);
-        if (res.status === 404) {
-            // Blob hilang/expired -> buat semula dengan saluran tempatan.
-            await syncPush();
-            return true;
-        }
-        if (!res.ok) throw new Error('pull status ' + res.status);
-        let data = await res.json();
-        const local = getCustomChannels();
-        if (!Array.isArray(data)) {
-            // Data blob rosak (bukan array) -> tetapkan semula kepada tempatan.
-            saveCustomChannels(local);
-            await syncPush();
-            return true;
-        }
-        const merged = mergeChannels(local, data);
-        saveCustomChannels(merged);
-        // Pautan: pastikan blob juga ada semua saluran (termasuk yang ditambah sebelum ciri ini).
-        if (merged.length !== data.length) await syncPush();
-        return true;
-    } catch (e) {
-        console.error('[sync] pull failed:', e.message);
-        return false;
-    }
-}
-
-async function syncPush() {
-    if (!syncEnabled()) return;
-    try {
-        const res = await fetch(SYNC_URL, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(getCustomChannels()),
-        });
-        if (!res.ok) console.error('[sync] push failed:', res.status);
-    } catch (e) {
-        console.error('[sync] push failed:', e.message);
-    }
-}
-
-async function syncNow() {
-    const st = $('#syncStatus');
-    if (st) st.textContent = t('syncing');
-    const ok = await syncPull();
-    renderTabs();
-    renderChannelList();
-    renderHero();
-    renderGrid();
-    updateSyncUI(ok);
-}
-
-function updateSyncUI(synced) {
-    const tg = $('#syncToggle');
-    if (tg) tg.checked = syncEnabled();
-    const st = $('#syncStatus');
-    if (!st) return;
-    if (synced === false) {
-        st.textContent = t('syncErr');
-    } else {
-        st.textContent = t('syncStatus').replace('%s', String(getCustomChannels().length));
-    }
 }
 
 /* ────────────────────────────────────────
@@ -956,14 +853,15 @@ const I18N = {
         linkedChannels: 'Saluran Terhubung',
         builtinBadge: 'Asal',
         addChannelTitle: 'Tambah Saluran',
-        channelPh: '@handle, pautan atau ID saluran...',
+        addChannelHint: 'Tiada kunci API diperlukan. Jika saluran tidak dapat dimuatkan, hantar ID saluran kepada pembangun untuk ditambah sebagai saluran tetap.',
+        channelPh: 'ID saluran (UC...)',
         addBtn: 'Tambah',
         remove: 'Buang',
         removeConfirm: 'Buang saluran ini?',
         checking: 'Menyemak saluran...',
         added: 'Saluran berjaya ditambah!',
         errEmpty: 'Sila masukkan nama saluran, @handle, pautan atau ID saluran.',
-        errNoKey: 'Sila tetapkan Kunci API YouTube dahulu di bahagian Tetapan.',
+        errFetch: 'Saluran tidak dapat dimuatkan sekarang. Hantar ID saluran kepada pembangun untuk ditambah sebagai saluran tetap.',
         errInvalid: 'Format tidak sah. Guna pautan youtube.com/@handle, @handle atau ID saluran (UC...).',
         errNotFound: 'Saluran tidak dijumpai. Semak nama pengguna atau pautan.',
         errQuota: 'Kuota API habis. Cuba lagi kemudian.',
@@ -1011,14 +909,15 @@ const I18N = {
         linkedChannels: 'Linked Channels',
         builtinBadge: 'Built-in',
         addChannelTitle: 'Add Channel',
-        channelPh: '@handle, link or channel ID...',
+        addChannelHint: 'No API key needed. If the channel cannot be loaded, send the channel ID to the developer to add it as a fixed channel.',
+        channelPh: 'Channel ID (UC...)',
         addBtn: 'Add',
         remove: 'Remove',
         removeConfirm: 'Remove this channel?',
         checking: 'Checking channel...',
         added: 'Channel added successfully!',
         errEmpty: 'Please enter a channel name, @handle, link or channel ID.',
-        errNoKey: 'Please set your YouTube API Key first in Settings.',
+        errFetch: 'The channel could not be loaded right now. Send the channel ID to the developer to add it as a fixed channel.',
         errInvalid: 'Invalid format. Use a youtube.com/@handle link, @handle or channel ID (UC...).',
         errNotFound: 'Channel not found. Check the username or link.',
         errQuota: 'API quota exceeded. Try again later.',
@@ -1066,14 +965,15 @@ const I18N = {
         linkedChannels: '已连接频道',
         builtinBadge: '内置',
         addChannelTitle: '添加频道',
-        channelPh: '@handle、链接或频道 ID...',
+        addChannelHint: '无需 API 密钥。如果频道无法加载，请将频道 ID 发送给开发者以添加为固定频道。',
+        channelPh: '频道 ID（UC...）',
         addBtn: '添加',
         remove: '移除',
         removeConfirm: '移除这个频道？',
         checking: '正在检查频道...',
         added: '频道添加成功！',
         errEmpty: '请输入频道名称、@handle、链接或频道 ID。',
-        errNoKey: '请先在设置中设置 YouTube API 密钥。',
+        errFetch: '暂时无法加载该频道。请将频道 ID 发送给开发者以添加为固定频道。',
         errInvalid: '格式无效。请使用 youtube.com/@handle 链接、@handle 或频道 ID（UC...）。',
         errNotFound: '未找到频道。请检查用户名或链接。',
         errQuota: 'API 配额已用尽，请稍后再试。',
@@ -1121,14 +1021,15 @@ const I18N = {
         linkedChannels: 'இணைக்கப்பட்ட சேனல்கள்',
         builtinBadge: 'உள்ளமை',
         addChannelTitle: 'சேனல் சேர்',
-        channelPh: '@handle, இணைப்பு அல்லது சேனல் ID...',
+        addChannelHint: 'API விசை தேவையில்லை. சேனலை ஏற்ற முடியவில்லை என்றால், நிரந்தர சேனலாகச் சேர்க்க சேனல் ID ஐ டெவலப்பருக்கு அனுப்பவும்.',
+        channelPh: 'சேனல் ID (UC...)',
         addBtn: 'சேர்',
         remove: 'நீக்கு',
         removeConfirm: 'இந்த சேனலை நீக்கவா?',
         checking: 'சேனல் சரிபார்க்கிறது...',
         added: 'சேனல் வெற்றிகரமாக சேர்க்கப்பட்டது!',
         errEmpty: 'சேனல் பெயர், @handle, இணைப்பு அல்லது சேனல் ID ஐ உள்ளிடவும்.',
-        errNoKey: 'முதலில் அமைப்புகளில் YouTube API விசையை அமைக்கவும்.',
+        errFetch: 'சேனலை இப்போது ஏற்ற முடியவில்லை. நிரந்தர சேனலாகச் சேர்க்க சேனல் ID ஐ டெவலப்பருக்கு அனுப்பவும்.',
         errInvalid: 'தவறான வடிவம். youtube.com/@handle இணைப்பு, @handle அல்லது சேனல் ID (UC...) பயன்படுத்தவும்.',
         errNotFound: 'சேனல் கிடைக்கவில்லை. பயனர் பெயர் அல்லது இணைப்பைச் சரிபார்க்கவும்.',
         errQuota: 'API ஒதுக்கீடு முடிந்தது. பின்னர் மீண்டும் முயற்சிக்கவும்.',
@@ -1392,7 +1293,6 @@ function initTheme() {
    SETTINGS — linked channels & add channel
 ──────────────────────────────────────── */
 function openSettings() {
-    $('#apiKeyInput').value = getApiKey();
     refreshSettingsStats();
     renderChannelList();
     hideFeedback();
@@ -1404,7 +1304,6 @@ function refreshSettingsStats() {
     const vc = $('#visitCount');
     if (vc) vc.textContent = t('visitCount').replace('%s', String(n));
     updateGlobalVisitsUI();
-    updateSyncUI();
     const tg = $('#embedFilterToggle');
     if (tg) tg.checked = embedFilterOn();
     updateEmbedProgress();
@@ -1466,118 +1365,65 @@ function removeCustomChannel(key) {
     renderChannelList();
     renderHero();
     renderGrid();
-    syncPush();
 }
 
-function parseChannelInput(input) {
+function parseChannelId(input) {
     const s = input.trim();
-    if (!s) return null;
-    if (/^(https?:\/\/)?(www\.|m\.)?(youtube\.com|youtu\.be)/i.test(s)) {
-        const m = s.match(/(?:youtube\.com|youtu\.be)\/(?:@|channel\/|c\/|user\/)?([^\/?#\s]+)/i);
-        if (m) {
-            const part = m[1].replace(/\/+$/, '');
-            if (/^UC[\w-]{22}$/.test(part)) return { handle: null, id: part };
-            return { handle: part.startsWith('@') ? part : '@' + part, id: null };
-        }
-    }
-    if (/^UC[\w-]{22}$/.test(s)) return { handle: null, id: s };
-    return { handle: s.startsWith('@') ? s : '@' + s, id: null };
+    const m = s.match(/(UC[A-Za-z0-9_-]{22})/);
+    return m ? m[1] : null;
 }
 
-async function resolveChannel(channelId, handle, key) {
-    let url = `${YT_API_BASE}/channels?part=snippet,statistics&key=${encodeURIComponent(key)}`;
-    url += channelId ? `&id=${encodeURIComponent(channelId)}` : `&forHandle=${encodeURIComponent(handle)}`;
-    const resp = await fetch(url);
-    const data = await resp.json();
-    if (data.error) {
-        if (data.error.code === 403) return { error: 'quota' };
-        if (data.error.code === 404 || data.error.code === 400) return { error: 'notfound' };
-        return { error: 'network' };
-    }
-    if (!data.items || data.items.length === 0) return { error: 'notfound' };
-    const ch = data.items[0];
-    return {
-        channelId: ch.id,
-        title: ch.snippet.title,
-        handle: ch.snippet.customUrl || handle,
-        videoCount: parseInt(ch.statistics.videoCount || '0', 10),
-    };
-}
-
-async function fetchChannelVideos(channelId, key) {
-    // Malay-first: bias the search toward Bahasa Melayu / Malaysia.
-    const url = `${YT_API_BASE}/search?part=snippet&channelId=${encodeURIComponent(channelId)}&type=video&order=viewCount&relevanceLanguage=ms&regionCode=MY&maxResults=30&key=${encodeURIComponent(key)}`;
-    const resp = await fetch(url);
-    const data = await resp.json();
-    if (data.error) return [];
-    const videos = (data.items || [])
-        .filter((it) => it.id && it.id.videoId)
-        .map((it) => ({ id: it.id.videoId, title: it.snippet.title }));
-
-    // Cuba ambil bahasa audio sebenar setiap video (videos.list, batch 50).
-    try {
-        const ids = videos.map((v) => v.id).join(',');
-        const vurl = `${YT_API_BASE}/videos?part=snippet&id=${encodeURIComponent(ids)}&key=${encodeURIComponent(key)}`;
-        const vresp = await fetch(vurl);
-        const vdata = await vresp.json();
-        if (!vdata.error && Array.isArray(vdata.items)) {
-            const langById = {};
-            vdata.items.forEach((it) => {
-                const sn = it.snippet || {};
-                const l = (sn.defaultAudioLanguage || sn.defaultLanguage || '').toLowerCase().split('-')[0];
-                if (l) langById[it.id] = l;
-            });
-            videos.forEach((v) => {
-                if (langById[v.id]) v.lang = langById[v.id];
-                else if (msTitleScore(v.title) >= 2) v.lang = 'ms';
-            });
+async function fetchChannelVideosKeyless(channelId) {
+    // Muatkan suapan RSS saluran melalui beberapa proksi CORS (tanpa kunci API).
+    const feed = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + encodeURIComponent(channelId);
+    const urls = [
+        'https://corsproxy.io/?url=' + encodeURIComponent(feed),
+        'https://api.allorigins.win/raw?url=' + encodeURIComponent(feed),
+        'https://cors.eu.org/' + feed,
+    ];
+    for (const u of urls) {
+        try {
+            const res = await fetch(u);
+            if (!res.ok) continue;
+            const xml = await res.text();
+            const ids = [...xml.matchAll(/<yt:videoId>([A-Za-z0-9_-]{11})<\/yt:videoId>/g)].map((m) => m[1]);
+            const titles = [...xml.matchAll(/<title>(.*?)<\/title>/g)].map((m) => m[1].trim());
+            if (ids.length) {
+                const vids = ids.map((id, i) => ({ id, title: titles[i + 1] || 'Video' }));
+                return { title: titles[0] || channelId, videos: vids };
+            }
+        } catch (e) {
+            // cuba proksi seterusnya
         }
-    } catch (e) {
-        videos.forEach((v) => { if (msTitleScore(v.title) >= 2) v.lang = 'ms'; });
     }
-    // Malay-first: susun video Bahasa Melayu di hadapan.
-    videos.sort((a, b) => {
-        const aMs = (a.lang === 'ms' || msTitleScore(a.title) >= 2) ? 0 : 1;
-        const bMs = (b.lang === 'ms' || msTitleScore(b.title) >= 2) ? 0 : 1;
-        return aMs - bMs;
-    });
-    return videos;
+    return null;
 }
 
 async function addChannel() {
     const input = $('#customChannelInput').value.trim();
     if (!input) { showFeedback(t('errEmpty'), false); return; }
-    const key = getApiKey();
-    if (!key) { showFeedback(t('errNoKey'), false); return; }
-    const parsed = parseChannelInput(input);
-    if (!parsed) { showFeedback(t('errInvalid'), false); return; }
+    const channelId = parseChannelId(input);
+    if (!channelId) { showFeedback(t('errInvalid'), false); return; }
+    if (CHANNELS[channelId] || getCustomChannels().some((c) => c.key === channelId)) {
+        showFeedback(t('errDuplicate'), false);
+        return;
+    }
 
     const btn = $('#addChannelBtn');
     const oldText = btn.textContent;
     btn.disabled = true;
     btn.textContent = t('checking');
     try {
-        const resolved = await resolveChannel(parsed.id, parsed.handle, key);
-        if (resolved.error) {
-            showFeedback(t('err' + resolved.error.charAt(0).toUpperCase() + resolved.error.slice(1)), false);
+        const data = await fetchChannelVideosKeyless(channelId);
+        if (!data || data.videos.length === 0) {
+            showFeedback(t('errFetch'), false);
             return;
         }
-        if (CHANNELS[resolved.channelId] || getCustomChannels().some((c) => c.key === resolved.channelId)) {
-            showFeedback(t('errDuplicate'), false);
-            return;
-        }
-        const videos = await fetchChannelVideos(resolved.channelId, key);
-        if (videos.length === 0) {
-            showFeedback(t('errNoVideos'), false);
-            return;
-        }
+        // Malay-first: susun video Bahasa Melayu di hadapan.
+        data.videos.forEach((v) => { if (msTitleScore(v.title) >= 2) v.lang = 'ms'; });
+        data.videos.sort((a, b) => ((a.lang === 'ms') ? 0 : 1) - ((b.lang === 'ms') ? 0 : 1));
         const list = getCustomChannels();
-        list.push({
-            key: resolved.channelId,
-            label: resolved.title,
-            handle: resolved.handle || '',
-            videos,
-        });
+        list.push({ key: channelId, label: data.title, handle: '', videos: data.videos });
         saveCustomChannels(list);
         $('#customChannelInput').value = '';
         renderTabs();
@@ -1585,10 +1431,9 @@ async function addChannel() {
         renderHero();
         renderGrid();
         if (embedFilterOn()) runEmbedCheck();
-        syncPush();
         showFeedback(t('added'), true);
     } catch (e) {
-        showFeedback(t('errNetwork'), false);
+        showFeedback(t('errFetch'), false);
     } finally {
         btn.disabled = false;
         btn.textContent = oldText;
@@ -1596,7 +1441,6 @@ async function addChannel() {
 }
 
 function initSettings() {
-    $('#apiKeyInput').value = getApiKey();
     renderChannelList();
     refreshSettingsStats();
 }
@@ -1627,10 +1471,6 @@ function bindEvents() {
     $('#settingsModal').addEventListener('click', (e) => {
         if (e.target === $('#settingsModal')) closeSettings();
     });
-    $('#saveApiKeyBtn').addEventListener('click', () => {
-        setApiKey($('#apiKeyInput').value);
-        showFeedback(t('keySaved'), true);
-    });
     $('#embedFilterToggle').addEventListener('change', (e) => {
         setEmbedFilterOn(e.target.checked);
         renderHero();
@@ -1641,18 +1481,6 @@ function bindEvents() {
     $('#embedRecheckBtn').addEventListener('click', () => {
         runEmbedCheck(true);
     });
-    $('#syncToggle').addEventListener('change', async (e) => {
-        setSyncEnabled(e.target.checked);
-        if (e.target.checked) {
-            await syncPull();
-            renderTabs();
-            renderChannelList();
-            renderHero();
-            renderGrid();
-        }
-        updateSyncUI();
-    });
-    $('#syncNowBtn').addEventListener('click', syncNow);
     $('#addChannelBtn').addEventListener('click', addChannel);
     $('#customChannelInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') addChannel();
@@ -1706,15 +1534,4 @@ function bindEvents() {
     renderHero();
     renderGrid();
     if (embedFilterOn()) runEmbedCheck();
-    if (syncEnabled()) {
-        syncPull().then((ok) => {
-            if (ok) {
-                renderTabs();
-                renderChannelList();
-                renderHero();
-                renderGrid();
-            }
-            updateSyncUI(ok);
-        });
-    }
 })();
