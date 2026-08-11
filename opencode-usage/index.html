@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCode Usage — Pie Chart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="brand">
+            <a href="../index.html" class="portal-btn" title="Portal Demo" aria-label="Portal Demo">↩</a>
+            <div class="brand-logo">◍</div>
+            <div class="brand-text">
+                <span class="brand-title">OpenCode Usage</span>
+                <span class="brand-sub">Dashboard</span>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <button id="nightBtn" class="night-btn" title="Gelap/Terang" aria-label="Gelap">🌙</button>
+        </div>
+    </header>
+
+    <main class="content">
+        <section class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon">🔮</div>
+                <div class="stat-num" id="statStreams">—</div>
+                <div class="stat-label">Permintaan LLM</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🛠️</div>
+                <div class="stat-num" id="statTools">—</div>
+                <div class="stat-label">Gunaan Alat</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤖</div>
+                <div class="stat-num" id="statModels">—</div>
+                <div class="stat-label">Model Aktif</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🧰</div>
+                <div class="stat-num" id="statToolKinds">—</div>
+                <div class="stat-label">Jenis Alat</div>
+            </div>
+        </section>
+
+        <section class="charts-row">
+            <div class="chart-card">
+                <h2 class="chart-title">Pengagihan Model LLM</h2>
+                <p class="chart-sub">Bilangan permintaan stream mengikut model</p>
+                <div class="chart-wrap" id="chartModels"></div>
+            </div>
+            <div class="chart-card">
+                <h2 class="chart-title">Gunaan Alat</h2>
+                <p class="chart-sub">Panggilan alat mengikut jenis</p>
+                <div class="chart-wrap" id="chartTools"></div>
+            </div>
+        </section>
+
+        <div class="note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Data dijana daripada <code>opencode.log</code> — dikira secara automatik daripada penggunaan sebenar.</span>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
