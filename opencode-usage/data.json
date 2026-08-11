@@ -1,0 +1,81 @@
+{
+  "generated": "2026-08-11T22:16:25.909Z",
+  "log": "opencode.log",
+  "stats": {
+    "streams": 5476,
+    "models": 4,
+    "tools": 10950,
+    "toolKinds": 9,
+    "sessions": 40,
+    "loops": 5709
+  },
+  "models": [
+    {
+      "name": "opencode · deepseek-v4-flash-free",
+      "value": 2787,
+      "color": "#7c3aed"
+    },
+    {
+      "name": "opencode-go · deepseek-v4-flash",
+      "value": 1764,
+      "color": "#4f46e5"
+    },
+    {
+      "name": "opencode · big-pickle",
+      "value": 919,
+      "color": "#3b82f6"
+    },
+    {
+      "name": "groq · llama-3.3-70b-versatile",
+      "value": 4,
+      "color": "#0ea5a4"
+    }
+  ],
+  "tools": [
+    {
+      "name": "bash",
+      "value": 6512,
+      "color": "#ef4444"
+    },
+    {
+      "name": "edit",
+      "value": 1970,
+      "color": "#f59e0b"
+    },
+    {
+      "name": "external_directory",
+      "value": 1073,
+      "color": "#0ea5a4"
+    },
+    {
+      "name": "read",
+      "value": 935,
+      "color": "#3b82f6"
+    },
+    {
+      "name": "grep",
+      "value": 276,
+      "color": "#8b5cf6"
+    },
+    {
+      "name": "todowrite",
+      "value": 84,
+      "color": "#ec4899"
+    },
+    {
+      "name": "webfetch",
+      "value": 46,
+      "color": "#22c55e"
+    },
+    {
+      "name": "websearch",
+      "value": 45,
+      "color": "#14b8a6"
+    },
+    {
+      "name": "glob",
+      "value": 9,
+      "color": "#94a3b8"
+    }
+  ]
+}
