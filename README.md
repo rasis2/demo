@@ -13,5 +13,6 @@ This is a demo repo where projects are being cast here
 | MyKilat | `internet/` | Static |
 | Zoo Radio | `zoo-radio/` | Static |
 | UTube Maheera | `utube/` | Static |
+| Software Eng. Slides | `software-eng-slides/` | Static |
 
 Semua demo berjalan sepenuhnya dalam pelayar (static). `signature-stamp-app` memproses PDF secara client-side dengan pdf.js (preview) dan pdf-lib (embed tandatangan) — tiada server diperlukan.
