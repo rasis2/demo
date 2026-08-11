@@ -361,7 +361,7 @@ body.night {
 /* ── VIDEO GRID ── */
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
 
@@ -682,7 +682,7 @@ body.night {
 }
 
 @media (max-width: 520px) {
-    .video-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+    .video-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
     .brand-sub { display: none; }
     .ch-tab { padding: 9px 14px; font-size: 13px; }
 }

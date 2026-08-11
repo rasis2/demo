@@ -1027,9 +1027,9 @@ function thumb(v) { return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`; }
 
 function embedUrl(v, autoplay = false) {
     // youtube-nocookie: no tracking cookies. rel=0: no unrelated rabbit-holes.
-    // muted=1: iOS/Safari hanya benarkan autoplay jika video senyap (bunyi boleh dibuka semula).
+    // mute=1: iOS/Safari hanya benarkan autoplay jika video senyap (bunyi boleh dibuka semula).
     // enablejsapi: benarkan postMessage playVideo (fallback autoplay iOS Safari).
-    const ap = autoplay ? '&autoplay=1&muted=1' : '';
+    const ap = autoplay ? '&autoplay=1&mute=1' : '';
     return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white&enablejsapi=1${ap}`;
 }
 
