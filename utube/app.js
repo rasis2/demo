@@ -652,6 +652,67 @@ function findVideoById(id) {
 }
 
 /* ────────────────────────────────────────
+   CROSS-DEVICE SYNC (custom channels)
+   Syncs the user-added channels through a
+   shared JSON blob so they appear on any
+   device/browser that opens this page.
+──────────────────────────────────────── */
+const SYNC_KEY = 'utube-sync';
+const SYNC_BIN = '019ff1b4-4ead-7ed2-b6ea-558b9bcb1e11';
+const SYNC_URL = `https://jsonblob.com/api/jsonBlob/${SYNC_BIN}`;
+
+function syncEnabled() {
+    return localStorage.getItem(SYNC_KEY) !== '0';
+}
+
+function setSyncEnabled(on) {
+    localStorage.setItem(SYNC_KEY, on ? '1' : '0');
+}
+
+async function syncPull() {
+    if (!syncEnabled()) return false;
+    try {
+        const res = await fetch(SYNC_URL);
+        if (!res.ok) throw new Error('pull status ' + res.status);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            const local = getCustomChannels();
+            const merged = [];
+            const seen = new Set();
+            [...data, ...local].forEach((c) => {
+                if (c && c.key && !seen.has(c.key)) { seen.add(c.key); merged.push(c); }
+            });
+            saveCustomChannels(merged);
+            return true;
+        }
+    } catch (e) {
+        console.error('[sync] pull failed:', e.message);
+    }
+    return false;
+}
+
+async function syncPush() {
+    if (!syncEnabled()) return;
+    try {
+        const res = await fetch(SYNC_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(getCustomChannels()),
+        });
+        if (!res.ok) console.error('[sync] push failed:', res.status);
+    } catch (e) {
+        console.error('[sync] push failed:', e.message);
+    }
+}
+
+function updateSyncUI() {
+    const tg = $('#syncToggle');
+    if (tg) tg.checked = syncEnabled();
+    const st = $('#syncStatus');
+    if (st) st.textContent = t('syncStatus').replace('%s', String(getCustomChannels().length));
+}
+
+/* ────────────────────────────────────────
    VISIT COUNTER & EMBED FILTER
 ──────────────────────────────────────── */
 function bumpVisits() {
@@ -863,6 +924,10 @@ const I18N = {
         statsTitle: 'Statistik',
         globalVisitors: 'Pelawat (semua pengguna): %s',
         globalVisitorsErr: 'Tidak dapat memuatkan bilangan pelawat global.',
+        syncTitle: 'Segerakan',
+        syncLabel: 'Segerak saluran merentas peranti',
+        syncHint: 'Saluran yang anda tambah akan disegerakkan ke semua peranti atau pelayar yang membuka laman ini.',
+        syncStatus: 'Saluran disegerakkan: %s',
         visitCount: 'Halaman ini dibuka %s kali pada peranti ini.',
         videoFilterTitle: 'Video',
         embedFilterLabel: 'Sembunyikan video yang tidak boleh dimainkan',
@@ -911,6 +976,10 @@ const I18N = {
         statsTitle: 'Stats',
         globalVisitors: 'Visitors (all users): %s',
         globalVisitorsErr: 'Could not load global visitor count.',
+        syncTitle: 'Sync',
+        syncLabel: 'Sync channels across devices',
+        syncHint: 'Channels you add will sync to every device or browser that opens this page.',
+        syncStatus: 'Synced channels: %s',
         visitCount: 'This page has been opened %s times on this device.',
         videoFilterTitle: 'Videos',
         embedFilterLabel: 'Hide videos that cannot be played',
@@ -959,6 +1028,10 @@ const I18N = {
         statsTitle: '统计',
         globalVisitors: '访客（所有用户）：%s',
         globalVisitorsErr: '无法加载全球访客数量。',
+        syncTitle: '同步',
+        syncLabel: '跨设备同步频道',
+        syncHint: '您添加的频道将同步到打开此页面的所有设备或浏览器。',
+        syncStatus: '已同步频道：%s',
         visitCount: '此页面已在本设备打开 %s 次。',
         videoFilterTitle: '视频',
         embedFilterLabel: '隐藏无法播放的视频',
@@ -1007,6 +1080,10 @@ const I18N = {
         statsTitle: 'புள்ளிவிவரம்',
         globalVisitors: 'பார்வையாளர்கள் (அனைத்து பயனர்கள்): %s',
         globalVisitorsErr: 'உலகளாவிய பார்வையாளர்களின் எண்ணிக்கையை ஏற்ற முடியவில்லை.',
+        syncTitle: 'ஒத்திசைவு',
+        syncLabel: 'சேனல்களை சாதனங்களுக்கு இடையே ஒத்திசை',
+        syncHint: 'நீங்கள் சேர்க்கும் சேனல்கள் இந்தப் பக்கத்தைத் திறக்கும் ஒவ்வொரு சாதனம் அல்லது உலாவிக்கும் ஒத்திசைக்கப்படும்.',
+        syncStatus: 'ஒத்திசைக்கப்பட்ட சேனல்கள்: %s',
         visitCount: 'இந்தப் பக்கம் இந்த சாதனத்தில் %s முறை திறக்கப்பட்டது.',
         videoFilterTitle: 'வீடியோக்கள்',
         embedFilterLabel: 'இயக்க முடியாத வீடியோக்களை மறை',
@@ -1265,6 +1342,7 @@ function refreshSettingsStats() {
     const vc = $('#visitCount');
     if (vc) vc.textContent = t('visitCount').replace('%s', String(n));
     updateGlobalVisitsUI();
+    updateSyncUI();
     const tg = $('#embedFilterToggle');
     if (tg) tg.checked = embedFilterOn();
     updateEmbedProgress();
@@ -1326,6 +1404,7 @@ function removeCustomChannel(key) {
     renderChannelList();
     renderHero();
     renderGrid();
+    syncPush();
 }
 
 function parseChannelInput(input) {
@@ -1364,7 +1443,8 @@ async function resolveChannel(channelId, handle, key) {
 }
 
 async function fetchChannelVideos(channelId, key) {
-    const url = `${YT_API_BASE}/search?part=snippet&channelId=${encodeURIComponent(channelId)}&type=video&order=viewCount&maxResults=30&key=${encodeURIComponent(key)}`;
+    // Malay-first: bias the search toward Bahasa Melayu / Malaysia.
+    const url = `${YT_API_BASE}/search?part=snippet&channelId=${encodeURIComponent(channelId)}&type=video&order=viewCount&relevanceLanguage=ms&regionCode=MY&maxResults=30&key=${encodeURIComponent(key)}`;
     const resp = await fetch(url);
     const data = await resp.json();
     if (data.error) return [];
@@ -1393,6 +1473,12 @@ async function fetchChannelVideos(channelId, key) {
     } catch (e) {
         videos.forEach((v) => { if (msTitleScore(v.title) >= 2) v.lang = 'ms'; });
     }
+    // Malay-first: susun video Bahasa Melayu di hadapan.
+    videos.sort((a, b) => {
+        const aMs = (a.lang === 'ms' || msTitleScore(a.title) >= 2) ? 0 : 1;
+        const bMs = (b.lang === 'ms' || msTitleScore(b.title) >= 2) ? 0 : 1;
+        return aMs - bMs;
+    });
     return videos;
 }
 
@@ -1437,6 +1523,7 @@ async function addChannel() {
         renderHero();
         renderGrid();
         if (embedFilterOn()) runEmbedCheck();
+        syncPush();
         showFeedback(t('added'), true);
     } catch (e) {
         showFeedback(t('errNetwork'), false);
@@ -1492,6 +1579,17 @@ function bindEvents() {
     $('#embedRecheckBtn').addEventListener('click', () => {
         runEmbedCheck(true);
     });
+    $('#syncToggle').addEventListener('change', async (e) => {
+        setSyncEnabled(e.target.checked);
+        if (e.target.checked) {
+            await syncPull();
+            renderTabs();
+            renderChannelList();
+            renderHero();
+            renderGrid();
+        }
+        updateSyncUI();
+    });
     $('#addChannelBtn').addEventListener('click', addChannel);
     $('#customChannelInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') addChannel();
@@ -1545,4 +1643,14 @@ function bindEvents() {
     renderHero();
     renderGrid();
     if (embedFilterOn()) runEmbedCheck();
+    if (syncEnabled()) {
+        syncPull().then((ok) => {
+            if (ok) {
+                renderTabs();
+                renderChannelList();
+                renderHero();
+                renderGrid();
+            }
+        });
+    }
 })();

@@ -117,6 +117,17 @@
                 </section>
 
                 <section class="settings-section">
+                    <h4 class="settings-title" data-i18n="syncTitle">Segerakan</h4>
+                    <label class="switch-row">
+                        <input type="checkbox" id="syncToggle" />
+                        <span class="switch"></span>
+                        <span data-i18n="syncLabel">Segerak saluran merentas peranti</span>
+                    </label>
+                    <p class="settings-hint" data-i18n="syncHint">Saluran yang anda tambah akan disegerakkan ke semua peranti atau pelayar yang membuka laman ini.</p>
+                    <span class="settings-stat" id="syncStatus"></span>
+                </section>
+
+                <section class="settings-section">
                     <h4 class="settings-title" data-i18n="apiKeyLabel">Kunci API YouTube</h4>
                     <input type="text" id="apiKeyInput" class="settings-input" data-i18n-ph="apiKeyPh" placeholder="Paste kunci API di sini..." autocomplete="off" spellcheck="false" />
                     <p class="settings-hint" data-i18n="apiKeyHelp">Diperlukan untuk mengesahkan saluran. Dapatkan secara percuma di Google Cloud Console (dayakan "YouTube Data API v3").</p>
