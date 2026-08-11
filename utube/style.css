@@ -361,7 +361,7 @@ body.night {
 /* ── VIDEO GRID ── */
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 20px;
 }
 
@@ -582,8 +582,8 @@ body.night {
 .sug-item:hover { background: var(--bg-soft); border-color: var(--border-active); transform: translateX(2px); }
 
 .sug-item img {
-    width: 170px;
-    height: 96px;
+    width: 190px;
+    height: 107px;
     object-fit: cover;
     border-radius: 10px;
     flex-shrink: 0;
@@ -682,7 +682,7 @@ body.night {
 }
 
 @media (max-width: 520px) {
-    .video-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+    .video-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
     .brand-sub { display: none; }
     .ch-tab { padding: 9px 14px; font-size: 13px; }
 }

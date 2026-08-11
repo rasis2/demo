@@ -1025,10 +1025,11 @@ const t = (key) => (I18N[lang] && I18N[lang][key]) || I18N.ms[key] || key;
 
 function thumb(v) { return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`; }
 
-function embedUrl(v, autoplay = false) {
+function embedUrl(v, autoplay = false, muted = false) {
     // youtube-nocookie: no tracking cookies. rel=0: no unrelated rabbit-holes.
+    // mute=1: perlu untuk autoplay tanpa gestur pengguna (contoh: auto-play video seterusnya).
     // enablejsapi: benarkan postMessage (autoplay fallback & auto-play next).
-    const ap = autoplay ? '&autoplay=1' : '';
+    const ap = autoplay ? '&autoplay=1' + (muted ? '&mute=1' : '') : '';
     return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white&enablejsapi=1${ap}`;
 }
 
@@ -1170,7 +1171,7 @@ function renderSuggestions(current) {
                 <div class="sug-title">${v.title}</div>
                 <div class="sug-channel">${(allChannels()[v.ch] || {}).label || v.ch}</div>
             </div>`;
-        item.addEventListener('click', () => loadVideo(v));
+        item.addEventListener('click', () => userPlay(v));
         box.appendChild(item);
     });
 }
@@ -1179,7 +1180,8 @@ function playNext() {
     if (!currentSuggestions.length) return;
     const next = currentSuggestions[0];
     if (next && next.id !== ($('#playerFrame').dataset.videoId || '')) {
-        loadVideo(next);
+        // Tiada gestur pengguna untuk video seterusnya -> autoplay kena senyap (mute).
+        loadVideo(next, true);
     }
 }
 
@@ -1196,7 +1198,23 @@ function bindPlayerEvents() {
     });
 }
 
-function loadVideo(v) {
+// Cipta iframe baharu dalam gestur klik — ini membolehkan autoplay dengan bunyi
+// dalam Chrome (Chrome hanya benarkan bunyi autoplay untuk iframe yang dimuat
+// melalui interaksi pengguna).
+function createFrame() {
+    const old = $('#playerFrame');
+    const wrap = old.parentNode;
+    const f = document.createElement('iframe');
+    f.id = 'playerFrame';
+    f.title = 'Video player';
+    f.setAttribute('frameborder', '0');
+    f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    f.setAttribute('allowfullscreen', '');
+    wrap.replaceChild(f, old);
+    return f;
+}
+
+function loadVideo(v, muted = false) {
     $('#playerTitle').textContent = v.title;
     $('#playerChannel').textContent = (allChannels()[v.ch] || {}).label || v.ch;
     $('#playerDesc').textContent = `https://youtu.be/${v.id}`;
@@ -1208,10 +1226,16 @@ function loadVideo(v) {
             frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
         } catch (e) { /* ignore */ }
     };
-    frame.src = embedUrl(v, true);
+    frame.src = embedUrl(v, true, muted);
     frame.dataset.videoId = v.id;
     renderSuggestions(v);
     frame.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function userPlay(v) {
+    // Dimainkan oleh klik pengguna: iframe baharu supaya autoplay dengan bunyi berfungsi.
+    createFrame();
+    loadVideo(v, false);
 }
 
 function openPlayer(v) {
@@ -1220,7 +1244,7 @@ function openPlayer(v) {
     // dan src di-set dalam gesture klik yang sama (synchronous).
     $('#playerModal').classList.add('open');
     document.body.style.overflow = 'hidden';
-    loadVideo(v);
+    userPlay(v);
 }
 
 function closePlayer() {
