@@ -5,6 +5,7 @@ This is a demo repo where projects are being cast here
 
 | Demo | Folder | Jenis |
 |------|--------|-------|
+| EduScan | `mobile-device-eduscan/` | Static (Web Bluetooth) |
 | Stamp Signature | `signature-stamp-app/` | Static (pdf.js + pdf-lib, client-side) |
 | VideoSlim | `video-editor/` | Static |
 | RK1 | `kesuma-jmb/` | Static (Supabase) |

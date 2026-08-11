@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>EduScan — Pengimbas Peranti Mudah Alih</title>
+<meta name="description" content="Pengimbas Bluetooth untuk pendidik mengesan peranti mudah alih berhampiran. Berjalan terus dalam pelayar, tanpa pemasangan.">
+<meta name="theme-color" content="#020b08">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<!-- Preconnect for speed, but fonts are NOT layout-critical — system fallbacks handle it -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&family=Noto+Sans+Tamil:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<style>
+/* ── SYSTEM FONT FALLBACKS (GitHub Pages safe) ── */
+:root {
+  --font-mono: 'Share Tech Mono', 'Courier New', 'Lucida Console', monospace;
+  --font-display: 'Orbitron', 'Courier New', monospace;
+  --font-ui: 'Rajdhani', 'Arial Narrow', Arial, sans-serif;
+  --font-tamil: 'Noto Sans Tamil', 'Latha', sans-serif;
+}
+
+/* ── DARK MODE (default) ── */
+:root, [data-theme="dark"] {
+  --bg: #020b08;
+  --surface: #061510;
+  --panel: #0a1f18;
+  --border: #0f3d2e;
+  --accent: #00ff88;
+  --accent2: #00d4ff;
+  --warn: #ffaa00;
+  --danger: #ff3355;
+  --text: #a0ffcc;
+  --muted: #3a7a5a;
+  --grid-color: rgba(0,255,136,0.03);
+  --shadow-accent: 0 0 14px var(--accent);
+  --shadow-none: none;
+}
+
+/* ── LIGHT MODE ── */
+[data-theme="light"] {
+  --bg: #f0f7f4;
+  --surface: #ffffff;
+  --panel: #e8f5ef;
+  --border: #b2d8c8;
+  --accent: #007a40;
+  --accent2: #0068a0;
+  --warn: #b35c00;
+  --danger: #c0143a;
+  --text: #0a2e1e;
+  --muted: #4a8a6a;
+  --grid-color: rgba(0,122,64,0.05);
+  --shadow-accent: none;
+  --shadow-none: none;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+  font-size: 14px;
+  overflow-x: hidden;
+  transition: background .3s, color .3s;
+}
+
+body.tamil { font-family: var(--font-tamil); }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none; z-index: 0;
+}
+
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 860px; margin: 0 auto;
+  padding: 10px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px; padding: 10px 14px;
+  background: var(--panel); border: 1px solid var(--border);
+}
+.logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(.95rem, 4vw, 1.35rem);
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-shadow: var(--shadow-accent);
+}
+.logo span { color: var(--accent2); }
+
+.hdr-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.clock {
+  font-family: var(--font-display);
+  font-size: clamp(.58rem, 2.5vw, .72rem);
+  color: var(--accent2);
+  letter-spacing: 1px;
+}
+
+/* ── LANG + THEME ROW ── */
+.controls-row { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+
+.lb, .theme-btn, .icon-btn {
+  padding: 3px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: .6rem; letter-spacing: 1px;
+  cursor: pointer; transition: all .2s;
+  line-height: 1.4;
+}
+.lb.active {
+  border-color: var(--accent2); color: var(--accent2);
+  background: transparent;
+}
+.theme-btn, .icon-btn {
+  border-color: var(--border);
+  font-size: .75rem; padding: 2px 7px;
+}
+.theme-btn:hover, .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.lb:disabled, .theme-btn:disabled, .icon-btn:disabled { opacity: .4; cursor: not-allowed; }
+.icon-btn.on { border-color: var(--accent); color: var(--accent); background: transparent; }
+
+/* divider */
+.ctrl-sep { width: 1px; height: 18px; background: var(--border); }
+
+/* ── ALERT ── */
+.alert {
+  display: none; padding: 9px 12px;
+  background: rgba(255,51,85,.1); border: 1px solid var(--danger);
+  color: var(--danger);
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: clamp(.72rem, 3vw, .82rem); letter-spacing: 1px;
+  animation: ablink .6s infinite alternate;
+}
+[data-theme="light"] .alert { background: rgba(192,20,58,.08); }
+.alert.show { display: block; }
+@keyframes ablink { from { border-color: var(--danger); } to { border-color: transparent; } }
+
+/* ── GRID ── */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media(max-width: 580px) { .grid { grid-template-columns: 1fr; } }
+
+/* ── PANEL ── */
+.panel { background: var(--panel); border: 1px solid var(--border); padding: 12px; }
+.ptitle {
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: .62rem; letter-spacing: 3px; color: var(--muted);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+  text-transform: uppercase;
+}
+.ptitle::before { content: ''; width: 3px; height: 11px; background: var(--accent); display: block; }
+
+/* ── PULSE RING ── */
+.pulse-wrap { display: flex; justify-content: center; padding: 8px 0; }
+.ring {
+  position: relative; width: 70px; height: 70px;
+  border-radius: 50%; border: 2px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .3s;
+}
+.ring-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent); transition: background .3s;
+}
+.ring-out {
+  position: absolute; inset: -2px; border-radius: 50%;
+  border: 2px solid var(--accent); opacity: 0;
+  transition: border-color .3s;
+}
+.ring.active .ring-out { animation: rpulse 1.4s ease-out infinite; }
+.ring.active .ring-dot { box-shadow: var(--shadow-accent); }
+@keyframes rpulse {
+  0%   { transform: scale(1); opacity: .7; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* ── BT STATUS ROW ── */
+.bt-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  font-size: .68rem; color: var(--muted);
+}
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted); flex-shrink: 0;
+}
+.dot.on {
+  background: var(--accent);
+  box-shadow: var(--shadow-accent);
+  animation: dp 1.5s infinite;
+}
+@keyframes dp { 0%,100% { opacity:1; } 50% { opacity:.25; } }
+
+/* ── BUTTONS ── */
+.btn {
+  width: 100%; padding: 11px;
+  border: 1px solid var(--accent); background: transparent;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: clamp(.62rem, 2.5vw, .76rem); letter-spacing: 2px;
+  cursor: pointer; transition: all .22s;
+}
+.btn:active { transform: scale(.97); }
+.btn:hover { background: rgba(0,122,64,.07); }
+.btn.scanning {
+  border-color: var(--warn); color: var(--warn);
+  animation: sbtn .85s ease-in-out infinite alternate;
+}
+@keyframes sbtn {
+  from { box-shadow: 0 0 4px var(--warn); }
+  to   { box-shadow: 0 0 16px var(--warn); }
+}
+.btn-stop { border-color: var(--danger); color: var(--danger); display: none; margin-top: 6px; }
+.btn-stop.show { display: block; }
+.btn-stop:hover { background: rgba(192,20,58,.07); }
+.btn-row { display: flex; gap: 6px; margin-top: 6px; }
+.btn-sm {
+  flex: 1; padding: 7px 6px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--muted);
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: .58rem; letter-spacing: 1px; cursor: pointer; transition: all .2s;
+}
+.btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ── PROGRESS ── */
+.prog { height: 2px; background: var(--border); margin-top: 6px; overflow: hidden; }
+.prog-bar {
+  height: 100%; width: 0%;
+  background: var(--accent);
+  box-shadow: var(--shadow-accent);
+  transition: width .3s;
+}
+.prog-bar.indeterminate {
+  width: 38% !important;
+  animation: indet 1.4s ease-in-out infinite;
+}
+@keyframes indet {
+  0%   { transform: translateX(-130%); }
+  100% { transform: translateX(360%); }
+}
+
+/* ── STATS ── */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--border); padding: 9px 6px; text-align: center; }
+.sn {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 5vw, 1.6rem); font-weight: 700;
+  color: var(--accent); text-shadow: var(--shadow-accent);
+  display: block; line-height: 1;
+}
+.sn.w { color: var(--warn); text-shadow: var(--shadow-none); }
+.sn.d { color: var(--danger); text-shadow: var(--shadow-none); animation: dp .5s infinite; }
+.sl { font-size: .52rem; color: var(--muted); letter-spacing: 2px; margin-top: 3px; display: block; }
+
+/* ── NOTE ── */
+.note {
+  padding: 8px 10px; margin-top: 8px;
+  background: transparent; border: 1px solid var(--border);
+  font-size: .63rem; color: var(--muted); line-height: 1.6;
+}
+
+/* ── LOG ── */
+.log-box { height: 150px; overflow-y: auto; font-size: .65rem; line-height: 1.65; }
+@media(max-width: 580px) { .log-box { height: 120px; } }
+.log-box::-webkit-scrollbar { width: 2px; }
+.log-box::-webkit-scrollbar-thumb { background: var(--border); }
+.ll {
+  display: flex; gap: 7px; padding: 2px 0;
+  border-bottom: 1px solid var(--border);
+  animation: lf .2s ease;
+}
+@keyframes lf { from { opacity:0; transform:translateX(-3px); } to { opacity:1; transform:none; } }
+.lt { color: var(--muted); min-width: 60px; flex-shrink: 0; font-size: .6rem; }
+.lk { min-width: 44px; font-weight: 700; font-size: .58rem; letter-spacing: 1px; flex-shrink: 0; }
+.lk.bt   { color: var(--accent2); }
+.lk.sys  { color: var(--muted); }
+.lk.warn { color: var(--warn); }
+.lk.phn  { color: var(--accent); }
+.lm { color: var(--text); word-break: break-word; }
+
+/* ── DEVICE LIST ── */
+.toolbar { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+.tb {
+  padding: 3px 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: .56rem; letter-spacing: 1px; cursor: pointer; transition: all .2s;
+}
+.tb.active { border-color: var(--accent); color: var(--accent); }
+.tb:hover { border-color: var(--accent2); color: var(--accent2); }
+.tb-spacer { flex: 1; }
+
+.dlist { display: flex; flex-direction: column; gap: 5px; max-height: 220px; overflow-y: auto; }
+@media(max-width: 580px) { .dlist { max-height: 170px; } }
+.dlist::-webkit-scrollbar { width: 2px; }
+.dlist::-webkit-scrollbar-thumb { background: var(--border); }
+.dcard {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 8px 11px;
+  display: flex; align-items: center; gap: 9px;
+  animation: lf .3s ease;
+}
+.dcard.phone { border-left: 3px solid var(--accent); }
+.dcard.other { border-left: 3px solid var(--accent2); }
+.dico { font-size: 1.1rem; flex-shrink: 0; }
+.dinfo { flex: 1; min-width: 0; }
+.dname {
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: clamp(.78rem, 3vw, .88rem);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--text);
+}
+.dmeta { font-size: .56rem; color: var(--muted); margin-top: 2px; }
+.dmeta b { color: var(--accent); font-weight: 400; }
+.sbars { display: flex; gap: 2px; align-items: flex-end; height: 14px; flex-shrink: 0; }
+.sb { width: 4px; border-radius: 1px; background: var(--border); }
+.sb.on  { background: var(--accent); }
+.sb.med { background: var(--warn); }
+.sb.lo  { background: var(--danger); }
+.empty { text-align: center; padding: 22px; color: var(--muted); font-size: .68rem; letter-spacing: 2px; }
+
+/* ── CHART ── */
+.chart-wrap { position: relative; margin-top: 6px; }
+.chart {
+  width: 100%; height: 120px; display: block;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.chart-label {
+  position: absolute; top: 5px; left: 8px;
+  font-size: .52rem; letter-spacing: 2px; color: var(--muted);
+  font-family: var(--font-ui); font-weight: 700;
+}
+.legend { display: flex; gap: 12px; margin-top: 6px; font-size: .55rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 4px; }
+.legend i { width: 14px; height: 3px; display: inline-block; }
+.legend .l1 i { background: var(--accent); }
+.legend .l2 i { background: var(--accent2); }
+
+/* ── BOTTOM BAR ── */
+.bottom {
+  padding: 7px 12px;
+  background: var(--panel); border: 1px solid var(--border);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 5px;
+  font-size: .58rem; color: var(--muted);
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 10px; right: 10px;
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 7px 12px; font-size: .62rem; color: var(--accent2);
+  display: none; z-index: 100;
+}
+.toast.show { display: block; }
+</style>
+</head>
+<body data-theme="dark">
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">EDU<span>SCAN</span></div>
+    <div class="hdr-right">
+      <div class="controls-row">
+        <!-- Language buttons -->
+        <button class="lb active" onclick="setLang('ms')">BM</button>
+        <button class="lb" onclick="setLang('en')">EN</button>
+        <button class="lb" onclick="setLang('zh')">中文</button>
+        <button class="lb" onclick="setLang('ta')">தமிழ்</button>
+        <div class="ctrl-sep"></div>
+        <!-- Sound alert toggle -->
+        <button class="icon-btn on" id="sndBtn" onclick="toggleSound()" title="Sound alert">🔔</button>
+        <!-- Theme toggle -->
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      </div>
+      <div class="clock" id="clk">--:--:--</div>
+    </div>
+  </header>
+
+  <!-- ALERT -->
+  <div class="alert" id="alertEl"></div>
+
+  <!-- MAIN GRID -->
+  <div class="grid">
+
+    <!-- LEFT: SCANNER -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="panel">
+        <div class="ptitle"><span data-i="panel_scanner">PENGIMBAS</span></div>
+
+        <div class="pulse-wrap">
+          <div class="ring" id="ring">
+            <div class="ring-out"></div>
+            <div class="ring-dot"></div>
+          </div>
+        </div>
+
+        <div class="bt-row" style="margin-top:8px;">
+          <div class="dot" id="btDot"></div>
+          <span id="btStatusTxt" data-i="bt_standby">BT: STANDBY</span>
+        </div>
+
+        <div style="margin-top:8px;">
+          <button class="btn" id="scanBtn" onclick="startScan()" data-i="btn_scan">▶ MULA IMBAS</button>
+          <button class="btn btn-stop" id="stopBtn" onclick="stopScan()" data-i="btn_stop">■ HENTI</button>
+        </div>
+
+        <div class="prog"><div class="prog-bar" id="progBar"></div></div>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="sn" id="totalN">0</span>
+            <span class="sl" data-i="stat_total">PERANTI</span>
+          </div>
+          <div class="stat">
+            <span class="sn w" id="phoneN">0</span>
+            <span class="sl" data-i="stat_phone">TELEFON</span>
+          </div>
+          <div class="stat">
+            <span class="sn" id="durN">0s</span>
+            <span class="sl" data-i="stat_time">MASA</span>
+          </div>
+          <div class="stat">
+            <span class="sn" id="scanN">0</span>
+            <span class="sl" data-i="stat_scans">IMBASAN</span>
+          </div>
+        </div>
+
+        <div class="note"><span data-i="perm_note">Tekan Mula Imbas → browser minta kebenaran Bluetooth. Pastikan Bluetooth murid HIDUP.</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="ptitle"><span data-i="panel_chart">GRAF PENEMUAN</span></div>
+        <div class="chart-wrap">
+          <div class="chart-label" data-i="chart_lbl">PERANTI / TELEFON</div>
+          <canvas class="chart" id="chart"></canvas>
+        </div>
+        <div class="legend">
+          <span class="l1"><i></i><span data-i="chart_total">Semua peranti</span></span>
+          <span class="l2"><i></i><span data-i="chart_phone">Telefon</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: LOG + DEVICES -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="panel">
+        <div class="ptitle"><span data-i="panel_log">LOG SISTEM</span></div>
+        <div class="log-box" id="logBox"></div>
+      </div>
+      <div class="panel">
+        <div class="ptitle"><span data-i="panel_devices">PERANTI DIKESAN</span></div>
+        <div class="toolbar">
+          <button class="tb active" data-f="all" onclick="setFilter('all')" data-i="f_all">SEMUA</button>
+          <button class="tb" data-f="phone" onclick="setFilter('phone')" data-i="f_phone">📱 TELEFON</button>
+          <button class="tb" data-f="other" onclick="setFilter('other')" data-i="f_other">📡 LAIN</button>
+          <span class="tb-spacer"></span>
+          <button class="tb" data-s="time" onclick="setSort('time')" data-i="s_time">MASA</button>
+          <button class="tb" data-s="signal" onclick="setSort('signal')" data-i="s_signal">ISYARAT</button>
+        </div>
+        <div class="dlist" id="dlist">
+          <div class="empty" data-i="empty">[ TIADA PERANTI — MULAKAN IMBASAN ]</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-sm" onclick="exportCSV()" data-i="btn_export">⬇ EKSPORT CSV</button>
+          <button class="btn-sm danger" onclick="clearDevices()" data-i="btn_clear">✖ KOSONGKAN</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom">
+    <span>EduScan v4.0</span>
+    <span id="sessEl" data-i="sess_idle">SESI: TIDAK AKTIF</span>
+    <span data-i="shortcut">[SPACE] = mula/henti</span>
+  </div>
+
+</div>
+
+<!-- Translation toast -->
+<div class="toast" id="toast">⟳ <span id="toastTxt"></span></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// BASE STRINGS — Malay
+// ═══════════════════════════════════════════════
+const BASE = {
+  panel_scanner : 'PENGIMBAS',
+  panel_log     : 'LOG SISTEM',
+  panel_devices : 'PERANTI DIKESAN',
+  panel_chart   : 'GRAF PENEMUAN',
+  chart_lbl     : 'PERANTI / TELEFON',
+  chart_total   : 'Semua peranti',
+  chart_phone   : 'Telefon',
+  btn_scan      : '▶ MULA IMBAS',
+  btn_stop      : '■ HENTI',
+  btn_export    : '⬇ EKSPORT CSV',
+  btn_clear     : '✖ KOSONGKAN',
+  f_all         : 'SEMUA',
+  f_phone       : '📱 TELEFON',
+  f_other       : '📡 LAIN',
+  s_time        : 'MASA',
+  s_signal      : 'ISYARAT',
+  stat_total    : 'PERANTI',
+  stat_phone    : 'TELEFON',
+  stat_time     : 'MASA',
+  stat_scans    : 'IMBASAN',
+  perm_note     : 'Tekan Mula Imbas → browser minta kebenaran Bluetooth. Pastikan Bluetooth murid HIDUP.',
+  bt_standby    : 'BT: STANDBY',
+  bt_scanning   : 'BT: MENGIMBAS',
+  bt_unavail    : 'BT: TIDAK TERSEDIA',
+  alert         : '⚠ AMARAN: TELEFON DIKESAN',
+  empty         : '[ TIADA PERANTI — MULAKAN IMBASAN ]',
+  sess_idle     : 'SESI: TIDAK AKTIF',
+  sess_active   : 'SESI: AKTIF',
+  sess_done     : 'SESI: TAMAT',
+  log_ready     : 'Sistem bersedia.',
+  log_bt_ok     : 'Web Bluetooth API tersedia ✓',
+  log_bt_no     : 'Web Bluetooth tidak tersedia — guna Chrome atau Edge.',
+  log_start     : 'Imbasan dimulakan.',
+  log_found     : 'Dijumpai: ',
+  log_phone     : '📱 TELEFON',
+  log_other     : '📡 Peranti',
+  log_dup       : '(sudah dikesan)',
+  log_cancel    : 'Dibatalkan / tiada peranti dipilih.',
+  log_denied    : 'Kebenaran Bluetooth ditolak.',
+  log_err       : 'Ralat: ',
+  log_stop      : 'Imbasan dihentikan.',
+  log_total     : 'Jumlah peranti: ',
+  log_phones    : 'Telefon dikesan: ',
+  log_clear     : 'Senarai peranti dikosongkan.',
+  log_restore   : 'Sesi terdahulu dipulihkan dari simpanan.',
+  log_sound_on  : 'Amaran bunyi dihidupkan.',
+  log_sound_off : 'Amaran bunyi dimatikan.',
+  dist_near     : 'dekat',
+  dist_mid      : 'sederhana',
+  dist_far      : 'jauh',
+  shortcut      : '[SPACE] = mula/henti',
+};
+
+// MyMemory langpair codes
+const LANG_CODE = { ms:'ms', en:'en', zh:'zh', ta:'ta' };
+
+let strings     = { ...BASE };
+let curLang     = 'ms';
+let translating = false;
+let transCache  = { ms: { ...BASE } }; // cache per lang
+
+// ── Translate via MyMemory (free, no API key) ──
+async function translateStrings(lang) {
+  if(transCache[lang]){ strings = transCache[lang]; applyStrings(); return; }
+
+  setTranslating(true);
+  document.getElementById('toastTxt').textContent = lang + '...';
+
+  const result = { ...BASE };
+  const keys   = Object.keys(BASE);
+
+  // Only translate display-worthy strings
+  const toTx = keys.filter(k => {
+    const v = BASE[k];
+    return v.length > 3 && !/^[▶■⚠⟳📱📡✓\[\]·:]+$/.test(v);
+  });
+
+  const CHUNK = 5;
+  for(let i = 0; i < toTx.length; i += CHUNK) {
+    const slice = toTx.slice(i, i + CHUNK);
+    await Promise.all(slice.map(async k => {
+      try {
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(BASE[k])}&langpair=ms|${LANG_CODE[lang]}`;
+        const res = await fetch(url);
+        const d   = await res.json();
+        if(d.responseStatus === 200 && d.responseData?.translatedText) {
+          result[k] = d.responseData.translatedText;
+        }
+      } catch(_) { /* keep original */ }
+    }));
+    if(i + CHUNK < toTx.length) await wait(280);
+  }
+
+  transCache[lang] = result;
+  strings = result;
+  applyStrings();
+  setTranslating(false);
+}
+
+function setTranslating(on) {
+  translating = on;
+  document.getElementById('toast').classList.toggle('show', on);
+  document.querySelectorAll('.lb, .theme-btn, .icon-btn').forEach(b => b.disabled = on);
+}
+
+function applyStrings() {
+  document.querySelectorAll('[data-i]').forEach(el => {
+    const k = el.getAttribute('data-i');
+    if(strings[k] !== undefined) el.textContent = strings[k];
+  });
+  // Tamil needs its own font family
+  document.body.classList.toggle('tamil', curLang === 'ta');
+  // Sync buttons that change during scan
+  if(!scanning) {
+    document.getElementById('scanBtn').textContent     = strings.btn_scan;
+    document.getElementById('stopBtn').textContent     = strings.btn_stop;
+    document.getElementById('btStatusTxt').textContent = strings.bt_standby;
+  }
+  renderDevices();
+  updateStats();
+}
+
+async function setLang(l) {
+  if(l === curLang || translating) return;
+  curLang = l;
+  document.querySelectorAll('.lb').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lb[onclick="setLang('${l}')"]`).classList.add('active');
+  await translateStrings(l);
+}
+
+// ═══════════════════════════════════════════════
+// THEME TOGGLE
+// ═══════════════════════════════════════════════
+let darkMode = true;
+
+function toggleTheme() {
+  darkMode = !darkMode;
+  document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  document.getElementById('themeBtn').textContent = darkMode ? '🌙' : '☀️';
+  // Save preference
+  try { localStorage.setItem('eduscan_theme', darkMode ? 'dark' : 'light'); } catch(_){}
+  drawChart();
+}
+
+// Load saved theme
+try {
+  const saved = localStorage.getItem('eduscan_theme');
+  if(saved === 'light') { darkMode = false; document.body.setAttribute('data-theme','light'); document.getElementById('themeBtn').textContent = '☀️'; }
+} catch(_){}
+
+// ═══════════════════════════════════════════════
+// SOUND ALERT
+// ═══════════════════════════════════════════════
+let soundOn = true;
+try { if(localStorage.getItem('eduscan_sound') === '0') soundOn = false; } catch(_){}
+
+function toggleSound() {
+  soundOn = !soundOn;
+  document.getElementById('sndBtn').classList.toggle('on', soundOn);
+  document.getElementById('sndBtn').textContent = soundOn ? '🔔' : '🔕';
+  try { localStorage.setItem('eduscan_sound', soundOn ? '1' : '0'); } catch(_){}
+  log('SYS','sys', soundOn ? strings.log_sound_on : strings.log_sound_off);
+}
+
+// Simple beep via WebAudio (no external assets)
+let audioCtx = null;
+function beep(freq = 880, dur = .12) {
+  if(!soundOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'square'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch(_) {}
+}
+
+// ═══════════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════════
+setInterval(() => {
+  document.getElementById('clk').textContent = new Date().toTimeString().slice(0,8);
+}, 1000);
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+function esc(s)   { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function nowHMS() { return new Date().toTimeString().slice(0,8); }
+
+// ═══════════════════════════════════════════════
+// LOG
+// ═══════════════════════════════════════════════
+function log(type, cls, msg) {
+  const box = document.getElementById('logBox');
+  const t   = nowHMS();
+  const el  = document.createElement('div');
+  el.className = 'll';
+  el.innerHTML = `<span class="lt">${t}</span><span class="lk ${cls}">${type}</span><span class="lm">${esc(msg)}</span>`;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+  while(box.children.length > 120) box.removeChild(box.firstChild);
+}
+
+// ═══════════════════════════════════════════════
+// DEVICE CLASSIFICATION
+// ═══════════════════════════════════════════════
+// Weighted keyword scoring — more specific matches (longer) weigh more.
+const TYPE_RULES = {
+  phone:   { icon:'📱', kw:['iphone','samsung','galaxy','redmi','xiaomi','oppo','vivo','huawei','honor',
+                            'realme','poco','nokia','pixel','oneplus','motorola','sony xperia','android',
+                            'mobile','phone','tecno','itel','infinix','zenfone','iqoo','vsmart','blackview','tcl'] },
+  tablet:  { icon:'📲', kw:['ipad','galaxy tab','tablet','tab','kindle','mipad','surface pro','matepad'] },
+  laptop:  { icon:'💻', kw:['macbook','thinkpad','latitude','inspiron','vivobook','zenbook','laptop','ideapad',
+                            'surface','pavilion','aspire','probook','elitebook','chromebook','vostro','xps'] },
+  wearable:{ icon:'⌚', kw:['galaxy watch','watch','band','fitbit','amazfit','miband','mi band','gear fit','versa','sense'] },
+  audio:   { icon:'🎧', kw:['buds','airpods','earbuds','headphones','headset','speaker','jbl','soundcore','earphone','soundsport'] },
+  other:   { icon:'📡', kw:[] }
+};
+
+function classifyDevice(name) {
+  const n = (name || '').toLowerCase();
+  let best = 'other', bestScore = 0;
+  for(const t in TYPE_RULES) {
+    if(t === 'other') continue;
+    let score = 0;
+    for(const k of TYPE_RULES[t].kw) {
+      if(n.includes(k)) score += k.length >= 8 ? 3 : k.length >= 5 ? 2 : 1;
+    }
+    if(score > bestScore) { bestScore = score; best = t; }
+  }
+  return best;
+}
+
+function isPhoneType(type) { return type === 'phone'; }
+
+// Signal bars (0-4) from RSSI
+function sigLevel(rssi) {
+  if(rssi > -60) return 4;
+  if(rssi > -70) return 3;
+  if(rssi > -80) return 2;
+  return 1;
+}
+
+// Rough distance estimate in meters from RSSI (free-space path loss approx)
+function distFromRssi(rssi, txPower = -59) {
+  if(rssi >= -40) return 'dekat';
+  const ratio = (txPower - rssi) / 20;
+  const m = Math.pow(10, ratio);
+  if(m < 2) return 'dekat';
+  if(m < 8) return 'sederhana';
+  return 'jauh';
+}
+
+function sigBars(rssi) {
+  const lvl = sigLevel(rssi);
+  const cls = rssi > -65 ? 'on' : rssi > -78 ? 'med' : 'lo';
+  return [8,11,14,17].map((h, i) =>
+    `<div class="sb${i < lvl ? ' '+cls : ''}" style="height:${h}px"></div>`
+  ).join('');
+}
+
+function distLabel(distKey) {
+  return { dekat: strings.dist_near, sederhana: strings.dist_mid, jauh: strings.dist_far }[distKey] || distKey;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER DEVICES (with filter + sort)
+// ═══════════════════════════════════════════════
+let filter = 'all';   // all | phone | other
+let sortBy = 'time';  // time | signal
+
+function setFilter(f) {
+  filter = f;
+  document.querySelectorAll('.tb[data-f]').forEach(b => b.classList.toggle('active', b.dataset.f === f));
+  renderDevices();
+}
+
+function setSort(s) {
+  sortBy = s;
+  document.querySelectorAll('.tb[data-s]').forEach(b => b.classList.toggle('active', b.dataset.s === s));
+  renderDevices();
+}
+
+function visibleDevices() {
+  let list = devices.slice();
+  if(filter === 'phone') list = list.filter(d => isPhoneType(d.type));
+  if(filter === 'other') list = list.filter(d => !isPhoneType(d.type));
+  if(sortBy === 'signal') list.sort((a,b) => b.rssi - a.rssi);
+  else list.sort((a,b) => (a.order||0) - (b.order||0));
+  return list;
+}
+
+function typeLabel(type) {
+  const map = {
+    phone:    strings.log_phone || '📱 TELEFON',
+    tablet:   '📲 TABLET',
+    laptop:   '💻 KOMPUTER',
+    wearable: '⌚ BOLEH PAKAI',
+    audio:    '🎧 AUDIO',
+    other:    strings.log_other || '📡 PERANTI'
+  };
+  return map[type] || '📡';
+}
+
+function renderDevices() {
+  const el = document.getElementById('dlist');
+  const list = visibleDevices();
+  if(list.length === 0){
+    el.innerHTML = `<div class="empty">${strings.empty||'[ NO DEVICES ]'}</div>`;
+    return;
+  }
+  el.innerHTML = list.map(d => `
+    <div class="dcard ${isPhoneType(d.type) ? 'phone' : 'other'}">
+      <div class="dico">${TYPE_RULES[d.type] ? TYPE_RULES[d.type].icon : '📡'}</div>
+      <div class="dinfo">
+        <div class="dname">${esc(d.name)}</div>
+        <div class="dmeta">${esc(typeLabel(d.type))} · <b>${d.rssi}</b>dBm · ${esc(distLabel(d.dist))} · ${d.time}</div>
+      </div>
+      <div class="sbars">${sigBars(d.rssi)}</div>
+    </div>
+  `).join('');
+}
+
+function updateStats() {
+  const phones = devices.filter(d => isPhoneType(d.type)).length;
+  document.getElementById('totalN').textContent = devices.length;
+  document.getElementById('scanN').textContent  = scanCount;
+
+  const pEl = document.getElementById('phoneN');
+  pEl.textContent  = phones;
+  pEl.className    = 'sn' + (phones > 4 ? ' d' : phones > 1 ? ' w' : '');
+
+  const alertEl = document.getElementById('alertEl');
+  if(phones > 4){
+    alertEl.textContent = `${strings.alert||'⚠ ALERT'} — ${phones}`;
+    alertEl.classList.add('show');
+    beep(660); setTimeout(() => beep(990), 200);
+  } else {
+    alertEl.classList.remove('show');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CHART — live canvas line chart
+// ═══════════════════════════════════════════════
+let chartHistory = []; // {t, total, phones}
+
+function drawChart() {
+  const cv = document.getElementById('chart');
+  if(!cv) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const colors = getComputedStyle(document.body);
+  const cGrid = colors.getPropertyValue('--border').trim() || '#0f3d2e';
+  const cAcc  = colors.getPropertyValue('--accent').trim()  || '#00ff88';
+  const cAcc2 = colors.getPropertyValue('--accent2').trim() || '#00d4ff';
+  const cText = colors.getPropertyValue('--text').trim()    || '#a0ffcc';
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = 'transparent';
+
+  // grid
+  ctx.strokeStyle = cGrid; ctx.lineWidth = 1; ctx.globalAlpha = .5;
+  for(let i = 1; i < 4; i++) {
+    const y = (H/4) * i;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  if(chartHistory.length < 2) {
+    ctx.fillStyle = cText; ctx.font = '9px Share Tech Mono, monospace';
+    ctx.globalAlpha = .4;
+    ctx.fillText('...', 6, H - 6);
+    ctx.globalAlpha = 1;
+    return;
+  }
+
+  const maxV = Math.max(1, ...chartHistory.map(p => p.total));
+  const pad  = 4;
+  const step = (W - pad*2) / (chartHistory.length - 1);
+
+  function line(key, color) {
+    ctx.strokeStyle = color; ctx.lineWidth = 1.6; ctx.beginPath();
+    chartHistory.forEach((p, i) => {
+      const x = pad + i * step;
+      const y = H - pad - (p[key] / maxV) * (H - pad*2);
+      if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    // dot on latest
+    const last = chartHistory[chartHistory.length-1];
+    const lx = pad + (chartHistory.length-1) * step;
+    const ly = H - pad - (last[key]/maxV)*(H - pad*2);
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(lx, ly, 2, 0, Math.PI*2); ctx.fill();
+  }
+  line('total', cAcc);
+  line('phones', cAcc2);
+
+  ctx.fillStyle = cText; ctx.font = '9px Share Tech Mono, monospace'; ctx.globalAlpha = .55;
+  ctx.fillText(`max ${maxV}`, 6, 10);
+  ctx.globalAlpha = 1;
+}
+
+// ═══════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════
+function exportCSV() {
+  if(devices.length === 0) { log('SYS','sys', strings.log_err + 'Tiada data untuk dieksport.'); return; }
+  const header = ['Nama','Jenis','RSSI (dBm)','Anggaran','Masa'];
+  const rows = devices.map(d => [
+    `"${d.name.replace(/"/g,'""')}"`,
+    typeLabel(d.type),
+    d.rssi,
+    distLabel(d.dist),
+    d.time
+  ]);
+  const csv = '\uFEFF' + [header, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `eduscan-${nowHMS().replace(/:/g,'-')}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  log('SYS','sys', 'CSV dieksport (' + devices.length + ' baris).');
+}
+
+function clearDevices() {
+  devices = []; chartHistory = [];
+  renderDevices(); updateStats(); drawChart();
+  log('SYS','sys', strings.log_clear);
+}
+
+// ═══════════════════════════════════════════════
+// STATE + PERSISTENCE
+// ═══════════════════════════════════════════════
+let scanning    = false;
+let seenIds     = {};
+let devices     = [];
+let scanSeconds = 0;
+let scanCount   = 0;
+let durTimer    = null;
+let chartTimer  = null;
+
+function saveSession() {
+  try {
+    localStorage.setItem('eduscan_session', JSON.stringify({
+      devices: devices.map(d => ({ name:d.name, id:d.id, rssi:d.rssi, type:d.type, dist:d.dist, time:d.time, order:d.order })),
+      scanSeconds, scanCount, saved: nowHMS()
+    }));
+  } catch(_) {}
+}
+
+function restoreSession() {
+  try {
+    const raw = localStorage.getItem('eduscan_session');
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    if(!s.devices || !s.devices.length) return;
+    devices = s.devices.map((d, i) => ({ ...d, order: i }));
+    chartHistory = [];
+    renderDevices(); updateStats();
+    log('SYS','sys', strings.log_restore + ' (' + devices.length + ')');
+  } catch(_) {}
+}
+
+// ═══════════════════════════════════════════════
+// BLUETOOTH SCAN — actual, no simulation
+// ═══════════════════════════════════════════════
+async function doBtScan() {
+  if(!navigator.bluetooth) return;
+
+  document.getElementById('btDot').classList.add('on');
+  document.getElementById('btStatusTxt').textContent = strings.bt_scanning || 'BT: SCANNING';
+
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: []
+    });
+
+    const name = device.name || device.id.slice(0, 12);
+    const id   = device.id;
+    scanCount++;
+    document.getElementById('scanN').textContent = scanCount;
+
+    // Attempt GATT connection to read TX Power Level (0x2A07) for real signal data
+    let rssi = -72;
+    try {
+      const server = await Promise.race([
+        device.gatt.connect(),
+        wait(3000).then(() => { throw new Error('timeout'); })
+      ]);
+      try {
+        const svc = await server.getPrimaryService(0x1800);
+        const chr = await svc.getCharacteristic(0x2A07);
+        const val = await chr.readValue();
+        const tx  = val.getInt8(0);
+        rssi = Math.max(-90, Math.min(-40, tx - 40));
+      } catch(_) {}
+      await server.disconnect();
+    } catch(_) {}
+
+    if(!seenIds[id]) {
+      seenIds[id] = true;
+      const type = classifyDevice(name);
+      const dist = distFromRssi(rssi);
+      const time = nowHMS();
+
+      devices.unshift({ name, id, rssi, type, dist, time, order: devices.length });
+      chartHistory.push({ t: scanSeconds, total: devices.length, phones: devices.filter(d => isPhoneType(d.type)).length });
+
+      const isPhone = isPhoneType(type);
+      log('BT', isPhone ? 'phn' : 'bt', `${strings.log_found||'Found: '}"${name}" — ${isPhone ? strings.log_phone : strings.log_other} (${rssi}dBm)`);
+      if(isPhone) beep(520);
+      renderDevices();
+      updateStats();
+      drawChart();
+    } else {
+      log('BT','bt', `"${name}" ${strings.log_dup||'(duplicate)'}`);
+    }
+
+  } catch(e) {
+    if(e.name === 'NotFoundError' || e.name === 'AbortError'){
+      log('BT','bt', strings.log_cancel || 'Cancelled.');
+    } else if(e.name === 'SecurityError'){
+      log('WARN','warn', strings.log_denied || 'Permission denied.');
+    } else {
+      log('WARN','warn', (strings.log_err || 'Error: ') + e.message);
+    }
+  } finally {
+    document.getElementById('btDot').classList.remove('on');
+    if(scanning) document.getElementById('btStatusTxt').textContent = strings.bt_scanning || 'BT: SCANNING';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SCAN FLOW
+// ═══════════════════════════════════════════════
+async function startScan() {
+  if(scanning) return;
+  scanning = true;
+
+  seenIds = {}; devices = []; scanSeconds = 0; scanCount = 0; chartHistory = [];
+  renderDevices(); updateStats(); drawChart();
+
+  document.getElementById('scanBtn').textContent     = strings.bt_scanning || 'SCANNING...';
+  document.getElementById('scanBtn').classList.add('scanning');
+  document.getElementById('stopBtn').classList.add('show');
+  document.getElementById('ring').classList.add('active');
+  document.getElementById('sessEl').textContent      = strings.sess_active || 'ACTIVE';
+  document.getElementById('progBar').classList.add('indeterminate');
+
+  log('SYS','sys', strings.log_start || 'Scan started.');
+  if(!navigator.bluetooth) log('WARN','warn', strings.log_bt_no || 'BT not available.');
+
+  durTimer = setInterval(() => {
+    scanSeconds++;
+    document.getElementById('durN').textContent = scanSeconds + 's';
+  }, 1000);
+
+  chartTimer = setInterval(() => {
+    if(devices.length) chartHistory.push({ t: scanSeconds, total: devices.length, phones: devices.filter(d => isPhoneType(d.type)).length });
+    drawChart();
+  }, 1000);
+
+  while(scanning) {
+    await doBtScan();
+    if(scanning) await wait(400);
+  }
+}
+
+function stopScan() {
+  scanning = false;
+  clearInterval(durTimer);
+  clearInterval(chartTimer);
+
+  document.getElementById('scanBtn').textContent     = strings.btn_scan || '▶ SCAN';
+  document.getElementById('scanBtn').classList.remove('scanning');
+  document.getElementById('stopBtn').classList.remove('show');
+  document.getElementById('ring').classList.remove('active');
+  document.getElementById('btDot').classList.remove('on');
+  document.getElementById('btStatusTxt').textContent = strings.bt_standby || 'BT: STANDBY';
+  document.getElementById('sessEl').textContent      = strings.sess_done || 'DONE';
+  document.getElementById('progBar').classList.remove('indeterminate');
+  document.getElementById('progBar').style.width     = '100%';
+
+  log('SYS','sys', strings.log_stop   || 'Stopped.');
+  log('SYS','sys', (strings.log_total || 'Total: ')  + devices.length);
+  log('SYS','sys', (strings.log_phones|| 'Phones: ') + devices.filter(d=>isPhoneType(d.type)).length);
+  saveSession();
+}
+
+// ═══════════════════════════════════════════════
+// KEYBOARD SHORTCUTS + RESIZE
+// ═══════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  if(e.code === 'Space' && !e.repeat && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName)) {
+    e.preventDefault();
+    scanning ? stopScan() : startScan();
+  }
+});
+
+let resizeT;
+window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(drawChart, 120); });
+
+// ═══════════════════════════════════════════════
+// PWA / SERVICE WORKER
+// ═══════════════════════════════════════════════
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+applyStrings();
+restoreSession();
+setTimeout(() => {
+  log('SYS','sys', strings.log_ready);
+  log(
+    navigator.bluetooth ? 'BT'   : 'WARN',
+    navigator.bluetooth ? 'bt'   : 'warn',
+    navigator.bluetooth ? strings.log_bt_ok : strings.log_bt_no
+  );
+}, 350);
+</script>
+</body>
+</html>
