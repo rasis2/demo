@@ -1,13 +1,13 @@
 {
-  "generated": "2026-08-11T22:16:25.909Z",
+  "generated": "2026-08-11T22:34:33.264Z",
   "log": "opencode.log",
   "stats": {
-    "streams": 5476,
+    "streams": 5590,
     "models": 4,
-    "tools": 10950,
+    "tools": 11178,
     "toolKinds": 9,
-    "sessions": 40,
-    "loops": 5709
+    "sessions": 41,
+    "loops": 5823
   },
   "models": [
     {
@@ -17,7 +17,7 @@
     },
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 1764,
+      "value": 1877,
       "color": "#4f46e5"
     },
     {
@@ -34,37 +34,37 @@
   "tools": [
     {
       "name": "bash",
-      "value": 6512,
+      "value": 6655,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 1970,
+      "value": 2006,
       "color": "#f59e0b"
     },
     {
       "name": "external_directory",
-      "value": 1073,
+      "value": 1095,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 935,
+      "value": 949,
       "color": "#3b82f6"
     },
     {
       "name": "grep",
-      "value": 276,
+      "value": 281,
       "color": "#8b5cf6"
     },
     {
       "name": "todowrite",
-      "value": 84,
+      "value": 90,
       "color": "#ec4899"
     },
     {
       "name": "webfetch",
-      "value": 46,
+      "value": 48,
       "color": "#22c55e"
     },
     {
@@ -77,5 +77,19 @@
       "value": 9,
       "color": "#94a3b8"
     }
-  ]
+  ],
+  "go": {
+    "provider": "opencode-go",
+    "model": "deepseek-v4-flash",
+    "used": 1.99,
+    "limit": 60,
+    "percent": 3.3,
+    "tokens": {
+      "total": 543352876,
+      "input": 1901121,
+      "output": 740607,
+      "cacheRead": 540087552
+    },
+    "requests": 1866
+  }
 }

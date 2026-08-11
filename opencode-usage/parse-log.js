@@ -29,6 +29,11 @@ const TOOL_COLORS = {
   write: '#e11d48', skill: '#f97316', task: '#6366f1', question: '#a855f7',
 };
 
+// ── OpenCode Go quota (from https://opencode.ai/docs/go/) ──
+// DeepSeek V4 Flash pricing per 1M tokens (USD):
+const GO_PRICING = { input: 0.14, output: 0.28, cacheRead: 0.0028, cacheWrite: 0 };
+const GO_MONTHLY_LIMIT_USD = 60; // Go monthly limit: $60 of usage
+
 const stats = {
   generated: null,
   logPath,
@@ -73,6 +78,9 @@ rl.on('close', () => {
   models.forEach((d, i) => { d.color = PALETTE[i % PALETTE.length]; });
   tools.forEach((d) => { d.color = TOOL_COLORS[d.name] || PALETTE[tools.indexOf(d) % PALETTE.length]; });
 
+  // Real token usage + cost from opencode SQLite DB (provider opencode-go)
+  const go = readGoUsage();
+
   const out = {
     generated: stats.generated,
     log: 'opencode.log',
@@ -86,9 +94,67 @@ rl.on('close', () => {
     },
     models,
     tools,
+    go,
   };
 
   const outPath = path.join(__dirname, 'data.json');
   fs.writeFileSync(outPath, JSON.stringify(out, null, 2));
   console.log(`data.json dijana: ${stats.streams} stream, ${models.length} model, ${tools.length} jenis alat`);
+  console.log(`Go usage: $${go.used.toFixed(2)} / $${go.limit} (${go.percent.toFixed(1)}%)`);
 });
+
+/* Read opencode-go token usage from opencode.db and compute cost. */
+function readGoUsage() {
+  const zero = {
+    provider: 'opencode-go', model: 'deepseek-v4-flash',
+    used: 0, limit: GO_MONTHLY_LIMIT_USD, percent: 0,
+    tokens: { total: 0, input: 0, output: 0, cacheRead: 0 }, requests: 0,
+  };
+
+  let dbPath;
+  const dataHome = path.join(process.env.USERPROFILE || process.env.HOME || '', '.local', 'share', 'opencode');
+  dbPath = path.join(dataHome, 'opencode.db');
+
+  let DatabaseSync;
+  try { DatabaseSync = require('node:sqlite').DatabaseSync; }
+  catch (_) { return zero; }
+
+  if (!fs.existsSync(dbPath)) return zero;
+
+  let d;
+  try { d = new DatabaseSync(dbPath, { readOnly: true }); }
+  catch (_) { return zero; }
+
+  let tokens = { total: 0, input: 0, output: 0, cacheRead: 0 };
+  let requests = 0;
+
+  try {
+    const rows = d.prepare('SELECT data FROM message').all();
+    for (const r of rows) {
+      let m;
+      try { m = JSON.parse(r.data); } catch (_) { continue; }
+      if (m.role !== 'assistant' || m.providerID !== 'opencode-go' || !m.tokens) continue;
+      const t = m.tokens;
+      tokens.total += t.total || 0;
+      tokens.input += t.input || 0;
+      tokens.output += t.output || 0;
+      tokens.cacheRead += (t.cache && t.cache.read) || 0;
+      requests++;
+    }
+  } catch (_) {}
+  d.close();
+
+  const used = (tokens.input / 1e6) * GO_PRICING.input
+             + (tokens.output / 1e6) * GO_PRICING.output
+             + (tokens.cacheRead / 1e6) * GO_PRICING.cacheRead;
+
+  return {
+    provider: 'opencode-go',
+    model: 'deepseek-v4-flash',
+    used: Math.round(used * 100) / 100,
+    limit: GO_MONTHLY_LIMIT_USD,
+    percent: Math.round((used / GO_MONTHLY_LIMIT_USD) * 1000) / 10,
+    tokens,
+    requests,
+  };
+}

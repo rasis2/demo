@@ -4,27 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenCode Usage</title>
-    <meta name="description" content="Penggunaan OpenCode sebenar daripada opencode.log — model LLM dan gunaan alat.">
+    <meta name="description" content="Penggunaan OpenCode sebenar daripada opencode.log — model LLM, gunaan alat dan kuota OpenCode Go.">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header class="topbar">
         <a href="../index.html" class="back" aria-label="Portal Demo">←</a>
-        <h1>OpenCode <span>Usage</span></h1>
-        <span class="stamp" id="stamp"></span>
+        <div class="brand">
+            <h1>OpenCode <span>Usage</span></h1>
+            <span class="stamp" id="stamp"></span>
+        </div>
+        <div class="lang">
+            <button class="lb active" data-lang="ms" onclick="setLang('ms')">BM</button>
+            <button class="lb" data-lang="en" onclick="setLang('en')">EN</button>
+        </div>
     </header>
 
     <main>
         <section class="stats" id="stats"></section>
 
+        <!-- OpenCode Go quota meter -->
+        <section class="card meter-card">
+            <div class="meter-head">
+                <h2 data-i="meter_title">Kuota OpenCode Go</h2>
+                <span class="meter-badge" id="meterBadge"></span>
+            </div>
+            <p class="chart-sub" id="meterSub"></p>
+            <div class="meter-bar">
+                <div class="meter-fill" id="meterFill" style="width:0%"></div>
+            </div>
+            <div class="meter-scale">
+                <span data-i="meter_good">✓ Baik</span>
+                <span data-i="meter_mid">⚠ Sederhana</span>
+                <span data-i="meter_bad">✕ Bahaya</span>
+            </div>
+        </section>
+
         <section class="cards">
             <div class="card">
-                <h2>Pengagihan Model LLM</h2>
+                <h2 data-i="title_models">Pengagihan Model LLM</h2>
                 <div class="bars" id="bars-models"></div>
             </div>
             <div class="card">
-                <h2>Gunaan Alat</h2>
+                <h2 data-i="title_tools">Gunaan Alat</h2>
                 <div class="bars" id="bars-tools"></div>
             </div>
         </section>
