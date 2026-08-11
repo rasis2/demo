@@ -21,7 +21,7 @@ const CHANNELS = {
     alifsofia: { label: 'Alif & Sofia', cls: 'ch-alifsofia', color: '#ec4899', icon: '🌸', lang: 'ms' },
     omarhana:  { label: 'Omar & Hana',  cls: 'ch-omarhana',  color: '#16a34a', icon: '🌙', lang: 'ms' },
     learnwithzakaria: { label: 'Learn with Zakaria', cls: 'ch-zakaria', color: '#0891b2', icon: '🎨', lang: 'ar' },
-    babyshark: { label: 'Baby Shark',   cls: 'ch-babyshark', color: '#0ea5e9', icon: '🦈', lang: 'ms' },
+    bebefinn: { label: 'Bebefinn', cls: 'ch-bebefinn', color: '#f472b6', icon: '🦈' },
 };
 
 const CUSTOM_ICONS = ['📺', '🌟', '🎈', '🦄', '🍬', '🐼', '🦋', '🚀', '🎪', '🧸'];
@@ -583,9 +583,27 @@ const VIDEOS = [
     { id: '7gpcxpoyaY0', ch: 'learnwithzakaria', title: 'The Letter Sad (ص) for kids | Learn Arabic Alphabet with Zakaria and Ziko' },
     { id: 'fWarA3WXavE', ch: 'learnwithzakaria', title: 'What are bees? How do bees make honey? | Facts about bees for kids - How, What, Why (Episode 2)' },
 
-    // BABY SHARK (Pinkfong Malay / Bahasa Malaysia)
-    { id: 'qWvTS6xoUi4', ch: 'babyshark', title: 'Baby Shark dalam Bahasa Malaysia | Anak Yu Doo Doo | Lagu Kanak Kanak Melayu' },
-    { id: 'rWZACqBA34o', ch: 'babyshark', title: 'Baby Shark (Bahasa Malaysia) | KiKaKo Kids | Lagu Kanak Kanak' },
+    // BEBEFINN 🦈 (Nursery Rhymes & Kids Songs)
+    { id: 'qxDuLdfGfW4', ch: 'bebefinn', title: 'Baby Shark and Bebefinn Doo Doo Doo | EP01 | Songs for Kids' },
+    { id: 'Sje6rnScu7o', ch: 'bebefinn', title: 'Baby Shark Doo Doo Doo and more | Bebefinn Best Nursery Rhyme Compilation' },
+    { id: '0PNiZflV2JQ', ch: 'bebefinn', title: 'Five Little Sharks | EP39 | Baby Shark Doo Doo Doo | Bebefinn Songs for Kids' },
+    { id: 'xJ6gG6DUjhI', ch: 'bebefinn', title: 'Shark Finger Family | EP107 | Baby Shark Doo Doo Doo | Bebefinn Best Songs' },
+    { id: 'm2mfP-AVMgQ', ch: 'bebefinn', title: 'Run Away Baby Car! | EP38 | Baby Shark Doo Doo Doo | Bebefinn Songs for Kids' },
+    { id: 'N1Hgj4O9Nk0', ch: 'bebefinn', title: 'Mix - Baby Shark, Good Morning, Baby Car | Bebefinn Most Viewed Videos' },
+    { id: 'IIjv09RS0gg', ch: 'bebefinn', title: 'Ten in a Bed and Five Little Sharks | Count Numbers Together | Compilation' },
+    { id: 'kuDzMR6k4R4', ch: 'bebefinn', title: 'Good Morning Bebefinn! Wake up Bora | EP14 | Nursery Rhymes' },
+    { id: '78rSZ9iEQeo', ch: 'bebefinn', title: 'Yes Papa Yes Mama! | EP109 | Bebefinn Nursery Rhymes for Kids' },
+    { id: 'u05ke3nGqU0', ch: 'bebefinn', title: 'Yes Papa! No Bebefinn\'s Not Eating Cookies! | EP02 | Songs for Kids' },
+    { id: 'F437eCwurA0', ch: 'bebefinn', title: 'Good Morning! Wake Up | Nursery Rhymes Compilation for Kids | Family Song' },
+    { id: 'oiKji3JjkgY', ch: 'bebefinn', title: 'Rain, Rain, Go Away | EP101 | Bebefinn Nursery Rhymes for Kids' },
+    { id: 'QXMHKfTtah4', ch: 'bebefinn', title: 'Walking Walking | EP07 | Bebefinn Nursery Rhymes | Healthy Habits' },
+    { id: 'qC3kGaTBW7s', ch: 'bebefinn', title: 'Animal Sounds Song (Moo! Oink!) | EP18 | Bebefinn Songs for Kids' },
+    { id: 'RLRsSeEPgJY', ch: 'bebefinn', title: 'Ouchie! Help Me Please | EP09 | Boo Boo Song | Bebefinn Nursery Rhymes' },
+    { id: '4GCCv9LOcW8', ch: 'bebefinn', title: 'Peek-a-Boo Song | EP08 | Songs for Kids | Bebefinn Nursery Rhymes' },
+    { id: '7muxnzQZS28', ch: 'bebefinn', title: 'Bebefinn ABC Song + more nursery rhymes | Alphabet Songs | Compilation' },
+    { id: 'YK6aMTRCXTg', ch: 'bebefinn', title: 'Best T-rex and dinosaur songs | Animal Songs | Compilation | Bebefinn' },
+    { id: 'FDMgufO6kQ0', ch: 'bebefinn', title: 'TOP 30 Popular Songs for Kids | Compilation | Bebefinn Nursery Rhymes' },
+    { id: 'WKXXoPXQHjk', ch: 'bebefinn', title: 'Bebefinn\'s got a boo-boo | EP70 | Boo-Boo Song for Kids | Bebefinn Sing Along2' },
 ];
 
 /* ────────────────────────────────────────
