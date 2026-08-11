@@ -11,16 +11,17 @@
    BUILT-IN CHANNELS
 ──────────────────────────────────────── */
 const CHANNELS = {
-    monsta:    { label: 'MONSTA',       cls: 'ch-monsta',    color: '#e63946', icon: '⚡' },
-    papazola:  { label: 'Papa Zola',    cls: 'ch-papazola',  color: '#f97316', icon: '🍕' },
-    upinipin:  { label: 'Upin & Ipin',  cls: 'ch-upinipin',  color: '#10b981', icon: '🌙' },
-    ejenali:   { label: 'Ejen Ali',     cls: 'ch-ejenali',   color: '#2563eb', icon: '🕵️' },
-    didi:      { label: 'Didi & Friends', cls: 'ch-didi',    color: '#f59e0b', icon: '🐤' },
-    durioo:    { label: 'Durioo+',      cls: 'ch-durioo',    color: '#6d28d9', icon: '🕌' },
-    msrachel:  { label: 'Ms Rachel',    cls: 'ch-msrachel',  color: '#ec4899', icon: '🎓' },
-    alifsofia: { label: 'Alif & Sofia', cls: 'ch-alifsofia', color: '#ec4899', icon: '🌸' },
-    omarhana:  { label: 'Omar & Hana',  cls: 'ch-omarhana',  color: '#16a34a', icon: '🌙' },
-    learnwithzakaria: { label: 'Learn with Zakaria', cls: 'ch-zakaria', color: '#0891b2', icon: '🎨' },
+    monsta:    { label: 'MONSTA',       cls: 'ch-monsta',    color: '#e63946', icon: '⚡', lang: 'ms' },
+    papazola:  { label: 'Papa Zola',    cls: 'ch-papazola',  color: '#f97316', icon: '🍕', lang: 'ms' },
+    upinipin:  { label: 'Upin & Ipin',  cls: 'ch-upinipin',  color: '#10b981', icon: '🌙', lang: 'ms' },
+    ejenali:   { label: 'Ejen Ali',     cls: 'ch-ejenali',   color: '#2563eb', icon: '🕵️', lang: 'ms' },
+    didi:      { label: 'Didi & Friends', cls: 'ch-didi',    color: '#f59e0b', icon: '🐤', lang: 'ms' },
+    durioo:    { label: 'Durioo+',      cls: 'ch-durioo',    color: '#6d28d9', icon: '🕌', lang: 'ms' },
+    msrachel:  { label: 'Ms Rachel',    cls: 'ch-msrachel',  color: '#ec4899', icon: '🎓', lang: 'en' },
+    alifsofia: { label: 'Alif & Sofia', cls: 'ch-alifsofia', color: '#ec4899', icon: '🌸', lang: 'ms' },
+    omarhana:  { label: 'Omar & Hana',  cls: 'ch-omarhana',  color: '#16a34a', icon: '🌙', lang: 'ms' },
+    learnwithzakaria: { label: 'Learn with Zakaria', cls: 'ch-zakaria', color: '#0891b2', icon: '🎨', lang: 'ar' },
+    babyshark: { label: 'Baby Shark',   cls: 'ch-babyshark', color: '#0ea5e9', icon: '🦈', lang: 'ms' },
 };
 
 const CUSTOM_ICONS = ['📺', '🌟', '🎈', '🦄', '🍬', '🐼', '🦋', '🚀', '🎪', '🧸'];
@@ -582,6 +583,9 @@ const VIDEOS = [
     { id: '7gpcxpoyaY0', ch: 'learnwithzakaria', title: 'The Letter Sad (ص) for kids | Learn Arabic Alphabet with Zakaria and Ziko' },
     { id: 'fWarA3WXavE', ch: 'learnwithzakaria', title: 'What are bees? How do bees make honey? | Facts about bees for kids - How, What, Why (Episode 2)' },
 
+    // BABY SHARK (Pinkfong Malay / Bahasa Malaysia)
+    { id: 'qWvTS6xoUi4', ch: 'babyshark', title: 'Baby Shark dalam Bahasa Malaysia | Anak Yu Doo Doo | Lagu Kanak Kanak Melayu' },
+    { id: 'rWZACqBA34o', ch: 'babyshark', title: 'Baby Shark (Bahasa Malaysia) | KiKaKo Kids | Lagu Kanak Kanak' },
 ];
 
 /* ────────────────────────────────────────
@@ -1033,21 +1037,27 @@ function thumb(v) { return `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`; }
 
 function embedUrl(v, autoplay = false) {
     // youtube-nocookie: no tracking cookies. rel=0: no unrelated rabbit-holes.
+    // enablejsapi: benarkan postMessage playVideo (fallback autoplay iOS Safari).
     const ap = autoplay ? '&autoplay=1' : '';
-    return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white${ap}`;
+    return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1&playsinline=1&color=white&enablejsapi=1${ap}`;
 }
 
 function watchUrl(v) { return `https://www.youtube.com/watch?v=${v.id}`; }
 
 function filterVideos() {
     const q = query.toLowerCase().trim();
-    return allVideos().filter((v) => {
+    const chs = allChannels();
+    let list = allVideos().filter((v) => {
         const chOk = activeChannel === 'all' || v.ch === activeChannel;
-        const chMeta = allChannels()[v.ch] || {};
+        const chMeta = chs[v.ch] || {};
         const chLabel = (chMeta.label || v.ch).toLowerCase();
         const qOk = !q || v.title.toLowerCase().includes(q) || chLabel.includes(q);
         return chOk && qOk;
     });
+    // Fokus bahasa Melayu: utamakan saluran tempatan/BM dulu
+    const msRank = (v) => ((chs[v.ch] || {}).lang === 'ms' ? 0 : 1);
+    list.sort((a, b) => msRank(a) - msRank(b));
+    return list;
 }
 
 /* ────────────────────────────────────────
@@ -1158,15 +1168,25 @@ function loadVideo(v) {
     $('#playerChannel').textContent = (allChannels()[v.ch] || {}).label || v.ch;
     $('#playerDesc').textContent = `https://youtu.be/${v.id}`;
     const frame = $('#playerFrame');
+    // iOS Safari kadang-kadang abaikan autoplay=1 — jadi kita hantar arahan
+    // playVideo melalui postMessage sebaik sahaja iframe siap dimuat.
+    frame.onload = () => {
+        try {
+            frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
+        } catch (e) { /* ignore */ }
+    };
     frame.src = embedUrl(v, true);
     renderSuggestions(v);
     frame.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function openPlayer(v) {
-    loadVideo(v);
+    // iOS Safari: modal kena nampak (display:flex) DULU sebelum src iframe
+    // di-set dengan autoplay — autoplay hanya dibenarkan jika iframe visible
+    // dan src di-set dalam gesture klik yang sama (synchronous).
     $('#playerModal').classList.add('open');
     document.body.style.overflow = 'hidden';
+    loadVideo(v);
 }
 
 function closePlayer() {
