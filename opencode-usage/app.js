@@ -20,7 +20,7 @@ const I18N = {
     title_models: 'Pengagihan Model LLM',
     title_tools: 'Gunaan Alat',
     meter_title: 'Kuota OpenCode Go',
-    meter_sub: '{used} / {limit} sebulan · {pct}% digunakan',
+    meter_sub: '{used} / {limit} ({month}) · {pct}% digunakan',
     meter_good: '✓ Baik',
     meter_mid: '⚠ Sederhana',
     meter_bad: '✕ Bahaya',
@@ -40,7 +40,7 @@ const I18N = {
     title_models: 'LLM Model Distribution',
     title_tools: 'Tool Usage',
     meter_title: 'OpenCode Go Quota',
-    meter_sub: '{used} / {limit} per month · {pct}% used',
+    meter_sub: '{used} / {limit} ({month}) · {pct}% used',
     meter_good: '✓ Good',
     meter_mid: '⚠ Moderate',
     meter_bad: '✕ Danger',
@@ -121,6 +121,7 @@ function renderMeter(go) {
   $('#meterSub').textContent = t('meter_sub', {
     used: '$' + fmt(go.used),
     limit: '$' + fmt(go.limit),
+    month: go.month,
     pct: go.percent.toFixed(1),
   });
 }

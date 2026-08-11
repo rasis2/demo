@@ -1,13 +1,13 @@
 {
-  "generated": "2026-08-11T22:45:02.805Z",
+  "generated": "2026-08-11T23:07:37.985Z",
   "log": "opencode.log",
   "stats": {
-    "streams": 5621,
+    "streams": 5642,
     "models": 4,
-    "tools": 11251,
+    "tools": 11297,
     "toolKinds": 9,
     "sessions": 41,
-    "loops": 5856
+    "loops": 5878
   },
   "models": [
     {
@@ -17,7 +17,7 @@
     },
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 1908,
+      "value": 1929,
       "color": "#4f46e5"
     },
     {
@@ -34,22 +34,22 @@
   "tools": [
     {
       "name": "bash",
-      "value": 6722,
+      "value": 6760,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2009,
+      "value": 2015,
       "color": "#f59e0b"
     },
     {
       "name": "external_directory",
-      "value": 1096,
+      "value": 1097,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 950,
+      "value": 951,
       "color": "#3b82f6"
     },
     {
@@ -81,15 +81,16 @@
   "go": {
     "provider": "opencode-go",
     "model": "deepseek-v4-flash",
-    "used": 2,
+    "month": "2026-08",
+    "used": 2.01,
     "limit": 60,
-    "percent": 3.3,
+    "percent": 3.4,
     "tokens": {
-      "total": 547336261,
-      "input": 1913111,
-      "output": 747033,
-      "cacheRead": 544047488
+      "total": 550191177,
+      "input": 1916162,
+      "output": 752120,
+      "cacheRead": 546892672
     },
-    "requests": 1896
+    "requests": 1917
   }
 }

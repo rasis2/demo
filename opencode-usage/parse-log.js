@@ -128,12 +128,19 @@ function readGoUsage() {
   let tokens = { total: 0, input: 0, output: 0, cacheRead: 0 };
   let requests = 0;
 
+  // Only count the current calendar month (quota is monthly).
+  const now = new Date();
+  const monthStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1);
+  const monthEnd = Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1);
+
   try {
     const rows = d.prepare('SELECT data FROM message').all();
     for (const r of rows) {
       let m;
       try { m = JSON.parse(r.data); } catch (_) { continue; }
       if (m.role !== 'assistant' || m.providerID !== 'opencode-go' || !m.tokens) continue;
+      const created = m.time && m.time.created;
+      if (!created || created < monthStart || created >= monthEnd) continue;
       const t = m.tokens;
       tokens.total += t.total || 0;
       tokens.input += t.input || 0;
@@ -151,6 +158,7 @@ function readGoUsage() {
   return {
     provider: 'opencode-go',
     model: 'deepseek-v4-flash',
+    month: now.getUTCFullYear() + '-' + String(now.getUTCMonth() + 1).padStart(2, '0'),
     used: Math.round(used * 100) / 100,
     limit: GO_MONTHLY_LIMIT_USD,
     percent: Math.round((used / GO_MONTHLY_LIMIT_USD) * 1000) / 10,
