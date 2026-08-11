@@ -687,26 +687,42 @@ function setSyncEnabled(on) {
     localStorage.setItem(SYNC_KEY, on ? '1' : '0');
 }
 
+function mergeChannels(a, b) {
+    const merged = [];
+    const seen = new Set();
+    [...b, ...a].forEach((c) => {
+        if (c && c.key && !seen.has(c.key)) { seen.add(c.key); merged.push(c); }
+    });
+    return merged;
+}
+
 async function syncPull() {
     if (!syncEnabled()) return false;
     try {
-        const res = await fetch(SYNC_URL);
-        if (!res.ok) throw new Error('pull status ' + res.status);
-        const data = await res.json();
-        if (Array.isArray(data)) {
-            const local = getCustomChannels();
-            const merged = [];
-            const seen = new Set();
-            [...data, ...local].forEach((c) => {
-                if (c && c.key && !seen.has(c.key)) { seen.add(c.key); merged.push(c); }
-            });
-            saveCustomChannels(merged);
+        let res = await fetch(SYNC_URL);
+        if (res.status === 404) {
+            // Blob hilang/expired -> buat semula dengan saluran tempatan.
+            await syncPush();
             return true;
         }
+        if (!res.ok) throw new Error('pull status ' + res.status);
+        let data = await res.json();
+        const local = getCustomChannels();
+        if (!Array.isArray(data)) {
+            // Data blob rosak (bukan array) -> tetapkan semula kepada tempatan.
+            saveCustomChannels(local);
+            await syncPush();
+            return true;
+        }
+        const merged = mergeChannels(local, data);
+        saveCustomChannels(merged);
+        // Pautan: pastikan blob juga ada semua saluran (termasuk yang ditambah sebelum ciri ini).
+        if (merged.length !== data.length) await syncPush();
+        return true;
     } catch (e) {
         console.error('[sync] pull failed:', e.message);
+        return false;
     }
-    return false;
 }
 
 async function syncPush() {
@@ -723,11 +739,27 @@ async function syncPush() {
     }
 }
 
-function updateSyncUI() {
+async function syncNow() {
+    const st = $('#syncStatus');
+    if (st) st.textContent = t('syncing');
+    const ok = await syncPull();
+    renderTabs();
+    renderChannelList();
+    renderHero();
+    renderGrid();
+    updateSyncUI(ok);
+}
+
+function updateSyncUI(synced) {
     const tg = $('#syncToggle');
     if (tg) tg.checked = syncEnabled();
     const st = $('#syncStatus');
-    if (st) st.textContent = t('syncStatus').replace('%s', String(getCustomChannels().length));
+    if (!st) return;
+    if (synced === false) {
+        st.textContent = t('syncErr');
+    } else {
+        st.textContent = t('syncStatus').replace('%s', String(getCustomChannels().length));
+    }
 }
 
 /* ────────────────────────────────────────
@@ -946,6 +978,9 @@ const I18N = {
         syncLabel: 'Segerak saluran merentas peranti',
         syncHint: 'Saluran yang anda tambah akan disegerakkan ke semua peranti atau pelayar yang membuka laman ini.',
         syncStatus: 'Saluran disegerakkan: %s',
+        syncNow: 'Segerak Sekarang',
+        syncing: 'Menyegerakkan...',
+        syncErr: 'Segerakan gagal. Cuba lagi.',
         visitCount: 'Halaman ini dibuka %s kali pada peranti ini.',
         videoFilterTitle: 'Video',
         embedFilterLabel: 'Sembunyikan video yang tidak boleh dimainkan',
@@ -998,6 +1033,9 @@ const I18N = {
         syncLabel: 'Sync channels across devices',
         syncHint: 'Channels you add will sync to every device or browser that opens this page.',
         syncStatus: 'Synced channels: %s',
+        syncNow: 'Sync Now',
+        syncing: 'Syncing...',
+        syncErr: 'Sync failed. Try again.',
         visitCount: 'This page has been opened %s times on this device.',
         videoFilterTitle: 'Videos',
         embedFilterLabel: 'Hide videos that cannot be played',
@@ -1050,6 +1088,9 @@ const I18N = {
         syncLabel: '跨设备同步频道',
         syncHint: '您添加的频道将同步到打开此页面的所有设备或浏览器。',
         syncStatus: '已同步频道：%s',
+        syncNow: '立即同步',
+        syncing: '同步中...',
+        syncErr: '同步失败，请重试。',
         visitCount: '此页面已在本设备打开 %s 次。',
         videoFilterTitle: '视频',
         embedFilterLabel: '隐藏无法播放的视频',
@@ -1102,6 +1143,9 @@ const I18N = {
         syncLabel: 'சேனல்களை சாதனங்களுக்கு இடையே ஒத்திசை',
         syncHint: 'நீங்கள் சேர்க்கும் சேனல்கள் இந்தப் பக்கத்தைத் திறக்கும் ஒவ்வொரு சாதனம் அல்லது உலாவிக்கும் ஒத்திசைக்கப்படும்.',
         syncStatus: 'ஒத்திசைக்கப்பட்ட சேனல்கள்: %s',
+        syncNow: 'இப்போது ஒத்திசை',
+        syncing: 'ஒத்திசைக்கிறது...',
+        syncErr: 'ஒத்திசைவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.',
         visitCount: 'இந்தப் பக்கம் இந்த சாதனத்தில் %s முறை திறக்கப்பட்டது.',
         videoFilterTitle: 'வீடியோக்கள்',
         embedFilterLabel: 'இயக்க முடியாத வீடியோக்களை மறை',
@@ -1608,6 +1652,7 @@ function bindEvents() {
         }
         updateSyncUI();
     });
+    $('#syncNowBtn').addEventListener('click', syncNow);
     $('#addChannelBtn').addEventListener('click', addChannel);
     $('#customChannelInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') addChannel();
@@ -1669,6 +1714,7 @@ function bindEvents() {
                 renderHero();
                 renderGrid();
             }
+            updateSyncUI(ok);
         });
     }
 })();
