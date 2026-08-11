@@ -15,6 +15,7 @@ This is a demo repo where projects are being cast here
 | Zoo Radio | `zoo-radio/` | Static |
 | UTube Maheera | `utube/` | Static |
 | Software Eng. Slides | `software-eng-slides/` | Static |
-| Parameswara | `parameswara/` | Static (Game interaktif SugarCube/Twine) |
+| Parameswara | `parameswara-phaser/` | Static (Game Phaser 3, animasi laut + HUD) |
+| Parameswara (Twine) | `parameswara/` | Static (versi asal SugarCube/Twine) |
 
 Semua demo berjalan sepenuhnya dalam pelayar (static). `signature-stamp-app` memproses PDF secara client-side dengan pdf.js (preview) dan pdf-lib (embed tandatangan) — tiada server diperlukan.
