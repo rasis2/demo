@@ -169,7 +169,7 @@ VIEWS.vehicles = {
               ? (ownerU ? '' : 'Unit ' + esc(o.unit) + ' · ') + esc(o.model || '—') + (o.lot ? ' · ' + t('veh_lot') + ': ' + esc(o.lot) : '')
               : esc(o.person) + ' · Unit ' + esc(o.unit || '—') + (o.model ? ' · ' + esc(o.model) : '') + (o.purpose ? ' · ' + esc(o.purpose) : '')) +
           '</div></div>' +
-          '<span class="badge ' + (o.kind === 'owner' ? 'green' : 'blue') + '">' + (o.kind === 'owner' ? t('veh_owner') : t('veh_visitor')) + '</span>' +
+          '<span class="badge ' + (o.kind === 'owner' ? 'red' : 'gold') + '">' + (o.kind === 'owner' ? t('veh_owner') : t('veh_visitor')) + '</span>' +
           (o.kind === 'owner' && (ownerU || staffU) ? '<button class="icon-btn-sm danger" onclick="vrm(\'' + esc(o.unit) + '\')">🗑</button>' : '') +
         '</div>'
       ).join('')
