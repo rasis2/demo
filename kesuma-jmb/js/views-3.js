@@ -143,21 +143,34 @@ VIEWS.vehicles = {
       btn.disabled = false; btn.textContent = t('veh_submit')
     }
     async function loadVeh() {
-      const owners = await kjAllOwners()
+      const [owners, visitors] = await Promise.all([kjAllOwners(), kjVisitors()])
       const q = (searchEl && searchEl.value || '').trim().toLowerCase()
-      let all = owners.filter(o => o.vehicle_plate)
-      if (ownerU) all = all.filter(o => o.unit === state.session.unit)
-      if (q) all = all.filter(o => (o.vehicle_plate || '').toLowerCase().includes(q) || (o.vehicle_model || '').toLowerCase().includes(q) || (o.unit || '').toLowerCase().includes(q))
+      let all = []
+      owners.filter(o => o.vehicle_plate).forEach(o => all.push({
+        kind: 'owner', plate: o.vehicle_plate, unit: o.unit, model: o.vehicle_model || '',
+        lot: o.parking_lot || '', photo: o.vehicle_photo || '', person: '', purpose: '',
+      }))
+      visitors.filter(v => v.vehicle_plate).forEach(v => all.push({
+        kind: 'visitor', plate: v.vehicle_plate, unit: v.unit || '', model: v.vehicle_type || '',
+        lot: '', photo: '', person: v.name || '', purpose: v.purpose || '',
+      }))
+      if (ownerU) all = all.filter(x => x.kind === 'owner' && x.unit === state.session.unit)
+      if (q) all = all.filter(x => (x.plate + ' ' + x.unit + ' ' + x.model + ' ' + x.person).toLowerCase().includes(q))
       const el = $('vvList')
       if (!all.length) { el.innerHTML = '<div class="empty"><div class="ei">🚗</div><p>' + t('veh_empty') + '</p></div>'; return }
       el.innerHTML = all.map(o =>
         '<div class="list-item">' +
-          (o.vehicle_photo
-            ? '<img src="' + esc(o.vehicle_photo) + '" style="width:46px;height:46px;object-fit:cover;border-radius:10px;border:1px solid var(--border);cursor:zoom-in" onclick="window.open(\'' + esc(o.vehicle_photo) + '\')">'
+          (o.photo
+            ? '<img src="' + esc(o.photo) + '" style="width:46px;height:46px;object-fit:cover;border-radius:10px;border:1px solid var(--border);cursor:zoom-in" onclick="window.open(\'' + esc(o.photo) + '\')">'
             : '<div class="avatar" style="background:var(--blue-dim);color:var(--blue)">🚗</div>') +
-          '<div class="grow"><div class="li-title mono">' + esc(o.vehicle_plate) + '</div>' +
-          '<div class="li-sub">' + (ownerU ? '' : 'Unit ' + esc(o.unit) + ' · ') + esc(o.vehicle_model || '—') + (o.parking_lot ? ' · ' + t('veh_lot') + ': ' + esc(o.parking_lot) : '') + '</div></div>' +
-          (ownerU || staffU ? '<button class="icon-btn-sm danger" onclick="vrm(\'' + esc(o.unit) + '\')">🗑</button>' : '') +
+          '<div class="grow"><div class="li-title mono">' + esc(o.plate) + '</div>' +
+          '<div class="li-sub">' +
+            (o.kind === 'owner'
+              ? (ownerU ? '' : 'Unit ' + esc(o.unit) + ' · ') + esc(o.model || '—') + (o.lot ? ' · ' + t('veh_lot') + ': ' + esc(o.lot) : '')
+              : esc(o.person) + ' · Unit ' + esc(o.unit || '—') + (o.model ? ' · ' + esc(o.model) : '') + (o.purpose ? ' · ' + esc(o.purpose) : '')) +
+          '</div></div>' +
+          '<span class="badge ' + (o.kind === 'owner' ? 'green' : 'blue') + '">' + (o.kind === 'owner' ? t('veh_owner') : t('veh_visitor')) + '</span>' +
+          (o.kind === 'owner' && (ownerU || staffU) ? '<button class="icon-btn-sm danger" onclick="vrm(\'' + esc(o.unit) + '\')">🗑</button>' : '') +
         '</div>'
       ).join('')
       window.vrm = async (unit) => { await kjUpdateOwner(unit, { vehicle_plate: '', vehicle_model: '', parking_lot: '', vehicle_photo: '' }); toast(t('veh_removed'), 'success'); loadVeh() }
