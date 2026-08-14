@@ -62,6 +62,7 @@ create table if not exists public.visitors (
   purpose text not null default '',
   vehicle_type text not null default '',
   vehicle_plate text not null default '',
+  vehicle_model text not null default '',
   status text not null default 'Pending', -- Pending | Approved | Rejected | Checked In | Checked Out
   created_at timestamptz not null default now(),
   approved_at timestamptz,
@@ -71,6 +72,7 @@ create table if not exists public.visitors (
 -- If visitors already existed, add any missing columns safely
 alter table public.visitors add column if not exists vehicle_type text not null default '';
 alter table public.visitors add column if not exists vehicle_plate text not null default '';
+alter table public.visitors add column if not exists vehicle_model text not null default '';
 
 -- ─────────────────────────────────────────────
 --  MAINTENANCE (fault reports)
@@ -300,13 +302,13 @@ select * from (values
 where not exists (select 1 from public.parcels);
 
 -- 3) Pelawat dengan kenderaan (untuk senarai kenderaan → badge Pelawat)
-insert into public.visitors (ref_code, name, ic_no, phone, unit, purpose, vehicle_type, vehicle_plate, status, created_at)
+insert into public.visitors (ref_code, name, ic_no, phone, unit, purpose, vehicle_type, vehicle_plate, vehicle_model, status, created_at)
 select * from (values
-  ('KESDEMO1', 'Ahmad bin Ali',   '900101-01-1234', '012-345 6789', '4-1',  'Ziarah',   'Kereta',    'WXW 1111', 'Checked Out', now() - interval '1 day'),
-  ('KESDEMO2', 'Siti Nurhaliza',  '880505-14-5678', '013-111 2222', '5-3',  'Hantar Barang', 'Motosikal', 'JHA 2222', 'Checked In',  now() - interval '2 hours'),
-  ('KESDEMO3', 'Raj Kumar',       '910707-10-9012', '016-333 4444', '6-4',  'Urusan Kerja', 'Kereta',    'VNH 3333', 'Pending',     now() - interval '30 minutes'),
-  ('KESDEMO4', 'Lim Wei Jie',     '950101-08-3456', '017-555 6666', '7-5',  'Pembaikan', 'Lori / Van', 'JKP 4444', 'Approved',    now() - interval '1 hour')
-) as v(ref_code, name, ic_no, phone, unit, purpose, vehicle_type, vehicle_plate, status, created_at)
+  ('KESDEMO1', 'Ahmad bin Ali',   '900101-01-1234', '012-345 6789', '4-1',  'Ziarah',   'Kereta',    'WXW 1111', 'Perodua Bezza', 'Checked Out', now() - interval '1 day'),
+  ('KESDEMO2', 'Siti Nurhaliza',  '880505-14-5678', '013-111 2222', '5-3',  'Hantar Barang', 'Motosikal', 'JHA 2222', 'Yamaha Y15ZR', 'Checked In',  now() - interval '2 hours'),
+  ('KESDEMO3', 'Raj Kumar',       '910707-10-9012', '016-333 4444', '6-4',  'Urusan Kerja', 'Kereta',    'VNH 3333', 'Honda City',   'Pending',     now() - interval '30 minutes'),
+  ('KESDEMO4', 'Lim Wei Jie',     '950101-08-3456', '017-555 6666', '7-5',  'Pembaikan', 'Lori / Van', 'JKP 4444', 'Toyota Hiace', 'Approved',    now() - interval '1 hour')
+) as v(ref_code, name, ic_no, phone, unit, purpose, vehicle_type, vehicle_plate, vehicle_model, status, created_at)
 where not exists (select 1 from public.visitors);
 
 -- 4) Bayaran mock — termasuk Auto-Debit untuk unit berauto-debit

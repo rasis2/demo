@@ -170,7 +170,7 @@ async function kjAddVisitor(v) {
   const { data, error } = await kjSb().from('visitors').insert({
     ref_code: kjGenRef(), name: v.name, ic_no: v.ic_no, phone: v.phone, unit: v.unit,
     purpose: v.purpose || '', vehicle_type: v.vehicle_type || '', vehicle_plate: v.vehicle_plate || '',
-    status: 'Pending',
+    vehicle_model: v.vehicle_model || '', status: 'Pending',
   }).select().single()
   if (error) throw error
   return data

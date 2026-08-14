@@ -202,6 +202,7 @@ function renderVisitorRegister() {
           '<select class="select" id="vr_veh">' + ['vis_veh_none','vis_veh_car','vis_veh_moto','vis_veh_lorry'].map(k => '<option>' + t(k) + '</option>').join('') + '</select></div>' +
       '</div>' +
       '<div class="field"><label data-i18n="vis_plate"></label><input class="input" id="vr_plate" placeholder="' + t('vis_plate_ph') + '"></div>' +
+      '<div class="field"><label data-i18n="vis_model"></label><input class="input" id="vr_model" placeholder="' + t('vis_model_ph') + '"></div>' +
       '<div class="error-text" id="vr_err" style="margin-bottom:8px"></div>' +
       '<button class="btn btn-primary btn-block btn-lg" id="vr_go">' + t('vis_submit') + '</button>' +
     '</div></div>'
@@ -218,6 +219,7 @@ function renderVisitorRegister() {
         purpose: $('vr_purpose').value,
         vehicle_type: $('vr_veh').value,
         vehicle_plate: $('vr_plate').value.trim(),
+        vehicle_model: $('vr_model').value.trim(),
       })
       showQrSuccess(v)
     } catch (e) { err.textContent = t('err_server') }

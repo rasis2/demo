@@ -151,7 +151,7 @@ VIEWS.vehicles = {
         lot: o.parking_lot || '', photo: o.vehicle_photo || '', person: '', purpose: '',
       }))
       visitors.filter(v => v.vehicle_plate).forEach(v => all.push({
-        kind: 'visitor', plate: v.vehicle_plate, unit: v.unit || '', model: v.vehicle_type || '',
+        kind: 'visitor', plate: v.vehicle_plate, unit: v.unit || '', model: v.vehicle_model || v.vehicle_type || '',
         lot: '', photo: '', person: v.name || '', purpose: v.purpose || '',
       }))
       if (ownerU) all = all.filter(x => x.kind === 'owner' && x.unit === state.session.unit)
