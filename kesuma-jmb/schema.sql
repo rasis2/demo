@@ -45,12 +45,9 @@ create table if not exists public.parcels (
   courier text not null,
   image_url text not null default '',
   status text not null default 'Pending', -- Pending | Done
-  picked_by text not null default '',
   created_at timestamptz not null default now(),
   collected_at timestamptz
 );
--- If parcels already existed, add any missing columns safely
-alter table public.parcels add column if not exists picked_by text not null default '';
 
 -- ─────────────────────────────────────────────
 --  VISITORS

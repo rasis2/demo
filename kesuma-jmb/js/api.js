@@ -150,12 +150,12 @@ async function kjParcelsByUnit(unit) {
   if (error) throw error
   return data || []
 }
-async function kjMarkParcelDone(id, pickedBy) {
-  const { error } = await kjSb().from('parcels').update({ status: 'Done', collected_at: new Date().toISOString(), picked_by: pickedBy || '' }).eq('id', id)
+async function kjMarkParcelDone(id) {
+  const { error } = await kjSb().from('parcels').update({ status: 'Done', collected_at: new Date().toISOString() }).eq('id', id)
   if (error) throw error
 }
 async function kjReopenParcel(id) {
-  const { error } = await kjSb().from('parcels').update({ status: 'Pending', collected_at: null, picked_by: '' }).eq('id', id)
+  const { error } = await kjSb().from('parcels').update({ status: 'Pending', collected_at: null }).eq('id', id)
   if (error) throw error
 }
 
