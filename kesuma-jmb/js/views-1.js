@@ -101,22 +101,43 @@ async function loadParcels(wrap) {
   const el = $('parList')
   const parcels = await kjParcels()
   const isOwnerU = isOwner(), isStaffU = isStaff()
-  const list = isOwnerU ? parcels.filter(p => p.unit === state.session.unit) : parcels
-  const pendingCount = list.filter(p => p.status === 'Pending').length
-  const urgentCount = list.filter(p => p.status === 'Pending' && (Date.now() - new Date(p.created_at).getTime()) > 2 * 86400000).length
+  const base = isOwnerU ? parcels.filter(p => p.unit === state.session.unit) : parcels
+  const pendingCount = base.filter(p => p.status === 'Pending').length
+  const urgentCount = base.filter(p => p.status === 'Pending' && (Date.now() - new Date(p.created_at).getTime()) > 2 * 86400000).length
 
-  if (!list.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>' + t('par_empty') + '</p></div>'; return }
+  if (!base.length) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>' + t('par_empty') + '</p></div>'; return }
 
   el.innerHTML =
+    '<div class="flex mt-8 mb-8" style="flex-wrap:wrap;gap:8px">' +
+      '<input class="input" id="pf_search" placeholder="' + t('par_search_ph') + '" style="flex:1;min-width:160px">' +
+      '<select class="select" id="pf_status" style="width:auto">' +
+        '<option value="All">' + t('all') + '</option>' +
+        '<option value="Pending">' + t('par_pending') + '</option>' +
+        '<option value="Done">' + t('par_done') + '</option>' +
+      '</select>' +
+    '</div>' +
     '<div class="flex mt-8 mb-8" style="flex-wrap:wrap">' +
       '<span class="chip">⏳ ' + pendingCount + ' ' + t('par_pending') + '</span>' +
       (urgentCount ? '<span class="chip" style="color:var(--red);border-color:var(--red-dim)">🔴 ' + urgentCount + ' ' + t('par_urgent') + '</span>' : '') +
     '</div>' +
-    list.slice(0, 40).map(p =>
+    '<div id="pfList"></div>'
+
+  const listEl = $('pfList')
+  const render = () => {
+    const q = ($('pf_search') ? $('pf_search').value : '').trim().toLowerCase()
+    const st = $('pf_status') ? $('pf_status').value : 'All'
+    const list = base.filter(p =>
+      (st === 'All' || p.status === st) &&
+      (!q || (p.unit + ' ' + p.courier).toLowerCase().includes(q))
+    )
+    if (!list.length) { listEl.innerHTML = '<div class="empty"><div class="ei">📭</div><p>' + t('par_empty') + '</p></div>'; return }
+    listEl.innerHTML = list.slice(0, 40).map(p =>
       '<div class="list-item">' +
         (p.image_url ? '<img src="' + esc(p.image_url) + '" style="width:46px;height:46px;object-fit:cover;border-radius:10px;border:1px solid var(--border);cursor:zoom-in" onclick="window.open(\'' + esc(p.image_url) + '\')">' : '<div class="avatar">📦</div>') +
         '<div class="grow"><div class="li-title">' + esc(p.courier) + ' · <span class="mono">' + esc(p.unit) + '</span></div>' +
-        '<div class="li-sub">' + fmtDate(p.created_at) + ' · ' + timeAgo(p.created_at) + '</div></div>' +
+        '<div class="li-sub">' + fmtDate(p.created_at) + ' · ' + timeAgo(p.created_at) + '</div>' +
+        (p.status === 'Done' && p.picked_by ? '<div class="li-sub" style="color:var(--green)">🖐 ' + t('par_picked_by') + ': ' + esc(p.picked_by) + (p.collected_at ? ' · ' + fmtDate(p.collected_at) : '') + '</div>' : '') +
+        '</div>' +
         badge(p.status) +
         (p.status === 'Pending' && isOwnerU ? '<button class="btn btn-green btn-sm" onclick="kd(\'' + p.id + '\')">' + t('par_mark_done') + '</button>' : '') +
         (isStaffU ? '<select class="select" style="width:auto;padding:6px 8px;font-size:11px" onchange="pset(\'' + p.id + '\', this.value)">' +
@@ -124,12 +145,23 @@ async function loadParcels(wrap) {
           '</select>' : '') +
       '</div>'
     ).join('')
-  window.kd = async (id) => { await kjMarkParcelDone(id); toast(t('par_collected'), 'success'); await loadParcels(wrap) }
+  }
+
+  $('pf_search').addEventListener('input', render)
+  $('pf_status').addEventListener('change', render)
+  window.kd = async (id) => { await kjMarkParcelDone(id, currentName()); toast(t('par_collected'), 'success'); await loadParcels(wrap) }
   window.pset = async (id, status) => {
-    if (status === 'Done') await kjMarkParcelDone(id)
+    if (status === 'Done') await kjMarkParcelDone(id, currentName())
     else await kjReopenParcel(id)
     toast(t('mnt_update'), 'success'); await loadParcels(wrap)
   }
+  render()
+}
+
+function currentName() {
+  const s = state.session
+  if (!s) return ''
+  return s.name || (s.type === 'owner' ? (s.unit || '') : (s.role || ''))
 }
 
 /* ─────────────────────────────── VISITORS ─────────────────────────────── */

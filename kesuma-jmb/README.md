@@ -62,7 +62,7 @@ Semua peranan log masuk dengan **username & password** (jadual `users`):
 
 ```sql
 owners        unit, name, email, phone, ic_no, vehicle_plate, vehicle_model, parking_lot
-parcels       unit, courier, image_url, status, created_at, collected_at
+parcels       unit, courier, image_url, status, picked_by, created_at, collected_at
 visitors      ref_code, name, ic_no, phone, unit, purpose, vehicle_type, vehicle_plate, status, timestamps
 maintenance   unit, category, title, description, priority, status, notes, closed_at
 payments      unit, period, amount, method, status, receipt
