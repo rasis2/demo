@@ -264,6 +264,64 @@ select * from (values
 where not exists (select 1 from public.announcements);
 
 -- ─────────────────────────────────────────────
+--  MOCK DATA (untuk fitur baharu — hanya jalan jika table kosong)
+--  · owners: kenderaan + kad + auto-debit
+--  · parcels: senarai parsel untuk filter/monitor
+--  · visitors: kenderaan pelawat untuk senarai kenderaan (badge Pelawat)
+--  · payments: rekod bayaran termasuk Auto-Debit
+-- ─────────────────────────────────────────────
+
+-- 1) Kenderaan & kad pemilik (contoh beberapa unit)
+update public.owners set
+  vehicle_plate = o.vp, vehicle_model = o.vm, parking_lot = o.pl,
+  card_last4 = o.c4, auto_debit = o.ad
+from (values
+  ('4-1',  'WXK 4521',  'Proton X50',    'A-01', '4242', true),
+  ('4-2',  'JHT 3320',  'Perodua Myvi',  'A-02', '1111', true),
+  ('5-3',  'VNF 8830',  'Honda Civic',   'B-01', '7888', false),
+  ('6-4',  'PNM 1290',  'Toyota Vios',   'B-02', '',    false),
+  ('7-5',  'WKT 7712',  'Perodua Axia',  'C-01', '2222', true),
+  ('9-8',  'MQQ 5510',  'Mazda CX-5',    'D-01', '',    false),
+  ('10-10','JKP 9077',  'Proton Saga',   'D-02', '3333', true)
+) as o(unit, vp, vm, pl, c4, ad)
+where public.owners.unit = o.unit;
+
+-- 2) Parsel mock — campuran Pending & Done
+insert into public.parcels (unit, courier, image_url, status, created_at, collected_at)
+select * from (values
+  ('4-1',  'J&T Express',            '', 'Pending', now() - interval '3 hours', null),
+  ('4-1',  'Shopee Express (SPX)',   '', 'Done',    now() - interval '1 day',   now() - interval '1 day' + interval '6 hours'),
+  ('5-3',  'Pos Laju',               '', 'Pending', now() - interval '5 hours', null),
+  ('6-4',  'Ninja Van',              '', 'Pending', now() - interval '3 days',  null),
+  ('7-5',  'DHL',                    '', 'Done',    now() - interval '2 days',  now() - interval '2 days' + interval '3 hours'),
+  ('9-8',  'Lazada Logistics',       '', 'Pending', now() - interval '8 hours', null),
+  ('10-10','City-Link',              '', 'Done',    now() - interval '5 days',  now() - interval '5 days' + interval '1 hour')
+) as p(unit, courier, image_url, status, created_at, collected_at)
+where not exists (select 1 from public.parcels);
+
+-- 3) Pelawat dengan kenderaan (untuk senarai kenderaan → badge Pelawat)
+insert into public.visitors (ref_code, name, ic_no, phone, unit, purpose, vehicle_type, vehicle_plate, status, created_at)
+select * from (values
+  ('KESDEMO1', 'Ahmad bin Ali',   '900101-01-1234', '012-345 6789', '4-1',  'Ziarah',   'Kereta',    'WXW 1111', 'Checked Out', now() - interval '1 day'),
+  ('KESDEMO2', 'Siti Nurhaliza',  '880505-14-5678', '013-111 2222', '5-3',  'Hantar Barang', 'Motosikal', 'JHA 2222', 'Checked In',  now() - interval '2 hours'),
+  ('KESDEMO3', 'Raj Kumar',       '910707-10-9012', '016-333 4444', '6-4',  'Urusan Kerja', 'Kereta',    'VNH 3333', 'Pending',     now() - interval '30 minutes'),
+  ('KESDEMO4', 'Lim Wei Jie',     '950101-08-3456', '017-555 6666', '7-5',  'Pembaikan', 'Lori / Van', 'JKP 4444', 'Approved',    now() - interval '1 hour')
+) as v(ref_code, name, ic_no, phone, unit, purpose, vehicle_type, vehicle_plate, status, created_at)
+where not exists (select 1 from public.visitors);
+
+-- 4) Bayaran mock — termasuk Auto-Debit untuk unit berauto-debit
+insert into public.payments (unit, period, amount, method, status, receipt, created_at)
+select * from (values
+  ('4-1',   'Januari 2026', 120, 'Auto-Debit', 'Paid', 'R-DEMO001', now() - interval '35 days'),
+  ('4-1',   'Februari 2026',120, 'Auto-Debit', 'Paid', 'R-DEMO002', now() - interval '5 days'),
+  ('4-2',   'Februari 2026',120, 'Auto-Debit', 'Paid', 'R-DEMO003', now() - interval '4 days'),
+  ('5-3',   'Februari 2026',120, 'FPX',        'Paid', 'R-DEMO004', now() - interval '3 days'),
+  ('7-5',   'Februari 2026',120, 'DuitNow',    'Paid', 'R-DEMO005', now() - interval '2 days'),
+  ('10-10', 'Februari 2026',120, 'Bank Transfer','Paid','R-DEMO006',now() - interval '1 day')
+) as pay(unit, period, amount, method, status, receipt, created_at)
+where not exists (select 1 from public.payments);
+
+-- ─────────────────────────────────────────────
 --  ROW LEVEL SECURITY (demo-friendly: anon full access)
 --  ⚠️ For production, replace with authenticated policies.
 -- ─────────────────────────────────────────────

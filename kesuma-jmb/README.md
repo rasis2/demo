@@ -11,7 +11,7 @@ Sistem pengurusan harta bersepadu untuk **Residensi Kesuma, Beranang** (475 unit
 App tidak berfungsi sehingga ia disambungkan ke projek Supabase anda:
 
 1. **Buat projek Supabase** percuma di [supabase.com](https://supabase.com) (atau guna projek sedia ada).
-2. Buka **SQL Editor** dalam dashboard Supabase → tampal keseluruhan kandungan **`schema.sql`** → **RUN**. (Ini mencipta semua jadual: `owners`, `parcels`, `visitors`, `maintenance`, `payments`, `announcements`, `facilities`, `bookings`, `documents`, `settings` + seed 475 unit.)
+2. Buka **SQL Editor** dalam dashboard Supabase → tampal keseluruhan kandungan **`schema.sql`** → **RUN**. (Ini mencipta semua jadual: `owners`, `parcels`, `visitors`, `maintenance`, `payments`, `announcements`, `facilities`, `bookings`, `documents`, `settings` + seed 475 unit + mock data kenderaan/parsel/pelawat/bayaran untuk demo.)
 3. Buat **Storage bucket** `parcel-images` (public) dan jalankan 4 baris policy storage di bahagian bawah `schema.sql`.
 4. Buka app → skrin **"Sambungkan Supabase"** akan muncul → masukkan:
    - **Project URL** (Supabase → Settings → API)
