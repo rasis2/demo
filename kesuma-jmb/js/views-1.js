@@ -55,11 +55,11 @@ VIEWS.parcels = {
 
     wrap.innerHTML =
       '<div class="page-head"><h1>📦 ' + t('par_title') + '</h1><p>' + t('par_added') + '</p></div>' +
-      '<div class="grid-2">' +
+      '<div style="max-width:560px">' +
         leftCol +
-        '<div class="card"><div class="card-head"><h3>' + (isOwnerU ? '🏠 ' + t('par_my') : t('par_monitor')) + '</h3></div>' +
-          '<div class="card-body" id="parList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>' +
-      '</div>'
+      '</div>' +
+      '<div class="mt-16 card"><div class="card-head"><h3>' + (isOwnerU ? '🏠 ' + t('par_my') : t('par_monitor')) + '</h3></div>' +
+        '<div class="card-body" id="parList" style="padding:8px 20px"><div class="skeleton" style="height:60px"></div></div></div>'
 
     const parStaffLogin = $('parStaffLogin'); if (parStaffLogin) parStaffLogin.onclick = showStaffLogin
     const parOwnerLogin = $('parOwnerLogin'); if (parOwnerLogin) parOwnerLogin.onclick = showOwnerLogin
