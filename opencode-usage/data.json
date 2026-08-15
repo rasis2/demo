@@ -1,23 +1,23 @@
 {
-  "generated": "2026-08-14T22:45:03.073Z",
+  "generated": "2026-08-15T22:45:02.279Z",
   "log": "opencode.log",
   "stats": {
-    "streams": 13025,
-    "models": 4,
-    "tools": 14054,
+    "streams": 13659,
+    "models": 5,
+    "tools": 15745,
     "toolKinds": 11,
-    "sessions": 56,
-    "loops": 13335
+    "sessions": 75,
+    "loops": 14062
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 9311,
+      "value": 9914,
       "color": "#7c3aed"
     },
     {
       "name": "opencode · deepseek-v4-flash-free",
-      "value": 2788,
+      "value": 2797,
       "color": "#4f46e5"
     },
     {
@@ -26,46 +26,56 @@
       "color": "#3b82f6"
     },
     {
+      "name": "opencode-go · gpt-5.6-luna",
+      "value": 22,
+      "color": "#0ea5a4"
+    },
+    {
       "name": "groq · llama-3.3-70b-versatile",
       "value": 4,
-      "color": "#0ea5a4"
+      "color": "#10b981"
     }
   ],
   "tools": [
     {
       "name": "bash",
-      "value": 8751,
+      "value": 10080,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2273,
+      "value": 2382,
       "color": "#f59e0b"
     },
     {
       "name": "external_directory",
-      "value": 1310,
+      "value": 1353,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 1123,
+      "value": 1248,
       "color": "#3b82f6"
     },
     {
       "name": "grep",
-      "value": 309,
+      "value": 328,
       "color": "#8b5cf6"
     },
     {
       "name": "todowrite",
-      "value": 114,
+      "value": 134,
       "color": "#ec4899"
     },
     {
       "name": "webfetch",
-      "value": 111,
+      "value": 119,
       "color": "#22c55e"
+    },
+    {
+      "name": "glob",
+      "value": 47,
+      "color": "#94a3b8"
     },
     {
       "name": "websearch",
@@ -73,18 +83,13 @@
       "color": "#14b8a6"
     },
     {
-      "name": "glob",
-      "value": 15,
-      "color": "#94a3b8"
-    },
-    {
       "name": "task",
-      "value": 2,
+      "value": 7,
       "color": "#6366f1"
     },
     {
       "name": "skill",
-      "value": 1,
+      "value": 2,
       "color": "#f97316"
     }
   ],
@@ -92,15 +97,15 @@
     "provider": "opencode-go",
     "model": "deepseek-v4-flash",
     "month": "2026-08",
-    "used": 3.44,
+    "used": 3.83,
     "limit": 60,
-    "percent": 5.7,
+    "percent": 6.4,
     "tokens": {
-      "total": 841981055,
-      "input": 4296127,
-      "output": 1794278,
-      "cacheRead": 834829056
+      "total": 910680365,
+      "input": 5436907,
+      "output": 1952589,
+      "cacheRead": 902033408
     },
-    "requests": 9260
+    "requests": 9871
   }
 }
