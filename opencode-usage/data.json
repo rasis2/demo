@@ -1,18 +1,18 @@
 {
-  "generated": "2026-08-16T22:45:02.867Z",
+  "generated": "2026-08-17T17:27:35.388Z",
   "log": "opencode.log",
   "stats": {
-    "streams": 13954,
+    "streams": 14487,
     "models": 5,
-    "tools": 16622,
+    "tools": 19136,
     "toolKinds": 11,
-    "sessions": 107,
-    "loops": 14381
+    "sessions": 150,
+    "loops": 14966
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 10168,
+      "value": 10680,
       "color": "#7c3aed"
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "name": "opencode-go · gpt-5.6-luna",
-      "value": 57,
+      "value": 78,
       "color": "#0ea5a4"
     },
     {
@@ -39,53 +39,53 @@
   "tools": [
     {
       "name": "bash",
-      "value": 10638,
+      "value": 12496,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2443,
+      "value": 2509,
       "color": "#f59e0b"
     },
     {
       "name": "external_directory",
-      "value": 1394,
+      "value": 1623,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 1390,
+      "value": 1585,
       "color": "#3b82f6"
     },
     {
       "name": "grep",
-      "value": 339,
+      "value": 386,
       "color": "#8b5cf6"
     },
     {
       "name": "todowrite",
-      "value": 145,
+      "value": 156,
       "color": "#ec4899"
     },
     {
       "name": "webfetch",
-      "value": 120,
+      "value": 148,
       "color": "#22c55e"
     },
     {
       "name": "glob",
-      "value": 72,
+      "value": 116,
       "color": "#94a3b8"
+    },
+    {
+      "name": "task",
+      "value": 67,
+      "color": "#6366f1"
     },
     {
       "name": "websearch",
       "value": 45,
       "color": "#14b8a6"
-    },
-    {
-      "name": "task",
-      "value": 31,
-      "color": "#6366f1"
     },
     {
       "name": "skill",
@@ -97,15 +97,15 @@
     "provider": "opencode-go",
     "model": "deepseek-v4-flash",
     "month": "2026-08",
-    "used": 3.93,
+    "used": 4.55,
     "limit": 60,
-    "percent": 6.5,
+    "percent": 7.6,
     "tokens": {
-      "total": 920561865,
-      "input": 5753821,
-      "output": 2028384,
-      "cacheRead": 911276820
+      "total": 951584889,
+      "input": 8916492,
+      "output": 2422159,
+      "cacheRead": 938716052
     },
-    "requests": 10145
+    "requests": 10671
   }
 }
