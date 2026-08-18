@@ -1,23 +1,23 @@
 {
-  "generated": "2026-08-17T22:45:02.572Z",
+  "generated": "2026-08-18T22:45:03.031Z",
   "log": "opencode.log",
   "stats": {
-    "streams": 15288,
+    "streams": 15765,
     "models": 5,
-    "tools": 21895,
+    "tools": 23222,
     "toolKinds": 11,
-    "sessions": 211,
-    "loops": 15819
+    "sessions": 275,
+    "loops": 16330
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 11239,
+      "value": 11483,
       "color": "#7c3aed"
     },
     {
       "name": "opencode · deepseek-v4-flash-free",
-      "value": 2803,
+      "value": 2819,
       "color": "#4f46e5"
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "name": "opencode-go · gpt-5.6-luna",
-      "value": 320,
+      "value": 537,
       "color": "#0ea5a4"
     },
     {
@@ -39,47 +39,47 @@
   "tools": [
     {
       "name": "bash",
-      "value": 14191,
+      "value": 14860,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2611,
+      "value": 2683,
       "color": "#f59e0b"
     },
     {
       "name": "read",
-      "value": 1957,
+      "value": 2231,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 1901,
+      "value": 2032,
       "color": "#0ea5a4"
     },
     {
       "name": "grep",
-      "value": 501,
+      "value": 542,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 194,
+      "value": 268,
       "color": "#94a3b8"
     },
     {
       "name": "todowrite",
-      "value": 188,
+      "value": 202,
       "color": "#ec4899"
     },
     {
       "name": "webfetch",
-      "value": 183,
+      "value": 184,
       "color": "#22c55e"
     },
     {
       "name": "task",
-      "value": 113,
+      "value": 157,
       "color": "#6366f1"
     },
     {
@@ -89,7 +89,7 @@
     },
     {
       "name": "skill",
-      "value": 11,
+      "value": 18,
       "color": "#f97316"
     }
   ],
@@ -97,15 +97,15 @@
     "provider": "opencode-go",
     "model": "deepseek-v4-flash",
     "month": "2026-08",
-    "used": 5.32,
+    "used": 5.61,
     "limit": 60,
-    "percent": 8.9,
+    "percent": 9.3,
     "tokens": {
-      "total": 1008828721,
-      "input": 12300646,
-      "output": 2940686,
-      "cacheRead": 991270900
+      "total": 1027026179,
+      "input": 13711777,
+      "output": 3096380,
+      "cacheRead": 1007134430
     },
-    "requests": 11453
+    "requests": 11870
   }
 }
