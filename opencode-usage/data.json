@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-19T11:00:35.160Z",
+  "generated": "2026-08-19T12:00:36.693Z",
   "period": "19–31 Ogo 2026",
   "quota": {
     "monthly": {
@@ -18,24 +18,24 @@
   "consumers": [
     {
       "name": "Hermes gateway",
-      "cost": 1.57,
+      "cost": 1.61,
       "calls": 1,
       "color": "#0ea5a4",
-      "percent": 85.3
+      "percent": 85.6
     },
     {
       "name": "Subagents",
       "cost": 0.15,
       "calls": 5,
       "color": "#3b82f6",
-      "percent": 8.2
+      "percent": 8
     },
     {
       "name": "CLI / build",
       "cost": 0.12,
       "calls": 16,
       "color": "#7c3aed",
-      "percent": 6.5
+      "percent": 6.4
     },
     {
       "name": "Hermes cron",
@@ -46,12 +46,12 @@
     }
   ],
   "stats": {
-    "streams": 16017,
-    "models": 6,
-    "tools": 24192,
+    "streams": 16122,
+    "models": 9,
+    "tools": 24494,
     "toolKinds": 11,
-    "sessions": 291,
-    "loops": 16593
+    "sessions": 301,
+    "loops": 16702
   },
   "models": [
     {
@@ -61,7 +61,7 @@
     },
     {
       "name": "opencode · deepseek-v4-flash-free",
-      "value": 3034,
+      "value": 3064,
       "color": "#4f46e5"
     },
     {
@@ -71,54 +71,69 @@
     },
     {
       "name": "opencode-go · gpt-5.6-luna",
-      "value": 543,
+      "value": 547,
       "color": "#0ea5a4"
     },
     {
       "name": "afiqstore · deepseek-v4-pro",
-      "value": 26,
+      "value": 92,
       "color": "#10b981"
     },
     {
       "name": "groq · llama-3.3-70b-versatile",
       "value": 4,
       "color": "#f59e0b"
+    },
+    {
+      "name": "afiqstore · glm-5.3",
+      "value": 2,
+      "color": "#ef4444"
+    },
+    {
+      "name": "afiqstore · kimi-k3",
+      "value": 2,
+      "color": "#ec4899"
+    },
+    {
+      "name": "afiqstore · deepseek-v4-flash",
+      "value": 1,
+      "color": "#14b8a6"
     }
   ],
   "tools": [
     {
       "name": "bash",
-      "value": 15604,
+      "value": 15800,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2706,
+      "value": 2725,
       "color": "#f59e0b"
     },
     {
       "name": "read",
-      "value": 2319,
+      "value": 2372,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 2097,
+      "value": 2105,
       "color": "#0ea5a4"
     },
     {
       "name": "grep",
-      "value": 553,
+      "value": 559,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 284,
+      "value": 295,
       "color": "#94a3b8"
     },
     {
       "name": "todowrite",
-      "value": 202,
+      "value": 204,
       "color": "#ec4899"
     },
     {
@@ -128,7 +143,7 @@
     },
     {
       "name": "task",
-      "value": 168,
+      "value": 173,
       "color": "#6366f1"
     },
     {
@@ -138,7 +153,7 @@
     },
     {
       "name": "skill",
-      "value": 18,
+      "value": 20,
       "color": "#f97316"
     }
   ],
