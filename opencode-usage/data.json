@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-19T05:00:07.731Z",
+  "generated": "2026-08-19T06:00:09.267Z",
   "period": "19–31 Ogo 2026",
   "quota": {
     "monthly": {
@@ -18,24 +18,24 @@
   "consumers": [
     {
       "name": "Hermes gateway",
-      "cost": 1.32,
+      "cost": 1.36,
       "calls": 1,
       "color": "#0ea5a4",
-      "percent": 83
+      "percent": 83.4
     },
     {
       "name": "Subagents",
       "cost": 0.15,
       "calls": 5,
       "color": "#3b82f6",
-      "percent": 9.4
+      "percent": 9.2
     },
     {
       "name": "CLI / build",
       "cost": 0.12,
       "calls": 16,
       "color": "#7c3aed",
-      "percent": 7.5
+      "percent": 7.4
     },
     {
       "name": "Hermes cron",
