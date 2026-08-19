@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════
    OPENCODE USAGE — style.css
-   Minimal, clean, one accent. Light only.
+   Dashboard layout: quota grid, cost ranking.
 ═══════════════════════════════════════════ */
 
 :root {
@@ -13,12 +13,16 @@
     --good: #22c55e;
     --mid: #f59e0b;
     --bad: #ef4444;
+    --hit: #dc2626;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    background: var(--bg);
+    background:
+        radial-gradient(1000px 500px at 85% -10%, rgba(56, 189, 248, .08), transparent),
+        radial-gradient(800px 400px at 10% 0%, rgba(124, 58, 237, .07), transparent),
+        var(--bg);
     color: var(--text);
     font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
     min-height: 100vh;
@@ -29,7 +33,7 @@ body {
     display: flex;
     align-items: center;
     gap: 14px;
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 22px 20px 10px;
 }
@@ -85,18 +89,18 @@ body {
 
 /* ── MAIN ── */
 main {
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 10px 20px 48px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 /* ── STATS ── */
 .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
     gap: 12px;
 }
 
@@ -108,12 +112,23 @@ main {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    transition: border-color .2s;
 }
+
+.stat:hover { border-color: var(--accent); }
 
 .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1.1; }
 .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
 
-/* ── QUOTA METER ── */
+/* ── QUOTA GRID (weekly + monthly) ── */
+.quota-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 700px) { .quota-grid { grid-template-columns: 1fr; } }
+
 .meter-card { width: 100%; }
 
 .meter-head {
@@ -127,7 +142,7 @@ main {
 .meter-head h2 { font-size: 16px; font-weight: 700; }
 
 .meter-badge {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
     padding: 4px 12px;
     border-radius: 999px;
@@ -138,10 +153,11 @@ main {
 .meter-badge.good { background: rgba(34, 197, 94, .15); color: var(--good); }
 .meter-badge.mid  { background: rgba(245, 158, 11, .15); color: var(--mid); }
 .meter-badge.bad  { background: rgba(239, 68, 68, .15); color: var(--bad); animation: blink .8s infinite alternate; }
+.meter-badge.hit  { background: rgba(220, 38, 38, .22); color: #fca5a5; animation: blink .6s infinite alternate; }
 
 @keyframes blink { from { opacity: 1; } to { opacity: .45; } }
 
-.chart-sub { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+.chart-sub { color: var(--muted); font-size: 13px; margin: 6px 0 10px; }
 
 .meter-bar {
     height: 16px;
@@ -157,14 +173,13 @@ main {
     transition: width .6s ease, background .3s ease;
 }
 
-.meter-scale {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 7px;
-    font-size: 11px;
+.meter-reset {
+    margin-top: 8px;
+    font-size: 11.5px;
     color: var(--muted);
-    font-weight: 600;
 }
+
+.meter-reset.warn { color: #fca5a5; font-weight: 600; }
 
 /* ── CARDS ── */
 .cards {
@@ -180,12 +195,25 @@ main {
     border: 1px solid var(--line);
     border-radius: 14px;
     padding: 20px;
+    transition: border-color .2s;
 }
 
-.card h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+.card:hover { border-color: var(--line); }
+
+.card h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+
+.total-chip {
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, .12);
+    color: var(--accent);
+    white-space: nowrap;
+}
 
 /* ── BARS ── */
-.bars { display: flex; flex-direction: column; gap: 10px; }
+.bars { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 
 .bar-row {
     display: grid;
@@ -232,12 +260,43 @@ main {
     font-variant-numeric: tabular-nums;
 }
 
+/* Consumer rows: extra meta line */
+.bar-row.consumer {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+        "name   cost  pct"
+        "meta   meta  meta"
+        "track  track track";
+    gap: 3px 10px;
+    padding: 10px 12px;
+    background: rgba(15, 23, 42, .5);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    transition: border-color .2s, transform .15s;
+}
+
+.bar-row.consumer:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+.bar-row.consumer .bar-name { grid-area: name; }
+.bar-row.consumer .bar-meta {
+    grid-area: meta;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bar-row.consumer .bar-pct { grid-area: pct; }
+.bar-row.consumer .bar-val.cost { grid-area: cost; font-weight: 700; color: var(--text); }
+.bar-row.consumer .bar-track { grid-area: track; }
+
 /* ── NOTE ── */
 .note {
     text-align: center;
     color: var(--muted);
-    font-size: 12.5px;
+    font-size: 12px;
     padding-top: 4px;
+    font-style: italic;
 }
 
 .error {

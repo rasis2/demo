@@ -1,23 +1,67 @@
 {
-  "generated": "2026-08-18T22:45:03.031Z",
-  "log": "opencode.log",
+  "generated": "2026-08-19T03:13:54.098Z",
+  "period": "19–31 Ogo 2026",
+  "quota": {
+    "monthly": {
+      "used": 5.61,
+      "limit": 60,
+      "percent": 9.4,
+      "unit": "USD"
+    },
+    "weekly": {
+      "used": 3.56,
+      "limit": 30,
+      "percent": 11.9,
+      "unit": "USD"
+    }
+  },
+  "consumers": [
+    {
+      "name": "Hermes gateway",
+      "cost": 1.23,
+      "calls": 1,
+      "color": "#0ea5a4",
+      "percent": 82
+    },
+    {
+      "name": "Subagents",
+      "cost": 0.15,
+      "calls": 5,
+      "color": "#3b82f6",
+      "percent": 10
+    },
+    {
+      "name": "CLI / build",
+      "cost": 0.12,
+      "calls": 16,
+      "color": "#7c3aed",
+      "percent": 8
+    },
+    {
+      "name": "Hermes cron",
+      "cost": 0,
+      "calls": 6,
+      "color": "#4f46e5",
+      "percent": 0
+    }
+  ],
   "stats": {
-    "streams": 15765,
+    "streams": 15983,
     "models": 5,
-    "tools": 23222,
+    "tools": 24096,
     "toolKinds": 11,
-    "sessions": 275,
-    "loops": 16330
+    "sessions": 284,
+    "loops": 16559
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 11483,
+      "value": 11484,
       "color": "#7c3aed"
     },
     {
       "name": "opencode · deepseek-v4-flash-free",
-      "value": 2819,
+      "value": 3034,
       "color": "#4f46e5"
     },
     {
@@ -39,32 +83,32 @@
   "tools": [
     {
       "name": "bash",
-      "value": 14860,
+      "value": 15558,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2683,
+      "value": 2706,
       "color": "#f59e0b"
     },
     {
       "name": "read",
-      "value": 2231,
+      "value": 2283,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 2032,
+      "value": 2096,
       "color": "#0ea5a4"
     },
     {
       "name": "grep",
-      "value": 542,
+      "value": 548,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 268,
+      "value": 279,
       "color": "#94a3b8"
     },
     {
@@ -74,17 +118,17 @@
     },
     {
       "name": "webfetch",
-      "value": 184,
+      "value": 190,
       "color": "#22c55e"
     },
     {
       "name": "task",
-      "value": 157,
+      "value": 165,
       "color": "#6366f1"
     },
     {
       "name": "websearch",
-      "value": 45,
+      "value": 51,
       "color": "#14b8a6"
     },
     {
@@ -93,19 +137,5 @@
       "color": "#f97316"
     }
   ],
-  "go": {
-    "provider": "opencode-go",
-    "model": "deepseek-v4-flash",
-    "month": "2026-08",
-    "used": 5.61,
-    "limit": 60,
-    "percent": 9.3,
-    "tokens": {
-      "total": 1027026179,
-      "input": 13711777,
-      "output": 3096380,
-      "cacheRead": 1007134430
-    },
-    "requests": 11870
-  }
+  "note": "Anggaran harga off-peak (konservatif). Sumber authoritative: dashboard opencode.ai"
 }

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /* ═══════════════════════════════════════════
    OPENCODE USAGE — parse-log.js
-   Reads opencode.log and emits data.json with
-   real usage counts. Run: node parse-log.js [path/to/opencode.log]
+   Reads opencode.log + databases, emits data.json
+   in the NEW format: quota.weekly/monthly + consumers.
+   Run: node parse-log.js [path/to/opencode.log]
 ═══════════════════════════════════════════ */
 
 const fs = require('fs');
@@ -15,7 +16,6 @@ const DEFAULT_LOG = path.join(
 );
 
 const logPath = process.argv[2] || DEFAULT_LOG;
-
 if (!fs.existsSync(logPath)) {
   console.error(`Log tidak dijumpai: ${logPath}`);
   process.exit(1);
@@ -29,16 +29,17 @@ const TOOL_COLORS = {
   write: '#e11d48', skill: '#f97316', task: '#6366f1', question: '#a855f7',
 };
 
-// ── OpenCode Go quota (from https://opencode.ai/docs/go/) ──
-// DeepSeek V4 Flash pricing per 1M tokens (USD):
+// ── Pricing & limits (USD) ──
+// DeepSeek V4 Flash pricing per 1M tokens:
 const GO_PRICING = { input: 0.14, output: 0.28, cacheRead: 0.0028, cacheWrite: 0 };
-const GO_MONTHLY_LIMIT_USD = 60; // Go monthly limit: $60 of usage
+const MONTHLY_LIMIT = 60; // OpenCode Go monthly: $60
+const WEEKLY_LIMIT = 30;  // OpenCode Go weekly per-user: $30
 
 const stats = {
   generated: null,
   logPath,
-  models: {},   // providerID/modelID -> count
-  tools: {},    // tool name -> count
+  models: {},
+  tools: {},
   sessions: 0,
   loops: 0,
   streams: 0,
@@ -50,7 +51,7 @@ rl.on('line', (line) => {
   if (line.includes('message=stream')) {
     stats.streams++;
     const m = line.match(/providerID=(\S+) modelID=(\S+)/);
-    if (m) {
+    if (m && m[1] && m[2] && !m[1].includes('\\\\') && !m[2].includes('\\\\')) {
       const key = `${m[1]} · ${m[2]}`;
       stats.models[key] = (stats.models[key] || 0) + 1;
     }
@@ -78,12 +79,15 @@ rl.on('close', () => {
   models.forEach((d, i) => { d.color = PALETTE[i % PALETTE.length]; });
   tools.forEach((d) => { d.color = TOOL_COLORS[d.name] || PALETTE[tools.indexOf(d) % PALETTE.length]; });
 
-  // Real token usage + cost from opencode SQLite DB (provider opencode-go)
-  const go = readGoUsage();
+  // Quota from opencode.db (monthly + weekly) and consumers from hermes state.db
+  const quota = readQuota();
+  const consumers = readConsumers();
 
   const out = {
     generated: stats.generated,
-    log: 'opencode.log',
+    period: periodLabel(),
+    quota,
+    consumers,
     stats: {
       streams: stats.streams,
       models: models.length,
@@ -94,44 +98,48 @@ rl.on('close', () => {
     },
     models,
     tools,
-    go,
+    note: 'Anggaran harga off-peak (konservatif). Sumber authoritative: dashboard opencode.ai',
   };
 
   const outPath = path.join(__dirname, 'data.json');
   fs.writeFileSync(outPath, JSON.stringify(out, null, 2));
   console.log(`data.json dijana: ${stats.streams} stream, ${models.length} model, ${tools.length} jenis alat`);
-  console.log(`Go usage: $${go.used.toFixed(2)} / $${go.limit} (${go.percent.toFixed(1)}%)`);
+  console.log(`→ Kuota bulanan: $${quota.monthly.used.toFixed(2)} / $${quota.monthly.limit} (${quota.monthly.percent.toFixed(1)}%)`);
+  console.log(`→ Kuota mingguan: $${quota.weekly.used.toFixed(2)} / $${quota.weekly.limit} (${quota.weekly.percent.toFixed(1)}%)`);
+  console.log(`→ Consumer: ${consumers.length} entri`);
 });
 
-/* Read opencode-go token usage from opencode.db and compute cost. */
-function readGoUsage() {
-  const zero = {
-    provider: 'opencode-go', model: 'deepseek-v4-flash',
-    used: 0, limit: GO_MONTHLY_LIMIT_USD, percent: 0,
-    tokens: { total: 0, input: 0, output: 0, cacheRead: 0 }, requests: 0,
-  };
+/* ── Period label (current month window) ── */
+function periodLabel() {
+  const now = new Date();
+  const d = String(now.getDate()).padStart(2, '0');
+  const last = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  return `${d}–${last} ${['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'][now.getMonth()]} ${now.getFullYear()}`;
+}
 
-  let dbPath;
+/* ── Read quota (monthly + weekly) from opencode.db ── */
+function readQuota() {
+  const zero = (limit) => ({ used: 0, limit, percent: 0, unit: 'USD' });
+  const monthly = zero(MONTHLY_LIMIT);
+  const weekly = zero(WEEKLY_LIMIT);
+
   const dataHome = path.join(process.env.USERPROFILE || process.env.HOME || '', '.local', 'share', 'opencode');
-  dbPath = path.join(dataHome, 'opencode.db');
+  const dbPath = path.join(dataHome, 'opencode.db');
 
   let DatabaseSync;
-  try { DatabaseSync = require('node:sqlite').DatabaseSync; }
-  catch (_) { return zero; }
-
-  if (!fs.existsSync(dbPath)) return zero;
+  try { DatabaseSync = require('node:sqlite').DatabaseSync; } catch (_) { return { monthly, weekly }; }
+  if (!fs.existsSync(dbPath)) return { monthly, weekly };
 
   let d;
-  try { d = new DatabaseSync(dbPath, { readOnly: true }); }
-  catch (_) { return zero; }
+  try { d = new DatabaseSync(dbPath, { readOnly: true }); } catch (_) { return { monthly, weekly }; }
 
-  let tokens = { total: 0, input: 0, output: 0, cacheRead: 0 };
-  let requests = 0;
-
-  // Only count the current calendar month (quota is monthly).
   const now = new Date();
   const monthStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1);
   const monthEnd = Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1);
+  const weekStart = now.getTime() - 7 * 86400 * 1000;
+
+  let mTokens = { total: 0, input: 0, output: 0, cacheRead: 0 }, mReq = 0;
+  let wTokens = { total: 0, input: 0, output: 0, cacheRead: 0 }, wReq = 0;
 
   try {
     const rows = d.prepare('SELECT data FROM message').all();
@@ -140,29 +148,112 @@ function readGoUsage() {
       try { m = JSON.parse(r.data); } catch (_) { continue; }
       if (m.role !== 'assistant' || m.providerID !== 'opencode-go' || !m.tokens) continue;
       const created = m.time && m.time.created;
-      if (!created || created < monthStart || created >= monthEnd) continue;
+      if (!created) continue;
       const t = m.tokens;
-      tokens.total += t.total || 0;
-      tokens.input += t.input || 0;
-      tokens.output += t.output || 0;
-      tokens.cacheRead += (t.cache && t.cache.read) || 0;
-      requests++;
+      const tok = {
+        total: t.total || 0, input: t.input || 0,
+        output: t.output || 0, cacheRead: (t.cache && t.cache.read) || 0,
+      };
+      if (created >= monthStart && created < monthEnd) {
+        mTokens = add(mTokens, tok); mReq++;
+      }
+      if (created >= weekStart) {
+        wTokens = add(wTokens, tok); wReq++;
+      }
     }
   } catch (_) {}
   d.close();
 
-  const used = (tokens.input / 1e6) * GO_PRICING.input
-             + (tokens.output / 1e6) * GO_PRICING.output
-             + (tokens.cacheRead / 1e6) * GO_PRICING.cacheRead;
+  monthly.used = round2(cost(mTokens));
+  monthly.percent = Math.round((monthly.used / MONTHLY_LIMIT) * 1000) / 10;
 
+  weekly.used = round2(cost(wTokens));
+  weekly.percent = Math.round((weekly.used / WEEKLY_LIMIT) * 1000) / 10;
+  if (weekly.percent >= 100) {
+    weekly.note = 'Had mingguan TELAH HABIS';
+  }
+
+  return { monthly, weekly };
+}
+
+function round2(n) { return Math.round(n * 100) / 100; }
+
+function add(a, b) {
   return {
-    provider: 'opencode-go',
-    model: 'deepseek-v4-flash',
-    month: now.getUTCFullYear() + '-' + String(now.getUTCMonth() + 1).padStart(2, '0'),
-    used: Math.round(used * 100) / 100,
-    limit: GO_MONTHLY_LIMIT_USD,
-    percent: Math.round((used / GO_MONTHLY_LIMIT_USD) * 1000) / 10,
-    tokens,
-    requests,
+    total: a.total + b.total, input: a.input + b.input,
+    output: a.output + b.output, cacheRead: a.cacheRead + b.cacheRead,
   };
+}
+
+/* DeepSeek V4 Flash cost estimate (USD) */
+function cost(tok) {
+  return (tok.input / 1e6) * GO_PRICING.input
+       + (tok.output / 1e6) * GO_PRICING.output
+       + (tok.cacheRead / 1e6) * GO_PRICING.cacheRead;
+}
+
+/* ── Read consumers (cost by source/agent) from hermes state.db ── */
+function readConsumers() {
+  const appData = process.env.LOCALAPPDATA || path.join(process.env.USERPROFILE || process.env.HOME || '', 'AppData', 'Local');
+  const dbPath = path.join(appData, 'hermes', 'state.db');
+  let DatabaseSync;
+  try { DatabaseSync = require('node:sqlite').DatabaseSync; } catch (_) { return fallbackConsumers(); }
+  if (!fs.existsSync(dbPath)) return fallbackConsumers();
+
+  let d;
+  try { d = new DatabaseSync(dbPath, { readOnly: true }); } catch (_) { return fallbackConsumers(); }
+
+  const weekStart = Math.floor(new Date().getTime() / 1000 - 7 * 86400);
+  const rows = [];
+  try {
+    const all = d.prepare(
+      `SELECT source, title, input_tokens, output_tokens, cache_read_tokens, cache_write_tokens
+       FROM sessions WHERE started_at > ?`
+    ).all(weekStart);
+    for (const r of all) rows.push(r);
+  } catch (_) {}
+  d.close();
+
+  if (!rows.length) return fallbackConsumers();
+
+  const colors = PALETTE;
+  const byKey = new Map();
+  const KEY_MAP = [
+    { re: /telegram/i, name: 'Hermes gateway' },
+    { re: /cli/i, name: 'CLI / build' },
+    { re: /cron/i, name: 'Hermes cron' },
+    { re: /subagent/i, name: 'Subagents' },
+  ];
+  const OTHER = 'Lain-lain';
+
+  for (const r of rows) {
+    const c = cost({
+      input: r.input_tokens || 0, output: r.output_tokens || 0,
+      cacheRead: r.cache_read_tokens || 0,
+    });
+    let name = OTHER;
+    for (const m of KEY_MAP) { if (m.re.test(r.source || '')) { name = m.name; break; } }
+    if (!byKey.has(name)) byKey.set(name, { name, cost: 0, calls: 0 });
+    const e = byKey.get(name);
+    e.cost += c;
+    e.calls += 1;
+  }
+
+  const entries = [...byKey.values()].map((e, i) => {
+    const pct = e.cost; // placeholder; normalized below
+    return { name: e.name, cost: Math.round(e.cost * 100) / 100, calls: e.calls, color: colors[i % colors.length] };
+  });
+  entries.sort((a, b) => b.cost - a.cost);
+
+  // Recompute percent of total consumers cost
+  const total = entries.reduce((s, e) => s + e.cost, 0);
+  for (const e of entries) e.percent = Math.round((e.cost / total) * 1000) / 10;
+
+  // Top consumers get named agents folded into "Subagents"? Keep simple: rename subagents detail
+  return entries;
+}
+
+/* Fallback: single aggregated entry (if hermes db unavailable) */
+function fallbackConsumers() {
+  return [{ name: 'OpenCode Go', cost: 0, percent: 0, calls: 0, color: PALETTE[0] }];
 }

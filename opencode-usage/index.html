@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenCode Usage</title>
-    <meta name="description" content="Penggunaan OpenCode sebenar daripada opencode.log — model LLM, gunaan alat dan kuota OpenCode Go.">
+    <title>OpenCode Usage · Kuota</title>
+    <meta name="description" content="Penggunaan OpenCode sebenar — kuota mingguan/bulanan, ranking kos mengikut ejen, model LLM dan gunaan alat.">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -25,23 +25,44 @@
     <main>
         <section class="stats" id="stats"></section>
 
-        <!-- OpenCode Go quota meter -->
-        <section class="card meter-card">
-            <div class="meter-head">
-                <h2 data-i="meter_title">Kuota OpenCode Go</h2>
-                <span class="meter-badge" id="meterBadge"></span>
+        <!-- Kuota: mingguan + bulanan -->
+        <section class="quota-grid">
+            <div class="card meter-card" id="meterWeeklyCard">
+                <div class="meter-head">
+                    <h2 data-i="meter_weekly_title">Kuota Mingguan</h2>
+                    <span class="meter-badge" id="meterWeeklyBadge"></span>
+                </div>
+                <p class="chart-sub" id="meterWeeklySub"></p>
+                <div class="meter-bar">
+                    <div class="meter-fill" id="meterWeeklyFill" style="width:0%"></div>
+                </div>
+                <p class="meter-reset" id="meterWeeklyReset"></p>
             </div>
-            <p class="chart-sub" id="meterSub"></p>
-            <div class="meter-bar">
-                <div class="meter-fill" id="meterFill" style="width:0%"></div>
-            </div>
-            <div class="meter-scale">
-                <span data-i="meter_good">✓ Baik</span>
-                <span data-i="meter_mid">⚠ Sederhana</span>
-                <span data-i="meter_bad">✕ Bahaya</span>
+
+            <div class="card meter-card" id="meterMonthlyCard">
+                <div class="meter-head">
+                    <h2 data-i="meter_monthly_title">Kuota Bulanan</h2>
+                    <span class="meter-badge" id="meterMonthlyBadge"></span>
+                </div>
+                <p class="chart-sub" id="meterMonthlySub"></p>
+                <div class="meter-bar">
+                    <div class="meter-fill" id="meterMonthlyFill" style="width:0%"></div>
+                </div>
+                <p class="meter-reset" id="meterMonthlyReset"></p>
             </div>
         </section>
 
+        <!-- Ranking kos mengikut ejen -->
+        <section class="card">
+            <div class="meter-head">
+                <h2 data-i="title_consumers">Ranking Kos Mengikut Ejen</h2>
+                <span class="total-chip" id="totalChip"></span>
+            </div>
+            <p class="chart-sub" id="consumersSub"></p>
+            <div class="bars" id="bars-consumers"></div>
+        </section>
+
+        <!-- Model + Alat -->
         <section class="cards">
             <div class="card">
                 <h2 data-i="title_models">Pengagihan Model LLM</h2>
