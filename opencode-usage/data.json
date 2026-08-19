@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-19T03:14:15.890Z",
+  "generated": "2026-08-19T03:17:39.137Z",
   "period": "19–31 Ogo 2026",
   "quota": {
     "monthly": {
@@ -18,10 +18,10 @@
   "consumers": [
     {
       "name": "Hermes gateway",
-      "cost": 1.24,
+      "cost": 1.25,
       "calls": 1,
       "color": "#0ea5a4",
-      "percent": 82.1
+      "percent": 82.2
     },
     {
       "name": "Subagents",
