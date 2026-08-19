@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-19T04:00:06.201Z",
+  "generated": "2026-08-19T05:00:07.731Z",
   "period": "19–31 Ogo 2026",
   "quota": {
     "monthly": {
@@ -18,24 +18,24 @@
   "consumers": [
     {
       "name": "Hermes gateway",
-      "cost": 1.28,
+      "cost": 1.32,
       "calls": 1,
       "color": "#0ea5a4",
-      "percent": 82.6
+      "percent": 83
     },
     {
       "name": "Subagents",
       "cost": 0.15,
       "calls": 5,
       "color": "#3b82f6",
-      "percent": 9.7
+      "percent": 9.4
     },
     {
       "name": "CLI / build",
       "cost": 0.12,
       "calls": 16,
       "color": "#7c3aed",
-      "percent": 7.7
+      "percent": 7.5
     },
     {
       "name": "Hermes cron",
@@ -46,12 +46,12 @@
     }
   ],
   "stats": {
-    "streams": 15983,
+    "streams": 15987,
     "models": 5,
     "tools": 24096,
     "toolKinds": 11,
-    "sessions": 284,
-    "loops": 16559
+    "sessions": 286,
+    "loops": 16561
   },
   "models": [
     {
@@ -71,7 +71,7 @@
     },
     {
       "name": "opencode-go · gpt-5.6-luna",
-      "value": 537,
+      "value": 541,
       "color": "#0ea5a4"
     },
     {
