@@ -1,17 +1,17 @@
 {
-  "generated": "2026-08-25T21:00:20.111Z",
+  "generated": "2026-08-25T22:00:21.443Z",
   "period": "26–31 Ogo 2026",
   "quota": {
     "monthly": {
-      "used": 5.75,
+      "used": 5.89,
       "limit": 60,
-      "percent": 9.6,
+      "percent": 9.8,
       "unit": "USD"
     },
     "weekly": {
-      "used": 0.17,
+      "used": 0.28,
       "limit": 30,
-      "percent": 0.6,
+      "percent": 0.9,
       "unit": "USD"
     }
   },
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 16250,
+    "streams": 16488,
     "models": 11,
-    "tools": 24928,
+    "tools": 25504,
     "toolKinds": 11,
-    "sessions": 311,
-    "loops": 16846
+    "sessions": 330,
+    "loops": 17094
   },
   "models": [
     {
@@ -55,7 +55,7 @@
     },
     {
       "name": "opencode-go · ox-alpha-free",
-      "value": 112,
+      "value": 350,
       "color": "#10b981"
     },
     {
@@ -92,38 +92,43 @@
   "tools": [
     {
       "name": "bash",
-      "value": 16087,
+      "value": 16355,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2763,
+      "value": 2812,
       "color": "#f59e0b"
     },
     {
       "name": "read",
-      "value": 2429,
+      "value": 2504,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 2127,
+      "value": 2234,
       "color": "#0ea5a4"
     },
     {
       "name": "grep",
-      "value": 564,
+      "value": 598,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 309,
+      "value": 325,
       "color": "#94a3b8"
     },
     {
       "name": "todowrite",
-      "value": 206,
+      "value": 210,
       "color": "#ec4899"
+    },
+    {
+      "name": "task",
+      "value": 199,
+      "color": "#6366f1"
     },
     {
       "name": "webfetch",
@@ -131,13 +136,8 @@
       "color": "#22c55e"
     },
     {
-      "name": "task",
-      "value": 182,
-      "color": "#6366f1"
-    },
-    {
       "name": "websearch",
-      "value": 51,
+      "value": 57,
       "color": "#14b8a6"
     },
     {
