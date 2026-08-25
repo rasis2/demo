@@ -1,17 +1,17 @@
 {
-  "generated": "2026-08-25T17:00:53.663Z",
+  "generated": "2026-08-25T18:00:55.003Z",
   "period": "26–31 Ogo 2026",
   "quota": {
     "monthly": {
-      "used": 5.65,
+      "used": 5.69,
       "limit": 60,
-      "percent": 9.4,
+      "percent": 9.5,
       "unit": "USD"
     },
     "weekly": {
-      "used": 0.07,
+      "used": 0.11,
       "limit": 30,
-      "percent": 0.2,
+      "percent": 0.4,
       "unit": "USD"
     }
   },
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 16172,
+    "streams": 16196,
     "models": 11,
-    "tools": 24707,
+    "tools": 24751,
     "toolKinds": 11,
-    "sessions": 306,
-    "loops": 16760
+    "sessions": 309,
+    "loops": 16786
   },
   "models": [
     {
@@ -60,7 +60,7 @@
     },
     {
       "name": "opencode-go · ox-alpha-free",
-      "value": 34,
+      "value": 58,
       "color": "#f59e0b"
     },
     {
@@ -97,12 +97,12 @@
     },
     {
       "name": "edit",
-      "value": 2730,
+      "value": 2751,
       "color": "#f59e0b"
     },
     {
       "name": "read",
-      "value": 2406,
+      "value": 2423,
       "color": "#3b82f6"
     },
     {
@@ -117,7 +117,7 @@
     },
     {
       "name": "glob",
-      "value": 306,
+      "value": 309,
       "color": "#94a3b8"
     },
     {
@@ -132,7 +132,7 @@
     },
     {
       "name": "task",
-      "value": 177,
+      "value": 180,
       "color": "#6366f1"
     },
     {
