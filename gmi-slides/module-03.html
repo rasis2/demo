@@ -16,29 +16,29 @@
   <section class="slide hero-slide">
     <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
     <h1 class="hero-title">Module 03<br><em>Advanced</em><br>Computer Hardware</h1>
-    <p class="hero-sub">Mendalami seni bina CPU, firmware BIOS/UEFI, teknologi memori &amp; storan, bas pengembangan dan peranti persisian.</p>
+    <p class="hero-sub">Dive deep into CPU architecture, BIOS/UEFI firmware, memory &amp; storage technologies, expansion buses, and peripheral devices.</p>
     <div class="hero-meta">MODULE 03 · DEEP DIVE HARDWARE · Let's begin →</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 03 · CPU</span>
     <h2 class="slide-title">Advanced CPU <em>Architecture</em></h2>
-    <p class="slide-sub">Teknologi dalam CPU moden yang meningkatkan prestasi dan keupayaan.</p>
+    <p class="slide-sub">Technologies inside modern CPUs that boost performance and capability.</p>
     <div class="grid cols-3">
       <div class="card amber">
         <div class="icon">🧮</div>
         <h3>Multi-Core &amp; SMT</h3>
-        <p>Banyak teras untuk multitasking. SMT/Hyper-Threading menjalankan 2 thread serentak setiap teras.</p>
+        <p>Many cores for multitasking. SMT/Hyper-Threading runs 2 threads concurrently per core.</p>
       </div>
       <div class="card amber">
         <div class="icon">🕹️</div>
         <h3>Integrated GPU</h3>
-        <p>Banyak CPU ada grafik onboard (iGPU) — cukup untuk kerja harian tanpa kad video.</p>
+        <p>Many CPUs have onboard graphics (iGPU) — enough for daily work without a video card.</p>
       </div>
       <div class="card amber">
         <div class="icon">🏠</div>
         <h3>Virtualization</h3>
-        <p>Sokongan VT-x (Intel) / AMD-V membenarkan mesin maya berjalan dengan cekap.</p>
+        <p>Support for VT-x (Intel) / AMD-V allows virtual machines to run efficiently.</p>
       </div>
     </div>
   </section>
@@ -46,46 +46,46 @@
   <section class="slide">
     <span class="kicker">Module 03 · Firmware</span>
     <h2 class="slide-title">BIOS, UEFI &amp; <em>CMOS</em></h2>
-    <p class="slide-sub">Firmware yang menghidupkan sistem dan menyimpan tetapan perkakasan.</p>
+    <p class="slide-sub">Firmware that powers up the system and stores hardware settings.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">🔌</div>
         <h3>BIOS</h3>
-        <p>Legacy firmware — antara muka teks, boot MBR, tetapan asas.</p>
+        <p>Legacy firmware — text interface, MBR boot, basic settings.</p>
       </div>
       <div class="card">
         <div class="icon">🚀</div>
         <h3>UEFI</h3>
-        <p>Standard moden — antara muka grafik, boot GPT, Secure Boot, boot lebih pantas.</p>
+        <p>Modern standard — graphical interface, GPT boot, Secure Boot, faster boot.</p>
       </div>
       <div class="card red">
         <div class="icon">🔋</div>
         <h3>CMOS Battery</h3>
-        <p>Bateri kecil menyimpan tetapan BIOS. Jika lemah — masa/BIOS hilang, perkakasan dikesan semula setiap boot.</p>
+        <p>A small battery stores BIOS settings. If weak — time/BIOS lost, hardware redetected every boot.</p>
       </div>
     </div>
-    <div class="quote red">Gejala: jam sistem selalu lari atau BIOS "rediscovers" hardware setiap boot → ganti CMOS battery.</div>
+    <div class="quote red">Symptoms: system clock keeps drifting or BIOS "rediscovers" hardware every boot → replace the CMOS battery.</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 03 · Memory</span>
     <h2 class="slide-title">Memory <em>Technologies</em></h2>
-    <p class="slide-sub">Jenis memori, kelajuan dan ciri yang mempengaruhi prestasi sistem.</p>
+    <p class="slide-sub">Memory types, speeds, and features that affect system performance.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">🧱</div>
         <h3>DDR Generations</h3>
-        <p>DDR3 → DDR4 → DDR5. Setiap generasi lebih pantas dan cekap; tidak serasi silang.</p>
+        <p>DDR3 → DDR4 → DDR5. Each generation is faster and more efficient; not cross-compatible.</p>
       </div>
       <div class="card">
         <div class="icon">🛡️</div>
         <h3>ECC Memory</h3>
-        <p>Error-Correcting Code — mengesan &amp; membetulkan ralat data. Digunakan dalam server.</p>
+        <p>Error-Correcting Code — detects &amp; corrects data errors. Used in servers.</p>
       </div>
       <div class="card">
         <div class="icon">🔀</div>
         <h3>Channels</h3>
-        <p>Single, dual, quad-channel — lebih banyak saluran = lebar jalur lebih tinggi untuk CPU.</p>
+        <p>Single, dual, quad-channel — more channels = higher bandwidth for the CPU.</p>
       </div>
     </div>
   </section>
@@ -93,24 +93,24 @@
   <section class="slide">
     <span class="kicker">Module 03 · Storage</span>
     <h2 class="slide-title">Storage <em>Technologies</em></h2>
-    <p class="slide-sub">RAID, partition dan sistem fail — cara data disusun dan dilindungi.</p>
+    <p class="slide-sub">RAID, partitions, and file systems — how data is organized and protected.</p>
     <div class="grid cols-2">
       <div class="card green">
         <div class="icon">🛡️</div>
         <h3>RAID Levels</h3>
         <ul>
-          <li>RAID 0 — striping (prestasi, tiada redundansi)</li>
-          <li>RAID 1 — mirroring (salinan penuh)</li>
-          <li>RAID 5 — striping + parity (1 cakera boleh gagal)</li>
-          <li>RAID 10 — mirror + stripe (perlahan namun selamat)</li>
+          <li>RAID 0 — striping (performance, no redundancy)</li>
+          <li>RAID 1 — mirroring (full copy)</li>
+          <li>RAID 5 — striping + parity (1 disk can fail)</li>
+          <li>RAID 10 — mirror + stripe (slower but safe)</li>
         </ul>
       </div>
       <div class="card green">
         <div class="icon">🗂️</div>
         <h3>Partition &amp; File Systems</h3>
         <ul>
-          <li>NTFS — Windows (kebenaran, enkripsi)</li>
-          <li>exFAT — pemacu mudah alih lintas-platform</li>
+          <li>NTFS — Windows (permissions, encryption)</li>
+          <li>exFAT — cross-platform portable drives</li>
           <li>APFS — macOS</li>
           <li>ext4 — Linux</li>
         </ul>
@@ -121,12 +121,12 @@
   <section class="slide">
     <span class="kicker">Module 03 · Buses</span>
     <h2 class="slide-title">Expansion <em>Buses</em></h2>
-    <p class="slide-sub">Bas menghubungkan CPU dengan peranti — kelajuan menentukan prestasi keseluruhan.</p>
+    <p class="slide-sub">Buses connect the CPU to devices — speed determines overall performance.</p>
     <table>
-      <tr><th>Bus</th><th>Kegunaan</th><th>Nota</th></tr>
-      <tr><td>PCIe</td><td>GPU, NVMe, NIC</td><td>Lanes x1/x4/x16; versi 3.0→5.0</td></tr>
-      <tr><td>USB</td><td>Peranti luaran</td><td>USB 2.0 → 3.2 → 4; Type-C</td></tr>
-      <tr><td>Thunderbolt</td><td>Storan/display berkelajuan tinggi</td><td>Guna USB-C, sehingga 40 Gbps</td></tr>
+      <tr><th>Bus</th><th>Use</th><th>Notes</th></tr>
+      <tr><td>PCIe</td><td>GPU, NVMe, NIC</td><td>Lanes x1/x4/x16; versions 3.0→5.0</td></tr>
+      <tr><td>USB</td><td>External devices</td><td>USB 2.0 → 3.2 → 4; Type-C</td></tr>
+      <tr><td>Thunderbolt</td><td>High-speed storage/display</td><td>Uses USB-C, up to 40 Gbps</td></tr>
       <tr><td>SATA</td><td>HDD/SSD</td><td>SATA III = 6 Gbps</td></tr>
     </table>
   </section>
@@ -134,7 +134,7 @@
   <section class="slide">
     <span class="kicker">Module 03 · Ports</span>
     <h2 class="slide-title">Ports &amp; <em>Connectors</em></h2>
-    <p class="slide-sub">Standard moden dan legacy untuk sambungan peranti.</p>
+    <p class="slide-sub">Modern and legacy standards for connecting devices.</p>
     <div class="grid cols-2">
       <div class="card cyan">
         <div class="icon">🆕</div>
@@ -162,22 +162,22 @@
   <section class="slide">
     <span class="kicker">Module 03 · Peripherals</span>
     <h2 class="slide-title">Peripheral <em>Devices</em></h2>
-    <p class="slide-sub">Peranti input/output yang berinteraksi dengan pengguna.</p>
+    <p class="slide-sub">Input/output devices that interact with the user.</p>
     <div class="grid cols-3">
       <div class="card purple">
         <div class="icon">🖥️</div>
         <h3>Displays</h3>
-        <p>LCD, LED, OLED. Perhatikan resolusi, refresh rate dan sambungan display.</p>
+        <p>LCD, LED, OLED. Consider resolution, refresh rate, and display connections.</p>
       </div>
       <div class="card purple">
         <div class="icon">⌨️</div>
         <h3>Input Devices</h3>
-        <p>Keyboard, mouse, scanner, webcam, microphone — berwayar atau wireless.</p>
+        <p>Keyboard, mouse, scanner, webcam, microphone — wired or wireless.</p>
       </div>
       <div class="card purple">
         <div class="icon">🧳</div>
         <h3>Docking &amp; Hubs</h3>
-        <p>Docking station &amp; USB hub menambah port untuk laptop dan desktop.</p>
+        <p>Docking stations &amp; USB hubs add ports for laptops and desktops.</p>
       </div>
     </div>
   </section>
@@ -185,22 +185,22 @@
   <section class="slide">
     <span class="kicker">Module 03 · Drivers</span>
     <h2 class="slide-title">Device <em>Drivers</em></h2>
-    <p class="slide-sub">Perisian yang membolehkan sistem operasi berkomunikasi dengan perkakasan.</p>
+    <p class="slide-sub">Software that lets the operating system communicate with hardware.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">🧩</div>
         <h3>Role</h3>
-        <p>Penterjemah antara OS dan peranti — tanpa driver, perkakasan tidak berfungsi.</p>
+        <p>Translator between the OS and device — without a driver, the hardware won't work.</p>
       </div>
       <div class="card">
         <div class="icon">🔄</div>
         <h3>Updates</h3>
-        <p>Kemas kini dari vendor untuk pembetulan, prestasi dan keselamatan.</p>
+        <p>Updates from vendors for fixes, performance, and security.</p>
       </div>
       <div class="card red">
         <div class="icon">✍️</div>
         <h3>Driver Signing</h3>
-        <p>Driver bertanda (signed) disahkan pengeluar — elak driver tidak sah/rosak.</p>
+        <p>Signed drivers are verified by the manufacturer — avoid unsigned/broken drivers.</p>
       </div>
     </div>
   </section>
@@ -209,10 +209,10 @@
     <span class="kicker">Wrap Up</span>
     <h2 class="slide-title">Key <em>Takeaways</em></h2>
     <div class="grid cols-2">
-      <div class="card amber"><div class="icon">🧠</div><h3>Know the CPU</h3><p>Fahami teras, thread, iGPU dan sokongan virtualisasi untuk pilihan tepat.</p></div>
-      <div class="card green"><div class="icon">🛡️</div><h3>RAID &amp; Backup</h3><p>RAID memberi redundansi, tetapi bukan pengganti backup.</p></div>
-      <div class="card cyan"><div class="icon">🔋</div><h3>CMOS Battery</h3><p>Bateri kecil — kesan besar. Gejala clock &amp; BIOS reset = ganti bateri.</p></div>
-      <div class="card red"><div class="icon">🩺</div><h3>Driver Health</h3><p>Driver terkini &amp; bertanda mengelakkan masalah keserasian.</p></div>
+      <div class="card amber"><div class="icon">🧠</div><h3>Know the CPU</h3><p>Understand cores, threads, iGPU, and virtualization support to choose right.</p></div>
+      <div class="card green"><div class="icon">🛡️</div><h3>RAID &amp; Backup</h3><p>RAID provides redundancy, but is not a replacement for backup.</p></div>
+      <div class="card cyan"><div class="icon">🔋</div><h3>CMOS Battery</h3><p>Small battery — big impact. Symptoms of clock &amp; BIOS reset = replace the battery.</p></div>
+      <div class="card red"><div class="icon">🩺</div><h3>Driver Health</h3><p>Up-to-date &amp; signed drivers avoid compatibility issues.</p></div>
     </div>
   </section>
 

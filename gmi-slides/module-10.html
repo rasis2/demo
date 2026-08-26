@@ -16,29 +16,29 @@
   <section class="slide hero-slide">
     <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
     <h1 class="hero-title">Module 10<br><em>Windows</em> Installation</h1>
-    <p class="hero-sub">Edisi Windows, keperluan sistem, kaedah pemasangan, partition MBR/GPT, langkah pemasangan dan pasca-pemasangan.</p>
+    <p class="hero-sub">Windows editions, system requirements, installation methods, MBR/GPT partitioning, installation steps and post-installation.</p>
     <div class="hero-meta">MODULE 10 · INSTALL WINDOWS · Let's begin →</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 10 · Editions</span>
     <h2 class="slide-title">Windows <em>Editions</em></h2>
-    <p class="slide-sub">Pilih edisi mengikut keperluan pengguna.</p>
+    <p class="slide-sub">Choose an edition based on the user's needs.</p>
     <div class="grid cols-3">
       <div class="card cyan">
         <div class="icon">🏠</div>
         <h3>Home</h3>
-        <p>Pengguna rumah — fungsi asas, Cortana, Microsoft Store.</p>
+        <p>Home users — basic features, Cortana, Microsoft Store.</p>
       </div>
       <div class="card cyan">
         <div class="icon">💼</div>
         <h3>Pro</h3>
-        <p>Perniagaan kecil — BitLocker, Remote Desktop, Group Policy, Hyper-V.</p>
+        <p>Small businesses — BitLocker, Remote Desktop, Group Policy, Hyper-V.</p>
       </div>
       <div class="card cyan">
         <div class="icon">🏢</div>
         <h3>Enterprise / Education</h3>
-        <p>Organisasi besar — kawalan penuh, deployment berpusat, keselamatan lanjutan.</p>
+        <p>Large organizations — full control, centralized deployment, advanced security.</p>
       </div>
     </div>
   </section>
@@ -46,10 +46,10 @@
   <section class="slide">
     <span class="kicker">Module 10 · Requirements</span>
     <h2 class="slide-title">System <em>Requirements</em></h2>
-    <p class="slide-sub">Semak perkakasan minimum sebelum pemasangan.</p>
+    <p class="slide-sub">Check the minimum hardware before installation.</p>
     <table>
-      <tr><th>Komponen</th><th>Minimum</th><th>Disyorkan</th></tr>
-      <tr><td>CPU</td><td>1 GHz, 2+ teras</td><td>4+ teras 64-bit</td></tr>
+      <tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr>
+      <tr><td>CPU</td><td>1 GHz, 2+ cores</td><td>4+ 64-bit cores</td></tr>
       <tr><td>RAM</td><td>4 GB</td><td>8–16 GB</td></tr>
       <tr><td>Storage</td><td>64 GB</td><td>SSD 256 GB+</td></tr>
       <tr><td>Firmware</td><td>UEFI + Secure Boot</td><td>UEFI + TPM 2.0</td></tr>
@@ -60,22 +60,22 @@
   <section class="slide">
     <span class="kicker">Module 10 · Boot</span>
     <h2 class="slide-title">Boot <em>Methods</em></h2>
-    <p class="slide-sub">Media yang digunakan untuk memulakan pemasangan.</p>
+    <p class="slide-sub">Media used to start the installation.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">💿</div>
         <h3>USB Drive</h3>
-        <p>Paling biasa — media pemasangan bootable (Rufus / Media Creation Tool).</p>
+        <p>Most common — bootable installation media (Rufus / Media Creation Tool).</p>
       </div>
       <div class="card">
         <div class="icon">📀</div>
         <h3>DVD / ISO</h3>
-        <p>Media optik atau fail ISO dipasang (mount) dalam OS.</p>
+        <p>Optical media or an ISO file mounted in the OS.</p>
       </div>
       <div class="card">
         <div class="icon">🌐</div>
         <h3>Network (PXE)</h3>
-        <p>Boot dari rangkaian — deployment berpusat (WDS/MDT).</p>
+        <p>Boot from the network — centralized deployment (WDS/MDT).</p>
       </div>
     </div>
   </section>
@@ -83,33 +83,33 @@
   <section class="slide">
     <span class="kicker">Module 10 · Methods</span>
     <h2 class="slide-title">Installation <em>Methods</em></h2>
-    <p class="slide-sub">Pilih kaedah mengikut keadaan.</p>
+    <p class="slide-sub">Choose a method based on the situation.</p>
     <div class="grid cols-2">
       <div class="card green">
         <div class="icon">🧹</div>
         <h3>Clean Install</h3>
         <ul>
-          <li>Padam partition &amp; pasang baharu</li>
-          <li>Paling bersih — tiada isu lama</li>
-          <li>Backup data dahulu!</li>
+          <li>Delete partitions &amp; install fresh</li>
+          <li>Cleanest — no leftover issues</li>
+          <li>Back up data first!</li>
         </ul>
       </div>
       <div class="card green">
         <div class="icon">⬆️</div>
         <h3>Upgrade</h3>
         <ul>
-          <li>Kekalkan fail, app &amp; tetapan</li>
-          <li>Dari versi/edisi Windows sedia ada</li>
-          <li>Laluan upgrade mesti disokong</li>
+          <li>Keeps files, apps &amp; settings</li>
+          <li>From an existing Windows version/edition</li>
+          <li>Upgrade path must be supported</li>
         </ul>
       </div>
       <div class="card green">
         <div class="icon">📦</div>
         <h3>Image Deployment</h3>
         <ul>
-          <li>Imej Windows prapasang (WIM)</li>
-          <li>Pantas untuk banyak PC</li>
-          <li>Guna Sysprep &amp; MDT/SCCM</li>
+          <li>Preinstalled Windows image (WIM)</li>
+          <li>Fast for many PCs</li>
+          <li>Use Sysprep &amp; MDT/SCCM</li>
         </ul>
       </div>
     </div>
@@ -118,63 +118,63 @@
   <section class="slide">
     <span class="kicker">Module 10 · Partition</span>
     <h2 class="slide-title">Partitioning: <em>MBR vs GPT</em></h2>
-    <p class="slide-sub">Struktur cakera menentukan had dan keserasian boot.</p>
+    <p class="slide-sub">Disk structure determines limits and boot compatibility.</p>
     <div class="grid cols-2">
       <div class="card amber">
         <div class="icon">🕰️</div>
         <h3>MBR</h3>
         <ul>
           <li>Legacy BIOS</li>
-          <li>Maks 4 partition utama</li>
-          <li>Had 2 TB</li>
+          <li>Max 4 primary partitions</li>
+          <li>2 TB limit</li>
         </ul>
       </div>
       <div class="card amber">
         <div class="icon">🚀</div>
         <h3>GPT</h3>
         <ul>
-          <li>UEFI — standard moden</li>
-          <li>Banyak partition (128+)</li>
-          <li>Melebihi 2 TB</li>
+          <li>UEFI — modern standard</li>
+          <li>Many partitions (128+)</li>
+          <li>Exceeds 2 TB</li>
         </ul>
       </div>
     </div>
-    <div class="quote">Fail sistem Windows: <strong>NTFS</strong> — menyokong kebenaran, mampatan &amp; enkripsi (EFS/BitLocker).</div>
+    <div class="quote">Windows system files: <strong>NTFS</strong> — supports permissions, compression &amp; encryption (EFS/BitLocker).</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 10 · Steps</span>
     <h2 class="slide-title">Installation <em>Steps</em></h2>
-    <p class="slide-sub">Aliran proses pemasangan Windows.</p>
+    <p class="slide-sub">The Windows installation process flow.</p>
     <div class="flow">
-      <div class="step"><div class="num">01</div><h4>Boot</h4><p>Dari media pemasangan.</p></div>
-      <div class="step"><div class="num">02</div><h4>Language</h4><p>Pilih bahasa &amp; wilayah.</p></div>
-      <div class="step"><div class="num">03</div><h4>Key</h4><p>Masukkan product key.</p></div>
-      <div class="step"><div class="num">04</div><h4>Partition</h4><p>Pilih/cipta partition.</p></div>
-      <div class="step"><div class="num">05</div><h4>Install</h4><p>Salin fail &amp; reboot.</p></div>
-      <div class="step"><div class="num">06</div><h4>Setup</h4><p>Akun, privasi, OOBE.</p></div>
+      <div class="step"><div class="num">01</div><h4>Boot</h4><p>From installation media.</p></div>
+      <div class="step"><div class="num">02</div><h4>Language</h4><p>Choose language &amp; region.</p></div>
+      <div class="step"><div class="num">03</div><h4>Key</h4><p>Enter the product key.</p></div>
+      <div class="step"><div class="num">04</div><h4>Partition</h4><p>Select/create a partition.</p></div>
+      <div class="step"><div class="num">05</div><h4>Install</h4><p>Copy files &amp; reboot.</p></div>
+      <div class="step"><div class="num">06</div><h4>Setup</h4><p>Account, privacy, OOBE.</p></div>
     </div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 10 · Post</span>
     <h2 class="slide-title">Post-Installation <em>Tasks</em></h2>
-    <p class="slide-sub">Sistem perlu disiapkan selepas pemasangan.</p>
+    <p class="slide-sub">The system needs to be finalized after installation.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">🛡️</div>
         <h3>Security</h3>
-        <p>Windows Update, antivirus, firewall, aktifkan Windows.</p>
+        <p>Windows Update, antivirus, firewall, activate Windows.</p>
       </div>
       <div class="card">
         <div class="icon">🔧</div>
         <h3>Drivers</h3>
-        <p>Pasang driver chipset, GPU, NIC — dari vendor.</p>
+        <p>Install chipset, GPU, NIC drivers — from the vendor.</p>
       </div>
       <div class="card">
         <div class="icon">💾</div>
         <h3>Restore Point</h3>
-        <p>Cipta System Restore point — rujukan untuk pemulihan masa depan.</p>
+        <p>Create a System Restore point — a reference for future recovery.</p>
       </div>
     </div>
   </section>
@@ -182,15 +182,15 @@
   <section class="slide">
     <span class="kicker">Module 10 · Troubleshoot</span>
     <h2 class="slide-title">Troubleshooting <em>Installation</em></h2>
-    <p class="slide-sub">Isu biasa semasa pemasangan &amp; penyelesaian.</p>
+    <p class="slide-sub">Common installation issues &amp; fixes.</p>
     <table>
-      <tr><th>Masalah</th><th>Penyelesaian</th></tr>
-      <tr><td>Media tidak boot</td><td>Semak boot order, media bootable</td></tr>
-      <tr><td>Ruang tidak cukup</td><td>Kosongkan/ubah partition</td></tr>
-      <tr><td>BSOD semasa install</td><td>Semak RAM, media rosak, driver</td></tr>
-      <tr><td>Product key ditolak</td><td>Edisi mesti sepadan dengan key</td></tr>
-      <tr><td>Driver tiada selepas install</td><td>Muat turun driver vendor</td></tr>
-      <tr><td>Windows tidak aktif</td><td>Aktifkan / sahkan lesen</td></tr>
+      <tr><th>Problem</th><th>Solution</th></tr>
+      <tr><td>Media won't boot</td><td>Check boot order, bootable media</td></tr>
+      <tr><td>Not enough space</td><td>Free up/resize partition</td></tr>
+      <tr><td>BSOD during install</td><td>Check RAM, damaged media, drivers</td></tr>
+      <tr><td>Product key rejected</td><td>Edition must match the key</td></tr>
+      <tr><td>Missing drivers after install</td><td>Download vendor drivers</td></tr>
+      <tr><td>Windows not activated</td><td>Activate / verify license</td></tr>
     </table>
   </section>
 
@@ -198,10 +198,10 @@
     <span class="kicker">Wrap Up</span>
     <h2 class="slide-title">Key <em>Takeaways</em></h2>
     <div class="grid cols-2">
-      <div class="card cyan"><div class="icon">🏠</div><h3>Pick the Right Edition</h3><p>Home untuk rumah, Pro untuk perniagaan, Enterprise untuk besar.</p></div>
-      <div class="card green"><div class="icon">🚀</div><h3>GPT + UEFI</h3><p>Standard moden — sokongan penuh &amp; boot selamat.</p></div>
-      <div class="card amber"><div class="icon">💾</div><h3>Backup Before Clean</h3><p>Clean install memadam semua — backup data dahulu.</p></div>
-      <div class="card red"><div class="icon">🩺</div><h3>Verify &amp; Update</h3><p>Selesai install — aktifkan, update, pasang driver, buat restore point.</p></div>
+      <div class="card cyan"><div class="icon">🏠</div><h3>Pick the Right Edition</h3><p>Home for households, Pro for businesses, Enterprise for large organizations.</p></div>
+      <div class="card green"><div class="icon">🚀</div><h3>GPT + UEFI</h3><p>Modern standard — full support &amp; secure boot.</p></div>
+      <div class="card amber"><div class="icon">💾</div><h3>Backup Before Clean</h3><p>Clean install wipes everything — back up data first.</p></div>
+      <div class="card red"><div class="icon">🩺</div><h3>Verify &amp; Update</h3><p>After install — activate, update, install drivers, create a restore point.</p></div>
     </div>
   </section>
 

@@ -16,44 +16,44 @@
   <section class="slide hero-slide">
     <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
     <h1 class="hero-title">Module 06<br><em>Applied</em> Networking</h1>
-    <p class="hero-sub">Rangkaian secara praktikal: peranti rangkaian, kabel, konfigurasi berwayar &amp; wayarles, perkongsian dan troubleshooting.</p>
+    <p class="hero-sub">Networking in practice: network devices, cabling, wired &amp; wireless configuration, sharing, and troubleshooting.</p>
     <div class="hero-meta">MODULE 06 · NETWORKING IN ACTION · Let's begin →</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 06 · Devices</span>
     <h2 class="slide-title">Network <em>Devices</em></h2>
-    <p class="slide-sub">Perkakasan yang membina dan menghubungkan rangkaian.</p>
+    <p class="slide-sub">Hardware that builds and connects networks.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">💳</div>
         <h3>NIC</h3>
-        <p>Network Interface Card — sambungan peranti ke rangkaian (berwayar/wayarles).</p>
+        <p>Network Interface Card — connects a device to the network (wired/wireless).</p>
       </div>
       <div class="card">
         <div class="icon">🔀</div>
         <h3>Switch</h3>
-        <p>Menyambung peranti dalam LAN — menghantar data ke destinasi spesifik.</p>
+        <p>Connects devices in a LAN — forwards data to a specific destination.</p>
       </div>
       <div class="card">
         <div class="icon">🧭</div>
         <h3>Router</h3>
-        <p>Menghubungkan rangkaian berbeza (LAN→WAN/internet) dan membuat keputusan laluan.</p>
+        <p>Connects different networks (LAN→WAN/internet) and makes routing decisions.</p>
       </div>
       <div class="card">
         <div class="icon">📡</div>
         <h3>Access Point</h3>
-        <p>Menyediakan Wi-Fi untuk peranti wayarles.</p>
+        <p>Provides Wi-Fi for wireless devices.</p>
       </div>
       <div class="card">
         <div class="icon">🛡️</div>
         <h3>Firewall</h3>
-        <p>Menapis trafik masuk/keluar berdasarkan peraturan keselamatan.</p>
+        <p>Filters incoming/outgoing traffic based on security rules.</p>
       </div>
       <div class="card">
         <div class="icon">📠</div>
         <h3>Modem</h3>
-        <p>Menukar isyarat ISP (kabel/fiber/DSL) kepada data rangkaian.</p>
+        <p>Converts ISP signals (cable/fiber/DSL) into network data.</p>
       </div>
     </div>
   </section>
@@ -61,38 +61,38 @@
   <section class="slide">
     <span class="kicker">Module 06 · Cables</span>
     <h2 class="slide-title">Copper <em>Cable Types</em></h2>
-    <p class="slide-sub">Pemilihan kabel UTP bergantung pada jenis peranti yang disambung.</p>
+    <p class="slide-sub">UTP cable choice depends on the type of devices being connected.</p>
     <table>
-      <tr><th>Kabel</th><th>Susunan</th><th>Kegunaan</th></tr>
-      <tr><td>Straight-through</td><td>T568A↔T568A / T568B↔T568B</td><td>Peranti berbeza (PC↔switch)</td></tr>
-      <tr><td>Crossover</td><td>T568A↔T568B</td><td>Peranti sama (PC↔PC, switch↔switch)</td></tr>
-      <tr><td>Rollover</td><td>Susunan songsang</td><td>Konsol ke router/switch (RJ45→serial)</td></tr>
+      <tr><th>Cable</th><th>Wiring</th><th>Use</th></tr>
+      <tr><td>Straight-through</td><td>T568A↔T568A / T568B↔T568B</td><td>Different devices (PC↔switch)</td></tr>
+      <tr><td>Crossover</td><td>T568A↔T568B</td><td>Same devices (PC↔PC, switch↔switch)</td></tr>
+      <tr><td>Rollover</td><td>Reversed wiring</td><td>Console to router/switch (RJ45→serial)</td></tr>
     </table>
-    <div class="quote">Standard T568A &amp; T568B — kenal pasti susunan wayar untuk sambungan yang betul.</div>
+    <div class="quote">T568A &amp; T568B standards — identify the wire arrangement for correct connections.</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 06 · Wiring</span>
     <h2 class="slide-title">Terminating <em>UTP</em></h2>
-    <p class="slide-sub">Memasang konektor RJ45 dan soket dengan betul.</p>
+    <p class="slide-sub">Installing RJ45 connectors and jacks correctly.</p>
     <div class="grid cols-2">
       <div class="card green">
         <div class="icon">🔧</div>
         <h3>RJ45 Connector</h3>
         <ul>
-          <li>Buka sarung luar kabel (~1.5cm)</li>
-          <li>Luruskan wayar mengikut T568A/B</li>
-          <li>Masukkan ke RJ45 &amp; tekan dengan crimper</li>
-          <li>Uji dengan cable tester</li>
+          <li>Strip the outer cable jacket (~1.5cm)</li>
+          <li>Straighten wires per T568A/B</li>
+          <li>Insert into RJ45 &amp; crimp with a crimper</li>
+          <li>Test with a cable tester</li>
         </ul>
       </div>
       <div class="card green">
         <div class="icon">🧱</div>
         <h3>Wall Jack / Patch Panel</h3>
         <ul>
-          <li>Gunakan punch-down tool</li>
-          <li>Ikut kod warna di soket</li>
-          <li>Pastikan wayar kemas &amp; tidak tertanggal</li>
+          <li>Use a punch-down tool</li>
+          <li>Follow the color code on the jack</li>
+          <li>Make sure wires are neat &amp; secure</li>
         </ul>
       </div>
     </div>
@@ -101,15 +101,15 @@
   <section class="slide">
     <span class="kicker">Module 06 · Config</span>
     <h2 class="slide-title">Wired Network <em>Configuration</em></h2>
-    <p class="slide-sub">Tetapan IP supaya peranti berkomunikasi dalam rangkaian.</p>
+    <p class="slide-sub">IP settings so devices can communicate on a network.</p>
     <div class="grid cols-2">
       <div class="card cyan">
         <div class="icon">🤝</div>
-        <h3>DHCP (Automatik)</h3>
+        <h3>DHCP (Automatic)</h3>
         <ul>
-          <li>Router memberi IP, subnet, gateway, DNS</li>
-          <li>Tiada konfigurasi manual</li>
-          <li>Sesuai untuk kebanyakan pengguna</li>
+          <li>Router assigns IP, subnet, gateway, DNS</li>
+          <li>No manual configuration</li>
+          <li>Suitable for most users</li>
         </ul>
       </div>
       <div class="card cyan">
@@ -117,33 +117,33 @@
         <h3>Static IP (Manual)</h3>
         <ul>
           <li>IP, subnet mask, default gateway, DNS</li>
-          <li>Untuk server, printer rangkaian</li>
-          <li>Elak konflik IP</li>
+          <li>For servers, network printers</li>
+          <li>Avoids IP conflicts</li>
         </ul>
       </div>
     </div>
-    <div class="quote">Semak dengan <span class="highlight">ipconfig</span> (Windows) / <span class="highlight">ifconfig</span> (Linux/macOS).</div>
+    <div class="quote">Check with <span class="highlight">ipconfig</span> (Windows) / <span class="highlight">ifconfig</span> (Linux/macOS).</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 06 · Wireless</span>
     <h2 class="slide-title">Wireless <em>Configuration</em></h2>
-    <p class="slide-sub">Tetapan penting pada access point / router wayarles.</p>
+    <p class="slide-sub">Key settings on a wireless access point / router.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">📶</div>
         <h3>SSID</h3>
-        <p>Nama rangkaian wayarles — tukar dari default, boleh disembunyikan.</p>
+        <p>Wireless network name — change from the default, can be hidden.</p>
       </div>
       <div class="card">
         <div class="icon">🔐</div>
         <h3>Security</h3>
-        <p>WPA2/WPA3 dengan kata laluan kuat — elak WEP (tidak selamat).</p>
+        <p>WPA2/WPA3 with a strong password — avoid WEP (insecure).</p>
       </div>
       <div class="card">
         <div class="icon">📻</div>
         <h3>Channel</h3>
-        <p>Pilih saluran kurang gangguan (2.4GHz vs 5GHz/6GHz).</p>
+        <p>Choose a less congested channel (2.4GHz vs 5GHz/6GHz).</p>
       </div>
     </div>
   </section>
@@ -151,24 +151,24 @@
   <section class="slide">
     <span class="kicker">Module 06 · Sharing</span>
     <h2 class="slide-title">Network <em>Sharing</em></h2>
-    <p class="slide-sub">Berkongsi fail, folder dan printer dalam rangkaian.</p>
+    <p class="slide-sub">Sharing files, folders, and printers on a network.</p>
     <div class="grid cols-2">
       <div class="card purple">
         <div class="icon">📁</div>
         <h3>File Sharing</h3>
         <ul>
           <li>Workgroup / domain</li>
-          <li>Kongsi folder dengan kebenaran (read/write)</li>
-          <li>Akses via \\PC-NAME\share</li>
+          <li>Share folders with permissions (read/write)</li>
+          <li>Access via \\PC-NAME\share</li>
         </ul>
       </div>
       <div class="card purple">
         <div class="icon">🖨️</div>
         <h3>Printer Sharing</h3>
         <ul>
-          <li>Kongsi printer dari satu PC</li>
-          <li>Atau printer rangkaian dengan IP sendiri</li>
-          <li>Pasang driver pada setiap klien</li>
+          <li>Share a printer from one PC</li>
+          <li>Or a network printer with its own IP</li>
+          <li>Install drivers on each client</li>
         </ul>
       </div>
     </div>
@@ -177,28 +177,28 @@
   <section class="slide">
     <span class="kicker">Module 06 · SOHO</span>
     <h2 class="slide-title">SOHO <em>Networks</em></h2>
-    <p class="slide-sub">Small Office / Home Office — rangkaian kecil tipikal.</p>
+    <p class="slide-sub">Small Office / Home Office — a typical small network.</p>
     <div class="flow">
-      <div class="step"><div class="num">01</div><h4>ISP</h4><p>Sambungan internet.</p></div>
-      <div class="step"><div class="num">02</div><h4>Modem</h4><p>Terima isyarat ISP.</p></div>
+      <div class="step"><div class="num">01</div><h4>ISP</h4><p>Internet connection.</p></div>
+      <div class="step"><div class="num">02</div><h4>Modem</h4><p>Receives the ISP signal.</p></div>
       <div class="step"><div class="num">03</div><h4>Router</h4><p>NAT, DHCP, firewall.</p></div>
-      <div class="step"><div class="num">04</div><h4>Switch/AP</h4><p>Berwayar &amp; Wi-Fi.</p></div>
-      <div class="step"><div class="num">05</div><h4>Devices</h4><p>PC, telefon, printer.</p></div>
+      <div class="step"><div class="num">04</div><h4>Switch/AP</h4><p>Wired &amp; Wi-Fi.</p></div>
+      <div class="step"><div class="num">05</div><h4>Devices</h4><p>PCs, phones, printers.</p></div>
     </div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 06 · Troubleshoot</span>
     <h2 class="slide-title">Troubleshooting <em>Networks</em></h2>
-    <p class="slide-sub">Alatan &amp; arahan untuk mendiagnosa isu rangkaian.</p>
+    <p class="slide-sub">Tools &amp; commands for diagnosing network issues.</p>
     <table>
-      <tr><th>Alatan</th><th>Kegunaan</th></tr>
-      <tr><td>ping</td><td>Uji sambungan ke IP/host</td></tr>
-      <tr><td>ipconfig / ifconfig</td><td>Semak tetapan IP peranti</td></tr>
-      <tr><td>tracert / traceroute</td><td>Laluan ke destinasi</td></tr>
-      <tr><td>nslookup</td><td>Semak resolusi DNS</td></tr>
-      <tr><td>Cable tester</td><td>Uji kabel UTP</td></tr>
-      <tr><td>Wi-Fi analyzer</td><td>Semak kekuatan &amp; saluran</td></tr>
+      <tr><th>Tool</th><th>Purpose</th></tr>
+      <tr><td>ping</td><td>Test connectivity to an IP/host</td></tr>
+      <tr><td>ipconfig / ifconfig</td><td>Check device IP settings</td></tr>
+      <tr><td>tracert / traceroute</td><td>Path to destination</td></tr>
+      <tr><td>nslookup</td><td>Check DNS resolution</td></tr>
+      <tr><td>Cable tester</td><td>Test UTP cables</td></tr>
+      <tr><td>Wi-Fi analyzer</td><td>Check signal strength &amp; channels</td></tr>
     </table>
   </section>
 
@@ -206,10 +206,10 @@
     <span class="kicker">Wrap Up</span>
     <h2 class="slide-title">Key <em>Takeaways</em></h2>
     <div class="grid cols-2">
-      <div class="card cyan"><div class="icon">🔀</div><h3>Devices &amp; Roles</h3><p>Switch dalam LAN, router antara rangkaian, AP untuk wayarles.</p></div>
-      <div class="card green"><div class="icon">🔌</div><h3>Wire It Right</h3><p>T568A/B, straight/crossover — kabel betul = sambungan betul.</p></div>
-      <div class="card amber"><div class="icon">🔐</div><h3>Secure Wi-Fi</h3><p>WPA2/WPA3 + SSID tersembunyi + kata laluan kuat.</p></div>
-      <div class="card red"><div class="icon">🩺</div><h3>Diagnose Systematically</h3><p>ping → ipconfig → tracert → ganti kabel/port.</p></div>
+      <div class="card cyan"><div class="icon">🔀</div><h3>Devices &amp; Roles</h3><p>Switches within a LAN, routers between networks, APs for wireless.</p></div>
+      <div class="card green"><div class="icon">🔌</div><h3>Wire It Right</h3><p>T568A/B, straight/crossover — right cable = right connection.</p></div>
+      <div class="card amber"><div class="icon">🔐</div><h3>Secure Wi-Fi</h3><p>WPA2/WPA3 + hidden SSID + strong password.</p></div>
+      <div class="card red"><div class="icon">🩺</div><h3>Diagnose Systematically</h3><p>ping → ipconfig → tracert → replace cable/port.</p></div>
     </div>
   </section>
 

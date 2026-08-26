@@ -16,34 +16,34 @@
   <section class="slide hero-slide">
     <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
     <h1 class="hero-title">Module 05<br><em>Networking</em> Concepts</h1>
-    <p class="hero-sub">Asas rangkaian: jenis rangkaian, topologi, media, model OSI/TCP-IP, IP addressing dan protokol biasa.</p>
+    <p class="hero-sub">Networking fundamentals: network types, topologies, media, the OSI/TCP-IP models, IP addressing, and common protocols.</p>
     <div class="hero-meta">MODULE 05 · NETWORK BASICS · Let's begin →</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 05 · Types</span>
     <h2 class="slide-title">Types of <em>Networks</em></h2>
-    <p class="slide-sub">Rangkaian dikelaskan mengikut saiz dan skop geografi.</p>
+    <p class="slide-sub">Networks are classified by size and geographic scope.</p>
     <div class="grid cols-2">
       <div class="card cyan">
         <div class="icon">👤</div>
         <h3>PAN — Personal</h3>
-        <p>Sangat kecil — peranti peribadi bersambung Bluetooth/USB (telefon → earbuds, laptop → telefon).</p>
+        <p>Very small — personal devices connected via Bluetooth/USB (phone → earbuds, laptop → phone).</p>
       </div>
       <div class="card cyan">
         <div class="icon">🏠</div>
         <h3>LAN — Local</h3>
-        <p>Satu bangunan/lokasi — rumah, pejabat, sekolah. Disambung switch &amp; router.</p>
+        <p>One building/location — home, office, school. Connected by switches &amp; routers.</p>
       </div>
       <div class="card cyan">
         <div class="icon">📶</div>
         <h3>WLAN — Wireless LAN</h3>
-        <p>LAN tanpa wayar menggunakan Wi-Fi (IEEE 802.11).</p>
+        <p>Wireless LAN using Wi-Fi (IEEE 802.11).</p>
       </div>
       <div class="card cyan">
         <div class="icon">🌍</div>
         <h3>WAN — Wide</h3>
-        <p>Merentasi bandar/negara — internet itu sendiri ialah WAN terbesar.</p>
+        <p>Spans cities/countries — the internet itself is the largest WAN.</p>
       </div>
     </div>
   </section>
@@ -51,27 +51,27 @@
   <section class="slide">
     <span class="kicker">Module 05 · Topologies</span>
     <h2 class="slide-title">Network <em>Topologies</em></h2>
-    <p class="slide-sub">Susunan fizikal/logik bagaimana peranti disambung.</p>
+    <p class="slide-sub">Physical/logical arrangement of how devices are connected.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">⭐</div>
         <h3>Star</h3>
-        <p>Semua peranti ke pusat (switch). Paling biasa — satu kabel putus tidak jejaskan lain.</p>
+        <p>All devices connect to a center (switch). Most common — one broken cable doesn't affect others.</p>
       </div>
       <div class="card">
         <div class="icon">🕸️</div>
         <h3>Mesh</h3>
-        <p>Setiap peranti bersambung ke banyak peranti — sangat berdaya tahan, mahal.</p>
+        <p>Each device connects to many others — highly resilient, expensive.</p>
       </div>
       <div class="card">
         <div class="icon">🚌</div>
         <h3>Bus / Ring</h3>
-        <p>Legacy. Bus: satu kabel dikongsi. Ring: peranti dalam gelung.</p>
+        <p>Legacy. Bus: one shared cable. Ring: devices in a loop.</p>
       </div>
       <div class="card">
         <div class="icon">🔀</div>
         <h3>Hybrid</h3>
-        <p>Gabungan topologi — paling biasa dalam rangkaian sebenar.</p>
+        <p>A combination of topologies — most common in real networks.</p>
       </div>
     </div>
   </section>
@@ -79,22 +79,22 @@
   <section class="slide">
     <span class="kicker">Module 05 · Media</span>
     <h2 class="slide-title">Network <em>Media</em></h2>
-    <p class="slide-sub">Saluran fizikal yang membawa data.</p>
+    <p class="slide-sub">The physical channel that carries data.</p>
     <div class="grid cols-3">
       <div class="card amber">
         <div class="icon">🟤</div>
         <h3>Copper</h3>
-        <p>UTP/STP (twisted pair) — Ethernet. RJ45, maks ~100m. Murah &amp; mudah.</p>
+        <p>UTP/STP (twisted pair) — Ethernet. RJ45, max ~100m. Cheap &amp; easy.</p>
       </div>
       <div class="card amber">
         <div class="icon">✨</div>
         <h3>Fiber Optic</h3>
-        <p>Cahaya melalui kaca — sangat pantas, jarak jauh, kebal gangguan elektrik.</p>
+        <p>Light through glass — very fast, long distance, immune to electrical interference.</p>
       </div>
       <div class="card amber">
         <div class="icon">📡</div>
         <h3>Wireless</h3>
-        <p>Gelombang radio (Wi-Fi, Bluetooth, cellular) — mudah alih, boleh diganggu.</p>
+        <p>Radio waves (Wi-Fi, Bluetooth, cellular) — portable, can be interfered with.</p>
       </div>
     </div>
   </section>
@@ -102,7 +102,7 @@
   <section class="slide">
     <span class="kicker">Module 05 · Models</span>
     <h2 class="slide-title">OSI &amp; <em>TCP/IP</em> Models</h2>
-    <p class="slide-sub">Model rangkaian untuk memahami bagaimana data bergerak.</p>
+    <p class="slide-sub">Network models for understanding how data travels.</p>
     <div class="grid cols-2">
       <div class="card">
         <div class="icon">📚</div>
@@ -124,27 +124,27 @@
         </ul>
       </div>
     </div>
-    <div class="quote">Ingat OSI: "Please Do Not Throw Sausage Pizza Away" — Physical→Application.</div>
+    <div class="quote">Remember OSI: "Please Do Not Throw Sausage Pizza Away" — Physical→Application.</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 05 · Ethernet</span>
     <h2 class="slide-title">Ethernet <em>Standards</em></h2>
-    <p class="slide-sub">IEEE 802.3 — teknologi LAN berwayar dominan.</p>
+    <p class="slide-sub">IEEE 802.3 — the dominant wired LAN technology.</p>
     <table>
-      <tr><th>Standard</th><th>Kelajuan</th><th>Media</th></tr>
+      <tr><th>Standard</th><th>Speed</th><th>Media</th></tr>
       <tr><td>10BASE-T</td><td>10 Mbps</td><td>Cat3+</td></tr>
       <tr><td>100BASE-TX (Fast)</td><td>100 Mbps</td><td>Cat5</td></tr>
       <tr><td>1000BASE-T (Gigabit)</td><td>1 Gbps</td><td>Cat5e/Cat6</td></tr>
       <tr><td>10GBASE-T (10G)</td><td>10 Gbps</td><td>Cat6a/Cat7</td></tr>
     </table>
-    <div class="quote">Ethernet moden beroperasi full-duplex — hantar &amp; terima serentak.</div>
+    <div class="quote">Modern Ethernet runs full-duplex — send &amp; receive simultaneously.</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 05 · IP</span>
     <h2 class="slide-title">IP <em>Addressing</em></h2>
-    <p class="slide-sub">Alamat unik untuk setiap peranti dalam rangkaian.</p>
+    <p class="slide-sub">A unique address for every device on a network.</p>
     <div class="grid cols-2">
       <div class="card green">
         <div class="icon">🔢</div>
@@ -153,7 +153,7 @@
           <li>32-bit: 192.168.1.10</li>
           <li>Private: 10.x, 172.16–31.x, 192.168.x</li>
           <li>Subnet mask: 255.255.255.0</li>
-          <li>NAT menukar private→public</li>
+          <li>NAT translates private→public</li>
         </ul>
       </div>
       <div class="card green">
@@ -161,8 +161,8 @@
         <h3>IPv6</h3>
         <ul>
           <li>128-bit: 2001:db8::1</li>
-          <li>Banyak alamat — tiada NAT diperlukan</li>
-          <li>Penyelesaian kekurangan IPv4</li>
+          <li>Plenty of addresses — no NAT required</li>
+          <li>Solves the IPv4 shortage</li>
         </ul>
       </div>
     </div>
@@ -171,22 +171,22 @@
   <section class="slide">
     <span class="kicker">Module 05 · Services</span>
     <h2 class="slide-title">DNS, DHCP &amp; <em>NAT</em></h2>
-    <p class="slide-sub">Perkhidmatan rangkaian yang menjadikan internet berfungsi.</p>
+    <p class="slide-sub">Network services that make the internet work.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">📖</div>
         <h3>DNS</h3>
-        <p>Domain Name System — menukar nama (google.com) kepada alamat IP.</p>
+        <p>Domain Name System — translates names (google.com) into IP addresses.</p>
       </div>
       <div class="card">
         <div class="icon">🤝</div>
         <h3>DHCP</h3>
-        <p>Memberi alamat IP, gateway &amp; DNS secara automatik kepada peranti.</p>
+        <p>Automatically assigns IP address, gateway &amp; DNS to devices.</p>
       </div>
       <div class="card">
         <div class="icon">🔀</div>
         <h3>NAT</h3>
-        <p>Menukar IP private kepada public — banyak peranti kongsi satu alamat internet.</p>
+        <p>Translates private IPs to public — many devices share one internet address.</p>
       </div>
     </div>
   </section>
@@ -194,15 +194,15 @@
   <section class="slide">
     <span class="kicker">Module 05 · Protocols</span>
     <h2 class="slide-title">Protocols &amp; <em>Ports</em></h2>
-    <p class="slide-sub">Protokol menentukan cara komunikasi; port mengenal pasti perkhidmatan.</p>
+    <p class="slide-sub">Protocols define how communication works; ports identify services.</p>
     <table>
-      <tr><th>Protocol</th><th>Port</th><th>Kegunaan</th></tr>
+      <tr><th>Protocol</th><th>Port</th><th>Purpose</th></tr>
       <tr><td>HTTP / HTTPS</td><td>80 / 443</td><td>Web browsing</td></tr>
-      <tr><td>FTP / SFTP</td><td>21 / 22</td><td>Pemindahan fail</td></tr>
-      <tr><td>SSH</td><td>22</td><td>Akses jauh selamat</td></tr>
-      <tr><td>SMTP / POP3 / IMAP</td><td>25 / 110 / 143</td><td>Emel</td></tr>
-      <tr><td>DNS</td><td>53</td><td>Resolusi nama</td></tr>
-      <tr><td>DHCP</td><td>67/68</td><td>Konfigurasi IP automatik</td></tr>
+      <tr><td>FTP / SFTP</td><td>21 / 22</td><td>File transfer</td></tr>
+      <tr><td>SSH</td><td>22</td><td>Secure remote access</td></tr>
+      <tr><td>SMTP / POP3 / IMAP</td><td>25 / 110 / 143</td><td>Email</td></tr>
+      <tr><td>DNS</td><td>53</td><td>Name resolution</td></tr>
+      <tr><td>DHCP</td><td>67/68</td><td>Automatic IP configuration</td></tr>
     </table>
   </section>
 
@@ -210,10 +210,10 @@
     <span class="kicker">Wrap Up</span>
     <h2 class="slide-title">Key <em>Takeaways</em></h2>
     <div class="grid cols-2">
-      <div class="card cyan"><div class="icon">🏗️</div><h3>Topology &amp; Media</h3><p>Star + copper paling biasa; fiber &amp; wireless untuk keperluan khas.</p></div>
-      <div class="card green"><div class="icon">📚</div><h3>Models Guide Us</h3><p>OSI &amp; TCP/IP membantu memahami &amp; menyelesaikan masalah rangkaian.</p></div>
-      <div class="card amber"><div class="icon">🔢</div><h3>IP &amp; Services</h3><p>Fahami IPv4/IPv6, DNS, DHCP, NAT — nadi komunikasi rangkaian.</p></div>
-      <div class="card red"><div class="icon">🔌</div><h3>Know Your Ports</h3><p>Protokol &amp; port biasa wajib dihafal untuk troubleshooting.</p></div>
+      <div class="card cyan"><div class="icon">🏗️</div><h3>Topology &amp; Media</h3><p>Star + copper most common; fiber &amp; wireless for special needs.</p></div>
+      <div class="card green"><div class="icon">📚</div><h3>Models Guide Us</h3><p>OSI &amp; TCP/IP help understand &amp; troubleshoot networks.</p></div>
+      <div class="card amber"><div class="icon">🔢</div><h3>IP &amp; Services</h3><p>Understand IPv4/IPv6, DNS, DHCP, NAT — the heart of network communication.</p></div>
+      <div class="card red"><div class="icon">🔌</div><h3>Know Your Ports</h3><p>Common protocols &amp; ports must be memorized for troubleshooting.</p></div>
     </div>
   </section>
 

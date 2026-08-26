@@ -16,29 +16,29 @@
   <section class="slide hero-slide">
     <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
     <h1 class="hero-title">Module 09<br><em>Virtualization</em> &amp;<br>Cloud Computing</h1>
-    <p class="hero-sub">Mesin maya &amp; hypervisor, faedah virtualisasi, model perkhidmatan cloud (IaaS/PaaS/SaaS) dan jenis deployment.</p>
+    <p class="hero-sub">Virtual machines &amp; hypervisors, benefits of virtualization, cloud service models (IaaS/PaaS/SaaS), and deployment types.</p>
     <div class="hero-meta">MODULE 09 · VIRTUAL &amp; CLOUD · Let's begin →</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 09 · Basics</span>
     <h2 class="slide-title">Virtualization <em>Basics</em></h2>
-    <p class="slide-sub">Menjalankan berbilang sistem operasi pada satu perkakasan fizikal.</p>
+    <p class="slide-sub">Running multiple operating systems on one physical machine.</p>
     <div class="grid cols-2">
       <div class="card cyan">
         <div class="icon">🖥️</div>
         <h3>Virtual Machine (VM)</h3>
         <ul>
-          <li>Komputer maya dalam perisian</li>
-          <li>OS sendiri (guest OS)</li>
-          <li>Sumber diagih: CPU, RAM, disk</li>
+          <li>A virtual computer in software</li>
+          <li>Its own OS (guest OS)</li>
+          <li>Resources allocated: CPU, RAM, disk</li>
         </ul>
       </div>
       <div class="card cyan">
         <div class="icon">🧑‍✈️</div>
         <h3>Hypervisor</h3>
         <ul>
-          <li>Perisian pengurus VM</li>
+          <li>Software that manages VMs</li>
           <li>Type 1 — bare-metal (VMware ESXi, Hyper-V)</li>
           <li>Type 2 — hosted (VirtualBox, VMware Workstation)</li>
         </ul>
@@ -49,46 +49,46 @@
   <section class="slide">
     <span class="kicker">Module 09 · Benefits</span>
     <h2 class="slide-title">Benefits of <em>Virtualization</em></h2>
-    <p class="slide-sub">Mengapa organisasi menggunakan virtualisasi secara meluas.</p>
+    <p class="slide-sub">Why organizations use virtualization widely.</p>
     <div class="grid cols-3">
       <div class="card green">
         <div class="icon">📦</div>
         <h3>Consolidation</h3>
-        <p>Banyak server fizikal → beberapa hos — jimat kos &amp; tenaga.</p>
+        <p>Many physical servers → a few hosts — saves cost &amp; energy.</p>
       </div>
       <div class="card green">
         <div class="icon">🔒</div>
         <h3>Isolation</h3>
-        <p>Setiap VM terasing — kegagalan satu tidak jejaskan yang lain.</p>
+        <p>Each VM is isolated — one failing doesn't affect the others.</p>
       </div>
       <div class="card green">
         <div class="icon">🧪</div>
         <h3>Testing &amp; Dev</h3>
-        <p>Uji OS/app dalam persekitaran selamat tanpa risiko pada sistem utama.</p>
+        <p>Test OS/apps in a safe environment without risking the main system.</p>
       </div>
     </div>
-    <div class="quote">Snapshot membolehkan VM kembali ke keadaan sebelumnya dengan cepat.</div>
+    <div class="quote">A snapshot lets a VM return to a previous state quickly.</div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 09 · Requirements</span>
     <h2 class="slide-title">Virtualization <em>Requirements</em></h2>
-    <p class="slide-sub">Perkakasan perlu menyokong virtualisasi dengan baik.</p>
+    <p class="slide-sub">Hardware must support virtualization well.</p>
     <div class="grid cols-3">
       <div class="card amber">
         <div class="icon">🧠</div>
         <h3>CPU</h3>
-        <p>Virtualization extensions — Intel VT-x / AMD-V. Banyak teras = lebih baik.</p>
+        <p>Virtualization extensions — Intel VT-x / AMD-V. More cores = better.</p>
       </div>
       <div class="card amber">
         <div class="icon">🗄️</div>
         <h3>RAM</h3>
-        <p>Setiap VM perlukan memori sendiri — jumlah RAM menentukan bilangan VM serentak.</p>
+        <p>Each VM needs its own memory — total RAM determines how many VMs run at once.</p>
       </div>
       <div class="card amber">
         <div class="icon">💾</div>
         <h3>Storage</h3>
-        <p>Ruang untuk fail VM (vmdk/vhdx) — SSD mempercepatkan prestasi VM.</p>
+        <p>Space for VM files (vmdk/vhdx) — SSDs speed up VM performance.</p>
       </div>
     </div>
   </section>
@@ -96,36 +96,36 @@
   <section class="slide">
     <span class="kicker">Module 09 · Setup</span>
     <h2 class="slide-title">Setting Up a <em>Virtual Machine</em></h2>
-    <p class="slide-sub">Langkah mencipta &amp; menggunakan VM.</p>
+    <p class="slide-sub">Steps to create &amp; use a VM.</p>
     <div class="flow">
-      <div class="step"><div class="num">01</div><h4>Create VM</h4><p>Nama, OS, sumber.</p></div>
+      <div class="step"><div class="num">01</div><h4>Create VM</h4><p>Name, OS, resources.</p></div>
       <div class="step"><div class="num">02</div><h4>Allocate</h4><p>CPU, RAM, disk.</p></div>
-      <div class="step"><div class="num">03</div><h4>Mount ISO</h4><p>Media pemasangan OS.</p></div>
-      <div class="step"><div class="num">04</div><h4>Install OS</h4><p>Proses seperti biasa.</p></div>
-      <div class="step"><div class="num">05</div><h4>Tools</h4><p>Pasang Guest Additions.</p></div>
-      <div class="step"><div class="num">06</div><h4>Snapshot</h4><p>Simpan keadaan awal.</p></div>
+      <div class="step"><div class="num">03</div><h4>Mount ISO</h4><p>OS installation media.</p></div>
+      <div class="step"><div class="num">04</div><h4>Install OS</h4><p>Process as usual.</p></div>
+      <div class="step"><div class="num">05</div><h4>Tools</h4><p>Install Guest Additions.</p></div>
+      <div class="step"><div class="num">06</div><h4>Snapshot</h4><p>Save the initial state.</p></div>
     </div>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 09 · Cloud</span>
     <h2 class="slide-title">Cloud <em>Computing</em></h2>
-    <p class="slide-sub">Sumber IT disediakan melalui internet — atas permintaan, boleh skala.</p>
+    <p class="slide-sub">IT resources delivered over the internet — on demand, scalable.</p>
     <div class="grid cols-3">
       <div class="card">
         <div class="icon">📶</div>
         <h3>On-Demand</h3>
-        <p>Sumber disediakan bila perlu, tanpa campur tangan manusia.</p>
+        <p>Resources are provided when needed, without human intervention.</p>
       </div>
       <div class="card">
         <div class="icon">📈</div>
         <h3>Scalability</h3>
-        <p>Naik/turun kapasiti mengikut permintaan dengan mudah.</p>
+        <p>Scale capacity up/down easily as demand changes.</p>
       </div>
       <div class="card">
         <div class="icon">💳</div>
         <h3>Pay-as-you-go</h3>
-        <p>Bayar mengikut penggunaan — tiada pelaburan modal besar.</p>
+        <p>Pay for what you use — no big upfront investment.</p>
       </div>
     </div>
   </section>
@@ -133,39 +133,39 @@
   <section class="slide">
     <span class="kicker">Module 09 · Models</span>
     <h2 class="slide-title">Cloud Service <em>Models</em></h2>
-    <p class="slide-sub">Tahap kawalan dan pengurusan yang berbeza.</p>
+    <p class="slide-sub">Different levels of control and management.</p>
     <table>
-      <tr><th>Model</th><th>Anda Urus</th><th>Contoh</th></tr>
-      <tr><td>IaaS</td><td>OS, app, data</td><td>VM awan (AWS EC2, Azure VM)</td></tr>
-      <tr><td>PaaS</td><td>App &amp; data sahaja</td><td>App platform (Azure App Service, Heroku)</td></tr>
-      <tr><td>SaaS</td><td>Tiada — guna sahaja</td><td>Gmail, Office 365, Google Drive</td></tr>
+      <tr><th>Model</th><th>You Manage</th><th>Example</th></tr>
+      <tr><td>IaaS</td><td>OS, apps, data</td><td>Cloud VMs (AWS EC2, Azure VM)</td></tr>
+      <tr><td>PaaS</td><td>Apps &amp; data only</td><td>App platforms (Azure App Service, Heroku)</td></tr>
+      <tr><td>SaaS</td><td>None — just use</td><td>Gmail, Office 365, Google Drive</td></tr>
     </table>
   </section>
 
   <section class="slide">
     <span class="kicker">Module 09 · Deployment</span>
     <h2 class="slide-title">Cloud <em>Deployment</em></h2>
-    <p class="slide-sub">Cara infrastruktur cloud diletakkan.</p>
+    <p class="slide-sub">How cloud infrastructure is deployed.</p>
     <div class="grid cols-2">
       <div class="card purple">
         <div class="icon">🌐</div>
         <h3>Public</h3>
-        <p>Dikongsi awam — dibekalkan pembekal cloud (AWS, Azure, GCP).</p>
+        <p>Shared publicly — provided by cloud providers (AWS, Azure, GCP).</p>
       </div>
       <div class="card purple">
         <div class="icon">🏢</div>
         <h3>Private</h3>
-        <p>Khas untuk satu organisasi — kawalan &amp; keselamatan penuh.</p>
+        <p>Exclusive to one organization — full control &amp; security.</p>
       </div>
       <div class="card purple">
         <div class="icon">🔀</div>
         <h3>Hybrid</h3>
-        <p>Gabungan public + private — fleksibel &amp; seimbang.</p>
+        <p>Combination of public + private — flexible &amp; balanced.</p>
       </div>
       <div class="card purple">
         <div class="icon">👥</div>
         <h3>Community</h3>
-        <p>Dikongsi oleh organisasi dengan keperluan sama (cth: kerajaan).</p>
+        <p>Shared by organizations with similar needs (e.g., government).</p>
       </div>
     </div>
   </section>
@@ -173,22 +173,22 @@
   <section class="slide">
     <span class="kicker">Module 09 · Storage</span>
     <h2 class="slide-title">Cloud <em>Storage &amp; Backup</em></h2>
-    <p class="slide-sub">Simpan dan lindungi data di awan.</p>
+    <p class="slide-sub">Store and protect data in the cloud.</p>
     <div class="grid cols-3">
       <div class="card green">
         <div class="icon">📁</div>
         <h3>File Sync</h3>
-        <p>Dropbox, Google Drive, OneDrive — fail tersedia merentas peranti.</p>
+        <p>Dropbox, Google Drive, OneDrive — files available across devices.</p>
       </div>
       <div class="card green">
         <div class="icon">🔄</div>
         <h3>Backup</h3>
-        <p>Salinan data automatik ke awan — lindungi dari kegagalan tempatan.</p>
+        <p>Automatic data copies to the cloud — protects against local failures.</p>
       </div>
       <div class="card green">
         <div class="icon">🛡️</div>
         <h3>Disaster Recovery</h3>
-        <p>Pulihkan sistem selepas bencana — data selamat di lokasi berbeza.</p>
+        <p>Restore systems after a disaster — data safe in a different location.</p>
       </div>
     </div>
   </section>
@@ -197,10 +197,10 @@
     <span class="kicker">Wrap Up</span>
     <h2 class="slide-title">Key <em>Takeaways</em></h2>
     <div class="grid cols-2">
-      <div class="card cyan"><div class="icon">🖥️</div><h3>VM + Hypervisor</h3><p>Fahami Type 1 vs Type 2 dan peruntukan sumber.</p></div>
-      <div class="card green"><div class="icon">📦</div><h3>Consolidate &amp; Isolate</h3><p>Virtualisasi jimat kos, mengasingkan risiko, mudahkan ujian.</p></div>
-      <div class="card amber"><div class="icon">☁️</div><h3>Know the Models</h3><p>IaaS / PaaS / SaaS — siapa urus apa.</p></div>
-      <div class="card purple"><div class="icon">🌐</div><h3>Pick the Deployment</h3><p>Public / Private / Hybrid — ikut keperluan &amp; keselamatan.</p></div>
+      <div class="card cyan"><div class="icon">🖥️</div><h3>VM + Hypervisor</h3><p>Understand Type 1 vs Type 2 and resource allocation.</p></div>
+      <div class="card green"><div class="icon">📦</div><h3>Consolidate &amp; Isolate</h3><p>Virtualization saves cost, isolates risk, simplifies testing.</p></div>
+      <div class="card amber"><div class="icon">☁️</div><h3>Know the Models</h3><p>IaaS / PaaS / SaaS — who manages what.</p></div>
+      <div class="card purple"><div class="icon">🌐</div><h3>Pick the Deployment</h3><p>Public / Private / Hybrid — match needs &amp; security.</p></div>
     </div>
   </section>
 
