@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catur Kaplay - Pemain lawan Komputer</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Catur</h1>
+    <p class="subtitle">Pemain lawan komputer &middot; Kaplay + chess.js</p>
+  </header>
+
+  <main>
+    <div id="board-wrap">
+      <canvas id="game" width="676" height="676"></canvas>
+    </div>
+
+    <aside id="panel">
+      <div id="status">Giliran anda</div>
+
+      <div class="controls">
+        <button id="btn-new" class="btn">Permainan Baru</button>
+        <button id="btn-undo" class="btn">Undur</button>
+        <button id="btn-side" class="btn btn-secondary">Main sebagai Hitam</button>
+      </div>
+
+      <div class="diff-group" role="group" aria-label="Kesukaran">
+        <span class="diff-label">Kesukaran:</span>
+        <button id="btn-easy" class="btn diff-btn">Mudah</button>
+        <button id="btn-medium" class="btn diff-btn active">Sederhana</button>
+        <button id="btn-hard" class="btn diff-btn">Sukar</button>
+      </div>
+
+      <section class="captured">
+        <h2>Bidak Ditangkap</h2>
+        <div class="cap-row">
+          <span class="cap-label">Anda:</span>
+          <span id="cap-by-player" class="cap-list"></span>
+        </div>
+        <div class="cap-row">
+          <span class="cap-label">Komputer:</span>
+          <span id="cap-by-ai" class="cap-list"></span>
+        </div>
+      </section>
+
+      <section class="moves">
+        <h2>Senarai Langkah</h2>
+        <ol id="movelist"></ol>
+      </section>
+    </aside>
+  </main>
+
+  <!-- Dialog promosi bidak -->
+  <div id="promo-modal" class="modal" hidden>
+    <div class="modal-box">
+      <p id="promo-text">Naikkan bidak kepada:</p>
+      <div class="promo-choices">
+        <button data-p="q" class="btn">Menteri</button>
+        <button data-p="r" class="btn">Benteng</button>
+        <button data-p="b" class="btn">Gajah</button>
+        <button data-p="n" class="btn">Kuda</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Dibina dengan Kaplay (render) dan chess.js (peraturan catur). Berfungsi luar talian.</p>
+  </footer>
+
+  <noscript>
+    <p style="text-align:center;color:#e07a5f;">JavaScript diperlukan untuk permainan ini.</p>
+  </noscript>
+
+  <script src="libs/kaplay.js"></script>
+  <script src="libs/chess.min.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

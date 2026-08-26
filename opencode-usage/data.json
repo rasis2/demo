@@ -1,48 +1,48 @@
 {
-  "generated": "2026-08-26T22:00:39.505Z",
+  "generated": "2026-08-26T22:45:02.920Z",
   "period": "27–31 Ogo 2026",
   "quota": {
     "monthly": {
-      "used": 6.04,
+      "used": 6.21,
       "limit": 60,
-      "percent": 10.1,
+      "percent": 10.4,
       "unit": "USD"
     },
     "weekly": {
-      "used": 0.43,
+      "used": 0.6,
       "limit": 30,
-      "percent": 1.4,
+      "percent": 2,
       "unit": "USD"
     }
   },
   "consumers": [
     {
+      "name": "Subagents",
+      "cost": 0.02,
+      "calls": 2,
+      "color": "#7c3aed",
+      "percent": 66.7
+    },
+    {
       "name": "CLI / build",
       "cost": 0.01,
       "calls": 4,
-      "color": "#7c3aed",
-      "percent": 100
-    },
-    {
-      "name": "Subagents",
-      "cost": 0,
-      "calls": 1,
       "color": "#4f46e5",
-      "percent": 0
+      "percent": 33.3
     }
   ],
   "stats": {
-    "streams": 16822,
+    "streams": 17142,
     "models": 11,
-    "tools": 26324,
+    "tools": 27386,
     "toolKinds": 11,
-    "sessions": 346,
-    "loops": 17417
+    "sessions": 360,
+    "loops": 17759
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 11524,
+      "value": 11711,
       "color": "#7c3aed"
     },
     {
@@ -67,7 +67,7 @@
     },
     {
       "name": "afiqstore · deepseek-v4-pro",
-      "value": 167,
+      "value": 300,
       "color": "#f59e0b"
     },
     {
@@ -99,48 +99,48 @@
   "tools": [
     {
       "name": "bash",
-      "value": 16883,
+      "value": 17518,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 2875,
+      "value": 2921,
       "color": "#f59e0b"
     },
     {
       "name": "read",
-      "value": 2567,
+      "value": 2695,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 2335,
+      "value": 2499,
       "color": "#0ea5a4"
     },
     {
       "name": "grep",
-      "value": 628,
+      "value": 689,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 334,
+      "value": 337,
       "color": "#94a3b8"
+    },
+    {
+      "name": "task",
+      "value": 223,
+      "color": "#6366f1"
+    },
+    {
+      "name": "webfetch",
+      "value": 216,
+      "color": "#22c55e"
     },
     {
       "name": "todowrite",
       "value": 210,
       "color": "#ec4899"
-    },
-    {
-      "name": "task",
-      "value": 209,
-      "color": "#6366f1"
-    },
-    {
-      "name": "webfetch",
-      "value": 205,
-      "color": "#22c55e"
     },
     {
       "name": "websearch",
