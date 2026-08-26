@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Essentials 8 — Module 4: Preventive Maintenance and Troubleshooting</title>
+<meta name="description" content="Interactive slide deck covering Cisco IT Essentials 8.0 Module 4 — Preventive Maintenance and Troubleshooting.">
+<style>
+  :root{
+    --bg:#12161c;
+    --panel:#1a2028;
+    --panel-alt:#161c23;
+    --line:#2a323d;
+    --text:#eae6da;
+    --muted:#9aa4b1;
+    --amber:#e8a13d;
+    --amber-dim:rgba(232,161,61,0.1);
+    --teal:#49c2b8;
+    --teal-dim:rgba(73,194,184,0.12);
+    --red:#e2564c;
+    --red-dim:rgba(226,86,76,0.12);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(232,161,61,0.08), transparent 60%),
+      radial-gradient(900px 500px at 0% 20%, rgba(73,194,184,0.06), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter','Segoe UI',sans-serif;
+    overflow:hidden;
+  }
+
+  .deck{ height:100vh; position:relative; }
+  .slide{
+    position:absolute; inset:0;
+    display:none; flex-direction:column;
+    padding:64px 72px 96px;
+    overflow-y:auto;
+  }
+  .slide.active{ display:flex; animation:fadeIn .35s ease; }
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+
+  .slide-title{
+    font-family:'Big Shoulders Display','Arial Black',sans-serif;
+    font-weight:800; font-size:clamp(30px,4.2vw,50px);
+    letter-spacing:0.5px; text-transform:uppercase; line-height:1.05;
+    margin-bottom:10px;
+  }
+  .slide-title em{ color:var(--amber); font-style:normal; }
+  .slide-kicker{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--amber);
+    border:1px solid rgba(232,161,61,0.3);
+    background:var(--amber-dim);
+    padding:5px 12px; border-radius:999px;
+    align-self:flex-start; margin-bottom:22px;
+  }
+  .slide-sub{ color:var(--muted); font-size:15px; max-width:820px; line-height:1.7; }
+
+  .grid{ display:grid; gap:16px; margin-top:26px; }
+  .grid.cols-2{ grid-template-columns:repeat(2,1fr); }
+  .grid.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .grid.cols-4{ grid-template-columns:repeat(4,1fr); }
+  @media (max-width:860px){
+    .grid.cols-2,.grid.cols-3,.grid.cols-4{ grid-template-columns:1fr; }
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:20px 20px 16px;
+  }
+  .card.amber{ border-color:rgba(232,161,61,0.35); }
+  .card.teal{ border-color:rgba(73,194,184,0.35); }
+  .card.red{ border-color:rgba(226,86,76,0.35); }
+  .card .icon{
+    width:42px; height:42px; border-radius:10px;
+    background:var(--amber-dim); border:1px solid rgba(232,161,61,0.25);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; margin-bottom:14px;
+  }
+  .card.teal .icon{ background:var(--teal-dim); border-color:rgba(73,194,184,0.25); }
+  .card.red .icon{ background:var(--red-dim); border-color:rgba(226,86,76,0.25); }
+  .card h3{
+    font-family:'Big Shoulders Display','Arial Black',sans-serif;
+    font-weight:700; font-size:21px; text-transform:uppercase; letter-spacing:0.4px;
+    margin-bottom:8px;
+  }
+  .card p{ font-size:13.5px; color:var(--muted); line-height:1.6; }
+  .card ul{ list-style:none; }
+  .card ul li{
+    font-size:13.5px; color:var(--muted); line-height:1.6;
+    padding-left:18px; position:relative; margin-bottom:5px;
+  }
+  .card ul li::before{
+    content:''; position:absolute; left:0; top:8px;
+    width:7px; height:7px; border-radius:2px;
+    background:var(--amber); transform:rotate(45deg);
+  }
+  .card.teal ul li::before{ background:var(--teal); }
+  .card.red ul li::before{ background:var(--red); }
+
+  .hero-slide{ justify-content:center; align-items:flex-start; }
+  .hero-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--teal); margin-bottom:18px;
+  }
+  .hero-title{
+    font-family:'Big Shoulders Display','Arial Black',sans-serif;
+    font-weight:800;
+    font-size:clamp(40px,7vw,84px);
+    line-height:0.98; letter-spacing:1px; text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  .hero-title em{ color:var(--amber); font-style:normal; }
+  .hero-sub{ color:var(--muted); font-size:17px; max-width:680px; line-height:1.7; margin-bottom:34px; }
+  .hero-meta{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:1px; }
+
+  /* Flow / steps */
+  .flow{ display:flex; align-items:stretch; gap:10px; margin-top:26px; flex-wrap:wrap; }
+  .step{
+    flex:1; min-width:130px;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:16px 16px 14px; position:relative;
+  }
+  .step .num{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--amber);
+    letter-spacing:1px; margin-bottom:8px;
+  }
+  .step h4{ font-size:15px; margin-bottom:5px; letter-spacing:0.3px; }
+  .step p{ font-size:12px; color:var(--muted); line-height:1.55; }
+  .step:not(:last-child)::after{
+    content:'→'; position:absolute; right:-13px; top:50%; transform:translateY(-50%);
+    color:var(--amber); font-size:18px;
+  }
+
+  /* Comparison table */
+  table{ width:100%; border-collapse:collapse; margin-top:26px; background:var(--panel); border-radius:12px; overflow:hidden; }
+  th,td{ text-align:left; padding:13px 18px; font-size:13.5px; border-bottom:1px solid var(--line); }
+  th{ font-family:'Big Shoulders Display',sans-serif; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; font-size:15px; background:var(--panel-alt); }
+  td{ color:var(--muted); line-height:1.6; }
+  tr:last-child td{ border-bottom:none; }
+  td:first-child{ color:var(--text); font-weight:600; }
+
+  /* Quote / highlight */
+  .quote{
+    margin-top:34px;
+    border-left:3px solid var(--amber);
+    background:var(--amber-dim);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    font-size:17px; line-height:1.7; color:var(--text); font-style:italic;
+    max-width:840px;
+  }
+  .quote.red{ border-left-color:var(--red); background:var(--red-dim); }
+  .highlight{
+    background:var(--teal-dim); border:1px solid rgba(73,194,184,0.3);
+    border-radius:8px; padding:4px 9px; color:var(--teal);
+    font-family:'JetBrains Mono',monospace; font-size:12.5px;
+  }
+
+  /* Progress & nav */
+  .progress{ position:fixed; top:0; left:0; height:3px; background:var(--amber); z-index:50; transition:width .25s ease; }
+  .controls{
+    position:fixed; bottom:20px; right:24px; z-index:50;
+    display:flex; gap:10px; align-items:center;
+  }
+  .controls .counter{
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);
+    margin-right:6px; letter-spacing:1px;
+  }
+  .controls button{
+    width:42px; height:42px; border-radius:10px;
+    background:var(--panel); border:1px solid var(--line);
+    color:var(--text); font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .controls button:hover{ border-color:var(--amber); background:var(--amber-dim); color:var(--amber); }
+  .controls button:disabled{ opacity:0.35; cursor:default; }
+  .hint{
+    position:fixed; bottom:24px; left:24px; z-index:50;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.5px;
+  }
+  @media (max-width:640px){ .slide{ padding:44px 24px 110px; } .hint{ display:none; } }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="hint">← → or Space to navigate</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. Title -->
+  <section class="slide hero-slide">
+    <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
+    <h1 class="hero-title">Module 4<br><em>Preventive Maintenance</em><br>&amp; Troubleshooting</h1>
+    <p class="hero-sub">Learn how to keep PCs healthy through proactive maintenance, and follow a structured process to diagnose and fix problems when they occur.</p>
+    <div class="hero-meta">IT Essentials v8.0 · Module 04 · Let's begin →</div>
+  </section>
+
+  <!-- 2. Overview -->
+  <section class="slide">
+    <span class="slide-kicker">Module 04 · Overview</span>
+    <h2 class="slide-title">Two Sides of <em>Computer Care</em></h2>
+    <p class="slide-sub">Preventive maintenance is proactive — done regularly to avoid problems. Troubleshooting is reactive — fixing problems after they happen.</p>
+    <table>
+      <tr><th>Preventive Maintenance</th><th>Troubleshooting</th></tr>
+      <tr><td>Proactive — prevents problems</td><td>Reactive — solves existing problems</td></tr>
+      <tr><td>Regular checks &amp; adjustments</td><td>Diagnose &amp; fix issues</td></tr>
+      <tr><td>Extends component life</td><td>Restores normal operation</td></tr>
+      <tr><td>Reduces downtime &amp; repair costs</td><td>Uses a structured 6-step process</td></tr>
+    </table>
+  </section>
+
+  <!-- 3. Benefits of Preventive Maintenance -->
+  <section class="slide">
+    <span class="slide-kicker">4.1 · Preventive Maintenance</span>
+    <h2 class="slide-title">Benefits of <em>Preventive Maintenance</em></h2>
+    <p class="slide-sub">A preventive maintenance plan keeps the IT infrastructure reliable, efficient, and cheaper to run.</p>
+    <div class="grid cols-3">
+      <div class="card amber">
+        <div class="icon">⏱️</div>
+        <h3>Extends Component Life</h3>
+        <p>Prevents undue wear on parts, so hardware lasts longer.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">🛡️</div>
+        <h3>Protects Data</h3>
+        <p>Regular backups and checks reduce the risk of data loss.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">🔻</div>
+        <h3>Fewer Failures</h3>
+        <p>Reduces equipment failures, downtime, and repair costs.</p>
+      </div>
+    </div>
+    <div class="quote">"Preventive maintenance helps protect computer equipment against future problems."</div>
+  </section>
+
+  <!-- 4. Preventive Maintenance Plan -->
+  <section class="slide">
+    <span class="slide-kicker">4.1 · Preventive Maintenance</span>
+    <h2 class="slide-title">Building a <em>Maintenance Plan</em></h2>
+    <p class="slide-sub">A plan is developed based on at least two factors: the computer's <strong>location/environment</strong> and how it is <strong>used</strong>.</p>
+    <div class="grid cols-2">
+      <div class="card teal">
+        <div class="icon">📍</div>
+        <h3>Environment</h3>
+        <ul>
+          <li>Dust, temperature, humidity</li>
+          <li>Power quality (surges, spikes)</li>
+          <li>Physical hazards</li>
+        </ul>
+      </div>
+      <div class="card teal">
+        <div class="icon">💼</div>
+        <h3>Usage</h3>
+        <ul>
+          <li>Heavy vs light workload</li>
+          <li>Mobile vs fixed location</li>
+          <li>Critical vs non-critical role</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote">Without a plan: <strong>increased downtime</strong> and <strong>increased repair costs</strong>.</div>
+  </section>
+
+  <!-- 5. Hardware Maintenance Tasks -->
+  <section class="slide">
+    <span class="slide-kicker">4.1 · Preventive Maintenance</span>
+    <h2 class="slide-title">Hardware <em>Maintenance Tasks</em></h2>
+    <p class="slide-sub">Routine physical care keeps components cool, clean, and securely connected.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <div class="icon">💨</div>
+        <h3>Dust Removal</h3>
+        <ul>
+          <li>Remove dust from fan intakes</li>
+          <li>Clean power supply vents</li>
+          <li>Clear dust from components</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="icon">🔌</div>
+        <h3>Connections</h3>
+        <ul>
+          <li>Check &amp; secure loose cables</li>
+          <li>Verify storage device cables</li>
+          <li>Ensure firm connections</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="icon">🖱️</div>
+        <h3>Peripherals</h3>
+        <ul>
+          <li>Clean mouse &amp; keyboard</li>
+          <li>Inspect monitor &amp; cables</li>
+          <li>Check cooling fans spin</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote">Cleaning tool of choice inside a case: <strong>compressed air</strong>.</div>
+  </section>
+
+  <!-- 6. Software Maintenance Tasks -->
+  <section class="slide">
+    <span class="slide-kicker">4.1 · Preventive Maintenance</span>
+    <h2 class="slide-title">Software <em>Maintenance Tasks</em></h2>
+    <p class="slide-sub">Keeping the operating system and applications updated is just as important as physical cleaning.</p>
+    <div class="grid cols-3">
+      <div class="card teal">
+        <div class="icon">🛡️</div>
+        <h3>Security</h3>
+        <ul>
+          <li>Review security updates</li>
+          <li>Update virus definitions</li>
+          <li>Scan for spyware &amp; malware</li>
+        </ul>
+      </div>
+      <div class="card teal">
+        <div class="icon">💿</div>
+        <h3>System Health</h3>
+        <ul>
+          <li>Disk cleanup &amp; defrag</li>
+          <li>Scan disk for errors</li>
+          <li>Verify backups</li>
+        </ul>
+      </div>
+      <div class="card teal">
+        <div class="icon">🔄</div>
+        <h3>Updates</h3>
+        <ul>
+          <li>Install OS patches</li>
+          <li>Update drivers &amp; firmware</li>
+          <li>Update applications</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Cleaning Safety -->
+  <section class="slide">
+    <span class="slide-kicker">4.1 · Preventive Maintenance</span>
+    <h2 class="slide-title">Cleaning <em>Safety Tips</em></h2>
+    <p class="slide-sub">Cleaning incorrectly can cause more damage than dust ever will.</p>
+    <div class="grid cols-3">
+      <div class="card red">
+        <div class="icon">🌀</div>
+        <h3>Hold Fan Blades</h3>
+        <p>Hold the fan blades in place when using compressed air to prevent over-spinning the rotor.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">👀</div>
+        <h3>Check Fan Visually</h3>
+        <p>Best way to check a CPU fan: visually inspect it with the power ON — don't spin it by hand.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">🚫</div>
+        <h3>No Liquids Inside</h3>
+        <p>Never use a damp cloth or liquid cleaner directly on internal components.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Troubleshooting Process Intro -->
+  <section class="slide">
+    <span class="slide-kicker">4.2 · Troubleshooting Process</span>
+    <h2 class="slide-title">The <em>6-Step</em> Process</h2>
+    <p class="slide-sub">A logical, repeatable approach to diagnosing and solving PC problems.</p>
+    <div class="flow">
+      <div class="step"><div class="num">01</div><h4>Identify</h4><p>Gather info from the customer.</p></div>
+      <div class="step"><div class="num">02</div><h4>Theory</h4><p>Establish probable cause.</p></div>
+      <div class="step"><div class="num">03</div><h4>Test</h4><p>Test theory to find cause.</p></div>
+      <div class="step"><div class="num">04</div><h4>Plan</h4><p>Plan of action &amp; implement.</p></div>
+      <div class="step"><div class="num">05</div><h4>Verify</h4><p>Full system functionality.</p></div>
+      <div class="step"><div class="num">06</div><h4>Document</h4><p>Record findings &amp; outcome.</p></div>
+    </div>
+  </section>
+
+  <!-- 9. Step 1 - Identify -->
+  <section class="slide">
+    <span class="slide-kicker">4.2 · Step 1</span>
+    <h2 class="slide-title">Identify the <em>Problem</em></h2>
+    <p class="slide-sub">Before touching anything, understand what's wrong — and protect the customer's data.</p>
+    <div class="grid cols-2">
+      <div class="card amber">
+        <div class="icon">🗣️</div>
+        <h3>Gather Information</h3>
+        <ul>
+          <li>Ask open &amp; closed-ended questions</li>
+          <li>Reproduce the problem if possible</li>
+          <li>Check recent changes</li>
+        </ul>
+      </div>
+      <div class="card amber">
+        <div class="icon">📝</div>
+        <h3>Document &amp; Backup</h3>
+        <ul>
+          <li>Record details in a work order</li>
+          <li>Back up customer data FIRST</li>
+          <li>Liability if data is lost</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote red">Always <strong>back up data</strong> before beginning any troubleshooting — a technician can be held liable for data loss.</div>
+  </section>
+
+  <!-- 10. Liability Release Form -->
+  <section class="slide">
+    <span class="slide-kicker">4.2 · Step 1</span>
+    <h2 class="slide-title">Liability <em>Release Form</em></h2>
+    <p class="slide-sub">If a backup can't be created, have the customer sign a liability release form containing these three pieces of information:</p>
+    <div class="grid cols-3">
+      <div class="card red">
+        <div class="icon">✅</div>
+        <h3>Permission</h3>
+        <p>Permission to work on the computer without a current backup.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">🖊️</div>
+        <h3>Release</h3>
+        <p>Release from liability if data is lost or corrupted.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">📋</div>
+        <h3>Description</h3>
+        <p>Description of the work to be performed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Step 2 & 3 - Theory & Test -->
+  <section class="slide">
+    <span class="slide-kicker">4.2 · Steps 2–3</span>
+    <h2 class="slide-title">Establish &amp; Test a <em>Theory</em></h2>
+    <p class="slide-sub">Form a probable cause, then test it. If it's wrong, form a new theory.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h3>Establish Theory</h3>
+        <ul>
+          <li>Start with obvious / least invasive causes</li>
+          <li>Use "divide and conquer" approach</li>
+          <li>Consider common problems first</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="icon">🔬</div>
+        <h3>Test the Theory</h3>
+        <ul>
+          <li>Confirm the cause by testing</li>
+          <li>If confirmed → plan solution</li>
+          <li>If not → new theory or escalate</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. Step 4 & 5 - Plan & Verify -->
+  <section class="slide">
+    <span class="slide-kicker">4.2 · Steps 4–5</span>
+    <h2 class="slide-title">Plan, Implement &amp; <em>Verify</em></h2>
+    <p class="slide-sub">Research solutions, apply them, then confirm everything works again.</p>
+    <div class="grid cols-2">
+      <div class="card teal">
+        <div class="icon">🔎</div>
+        <h3>Plan &amp; Implement</h3>
+        <ul>
+          <li>Research solutions (web, manuals)</li>
+          <li>Escalate if beyond knowledge level</li>
+          <li>Apply the chosen solution</li>
+        </ul>
+      </div>
+      <div class="card teal">
+        <div class="icon">✔️</div>
+        <h3>Verify Functionality</h3>
+        <ul>
+          <li>Confirm full system works</li>
+          <li>Implement preventive measures</li>
+          <li>Show the customer the fix</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. Step 6 - Document -->
+  <section class="slide">
+    <span class="slide-kicker">4.2 · Step 6</span>
+    <h2 class="slide-title">Document <em>Everything</em></h2>
+    <p class="slide-sub">No technical job is finished until the documentation is complete.</p>
+    <div class="grid cols-3">
+      <div class="card amber">
+        <div class="icon">📄</div>
+        <h3>Failed Attempts</h3>
+        <p>Record what didn't work, so future technicians know what to avoid.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">✅</div>
+        <h3>The Solution</h3>
+        <p>Record the solution that finally resolved the problem.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">🔁</div>
+        <h3>Avoid Repetition</h3>
+        <p>Good documentation prevents repeating past repairs.</p>
+      </div>
+    </div>
+    <div class="quote">Before escalating a ticket: <strong>document each test</strong> that was performed.</div>
+  </section>
+
+  <!-- 14. Common Problems -->
+  <section class="slide">
+    <span class="slide-kicker">4.2 · Common Problems</span>
+    <h2 class="slide-title">Common Problems &amp; <em>Solutions</em></h2>
+    <p class="slide-sub">Recognising symptoms helps you reach the cause faster.</p>
+    <table>
+      <tr><th>Symptom</th><th>Most Likely Cause</th></tr>
+      <tr><td>BIOS rediscovers hardware every boot</td><td>Replace the CMOS battery</td></tr>
+      <tr><td>Computer locks up after ~5 minutes</td><td>CPU overheating</td></tr>
+      <tr><td>Burning electronics smell</td><td>Overloaded power supply</td></tr>
+      <tr><td>HDD LED off but PC runs fine</td><td>LED cable loose from motherboard</td></tr>
+      <tr><td>RAM fails, works in another PC</td><td>Modules not seated firmly</td></tr>
+      <tr><td>Slow app + HDD LED flashing</td><td>Not enough RAM (swapping)</td></tr>
+      <tr><td>Clock keeps losing time</td><td>CMOS battery loose or failing</td></tr>
+      <tr><td>PC sometimes won't turn on</td><td>Failing power supply</td></tr>
+    </table>
+  </section>
+
+  <!-- 15. Key Takeaways -->
+  <section class="slide hero-slide">
+    <span class="slide-kicker">Wrap Up</span>
+    <h2 class="slide-title">Key <em>Takeaways</em></h2>
+    <div class="grid cols-2">
+      <div class="card amber"><div class="icon">🛡️</div><h3>Maintain Proactively</h3><p>Regular cleaning and updates extend component life and prevent costly failures.</p></div>
+      <div class="card teal"><div class="icon">🔧</div><h3>Follow the Process</h3><p>Use the 6-step troubleshooting method every time — don't skip steps.</p></div>
+      <div class="card teal"><div class="icon">💾</div><h3>Back Up First</h3><p>Always back up data (or get a liability release) before touching a customer's PC.</p></div>
+      <div class="card amber"><div class="icon">📝</div><h3>Document Everything</h3><p>Record failed attempts and the final solution — the job isn't done until it's documented.</p></div>
+    </div>
+    <div class="quote" style="margin-top:28px;">Prevent problems before they happen; solve the rest with a clear, repeatable process.</div>
+  </section>
+
+  <!-- 16. Thank you -->
+  <section class="slide hero-slide">
+    <div class="hero-eyebrow">End of Module 4</div>
+    <h1 class="hero-title">Thank <em>You!</em></h1>
+    <p class="hero-sub">Questions &amp; discussion welcome.<br>IT Essentials v8.0 — Module 4: Preventive Maintenance and Troubleshooting.</p>
+    <div class="hero-meta">Press ← to go back · Created with a single HTML file</div>
+  </section>
+
+</div>
+
+<div class="controls">
+  <span class="counter" id="counter">1 / 16</span>
+  <button id="prev" aria-label="Previous slide">←</button>
+  <button id="next" aria-label="Next slide">→</button>
+</div>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+let current = 0;
+
+function go(n){
+  current = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach((s,i) => s.classList.toggle('active', i === current));
+  counter.textContent = (current + 1) + ' / ' + slides.length;
+  progress.style.width = ((current + 1) / slides.length * 100) + '%';
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === slides.length - 1;
+  window.scrollTo(0,0);
+}
+
+prevBtn.addEventListener('click', () => go(current - 1));
+nextBtn.addEventListener('click', () => go(current + 1));
+document.addEventListener('keydown', e => {
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)) { e.preventDefault(); go(current + 1); }
+  if(['ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); go(current - 1); }
+  if(e.key === 'Home') go(0);
+  if(e.key === 'End') go(slides.length - 1);
+});
+
+// Touch swipe
+let touchX = null;
+document.addEventListener('touchstart', e => touchX = e.touches[0].clientX, { passive:true });
+document.addEventListener('touchend', e => {
+  if(touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if(Math.abs(dx) > 50) go(current + (dx < 0 ? 1 : -1));
+  touchX = null;
+}, { passive:true });
+
+go(0);
+</script>
+</body>
+</html>
