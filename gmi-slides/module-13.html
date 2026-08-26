@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMI Slides — IT Essentials 8.0 · Module 13: Security</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<a class="back" href="index.html">◄ Modules</a>
+<div class="hint">← → or Space to navigate</div>
+<div class="deck" id="deck">
+
+  <section class="slide hero-slide">
+    <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
+    <h1 class="hero-title">Module 13<br><em>Security</em></h1>
+    <p class="hero-sub">Ancaman keselamatan, autentikasi, firewall, enkripsi, VPN, keselamatan wayarles, perlindungan data dan pencegahan social engineering.</p>
+    <div class="hero-meta">MODULE 13 · SECURE THE SYSTEM · Let's begin →</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Threats</span>
+    <h2 class="slide-title">Security <em>Threats</em></h2>
+    <p class="slide-sub">Jenis perisian hasad (malware) yang perlu dikenali.</p>
+    <div class="grid cols-3">
+      <div class="card red">
+        <div class="icon">🦠</div>
+        <h3>Virus &amp; Worm</h3>
+        <p>Virus memerlukan hos; worm merebak sendiri melalui rangkaian.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">🎭</div>
+        <h3>Trojan</h3>
+        <p>Menyamar sebagai perisian sah — akses belakang (backdoor).</p>
+      </div>
+      <div class="card red">
+        <div class="icon">💰</div>
+        <h3>Ransomware</h3>
+        <p>Mengunci data &amp; meminta tebusan. Backup adalah pertahanan terbaik.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">👁️</div>
+        <h3>Spyware &amp; Keyloggers</h3>
+        <p>Memerhati aktiviti &amp; merakam ketukan kekunci secara senyap.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">🕳️</div>
+        <h3>Rootkit</h3>
+        <p>Bersembunyi dalam sistem — sukar dikesan, kawalan penuh.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">🪝</div>
+        <h3>Botnets</h3>
+        <p>Peranti dijangkiti digunakan untuk serangan DDoS &amp; spam.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Social</span>
+    <h2 class="slide-title">Social <em>Engineering</em></h2>
+    <p class="slide-sub">Manipulasi manusia — bukan teknologi — untuk mendapatkan akses.</p>
+    <div class="grid cols-2">
+      <div class="card amber">
+        <div class="icon">🎣</div>
+        <h3>Phishing</h3>
+        <p>Emel/laman palsu mencuri kredensial. Semak URL &amp; pengirim.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">🎭</div>
+        <h3>Pretexting &amp; Baiting</h3>
+        <p>Berkisah palsu (pretext) atau menawarkan umpan (USB, hadiah).</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">🚪</div>
+        <h3>Tailgating</h3>
+        <p>Menyusup masuk mengikuti orang lain tanpa kebenaran.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">📵</div>
+        <h3>Shoulder Surfing</h3>
+        <p>Memerhati skrin/keyboard untuk curi maklumat.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Auth</span>
+    <h2 class="slide-title">Authentication <em>Methods</em></h2>
+    <p class="slide-sub">Sahkan identiti pengguna — sesuatu yang anda tahu, ada, atau anda.</p>
+    <div class="grid cols-3">
+      <div class="card green">
+        <div class="icon">🔑</div>
+        <h3>Something You Know</h3>
+        <p>Kata laluan, PIN. Kuat &amp; unik — jangan guna semula.</p>
+      </div>
+      <div class="card green">
+        <div class="icon">💳</div>
+        <h3>Something You Have</h3>
+        <p>Smart card, token, telefon untuk OTP.</p>
+      </div>
+      <div class="card green">
+        <div class="icon">🫵</div>
+        <h3>Something You Are</h3>
+        <p>Biometrik — cap jari, wajah (Windows Hello).</p>
+      </div>
+    </div>
+    <div class="quote">Multifactor Authentication (MFA) — gabungan dua atau lebih kaedah — jauh lebih selamat.</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Defense</span>
+    <h2 class="slide-title">Firewalls &amp; <em>NAT</em></h2>
+    <p class="slide-sub">Pertahanan peringkat rangkaian.</p>
+    <div class="grid cols-2">
+      <div class="card cyan">
+        <div class="icon">🧱</div>
+        <h3>Firewall</h3>
+        <ul>
+          <li>Menapis trafik berdasarkan peraturan</li>
+          <li>Block port &amp; alamat tidak sah</li>
+          <li>Perisian (Windows Defender) &amp; perkakasan</li>
+        </ul>
+      </div>
+      <div class="card cyan">
+        <div class="icon">🔀</div>
+        <h3>NAT</h3>
+        <ul>
+          <li>Menyembunyikan IP dalaman</li>
+          <li>Port forwarding untuk perkhidmatan khusus</li>
+          <li>Lapisan perlindungan tambahan</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Encryption</span>
+    <h2 class="slide-title">Encryption &amp; <em>VPN</em></h2>
+    <p class="slide-sub">Lindungi data — semasa rehat dan semasa bergerak.</p>
+    <div class="grid cols-3">
+      <div class="card purple">
+        <div class="icon">🔒</div>
+        <h3>Data at Rest</h3>
+        <p>BitLocker (Windows), FileVault (macOS) — enkripsi cakera penuh.</p>
+      </div>
+      <div class="card purple">
+        <div class="icon">🔐</div>
+        <h3>Data in Transit</h3>
+        <p>TLS/HTTPS untuk web; SSH untuk akses jauh — data disulitkan.</p>
+      </div>
+      <div class="card purple">
+        <div class="icon">🌐</div>
+        <h3>VPN</h3>
+        <p>Tunnel selamat melalui internet — akses jauh &amp; privasi.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Wireless</span>
+    <h2 class="slide-title">Wireless <em>Security</em></h2>
+    <p class="slide-sub">Lindungi rangkaian Wi-Fi daripada penyusupan.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <div class="icon">🔐</div>
+        <h3>WPA2 / WPA3</h3>
+        <p>Enkripsi moden — guna kata laluan kuat. Elak WEP (tidak selamat).</p>
+      </div>
+      <div class="card">
+        <div class="icon">📶</div>
+        <h3>SSID &amp; MAC Filter</h3>
+        <p>Sembunyikan SSID &amp; hadkan peranti melalui MAC filtering.</p>
+      </div>
+      <div class="card">
+        <div class="icon">👥</div>
+        <h3>Guest Network</h3>
+        <p>Asingkan tetamu dari rangkaian utama — VLAN/AP isolation.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Data</span>
+    <h2 class="slide-title">Data <em>Protection</em></h2>
+    <p class="slide-sub">Data adalah aset paling berharga — lindungi dari semua sudut.</p>
+    <div class="grid cols-3">
+      <div class="card green">
+        <div class="icon">💾</div>
+        <h3>Backup</h3>
+        <p>3-2-1: 3 salinan, 2 media, 1 di luar tapak.</p>
+      </div>
+      <div class="card green">
+        <div class="icon">🛡️</div>
+        <h3>RAID</h3>
+        <p>Redundansi cakera — tetapi bukan pengganti backup!</p>
+      </div>
+      <div class="card green">
+        <div class="icon">🗑️</div>
+        <h3>Secure Disposal</h3>
+        <p>Padam data selamat / hancurkan cakera sebelum buang.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 13 · Response</span>
+    <h2 class="slide-title">Incident Response &amp; <em>Policies</em></h2>
+    <p class="slide-sub">Apa yang perlu dilakukan apabila berlaku insiden keselamatan.</p>
+    <div class="flow">
+      <div class="step"><div class="num">01</div><h4>Detect</h4><p>Kenal pasti insiden.</p></div>
+      <div class="step"><div class="num">02</div><h4>Contain</h4><p>Asingkan sistem terjejas.</p></div>
+      <div class="step"><div class="num">03</div><h4>Eradicate</h4><p>Buang punca malware.</p></div>
+      <div class="step"><div class="num">04</div><h4>Recover</h4><p>Pulihkan dari backup.</p></div>
+      <div class="step"><div class="num">05</div><h4>Learn</h4><p>Dokumen &amp; perbaiki.</p></div>
+    </div>
+    <div class="quote">Kemas kini antivirus, patch OS &amp; latihan pengguna adalah pertahanan berterusan.</div>
+  </section>
+
+  <section class="slide hero-slide">
+    <span class="kicker">Wrap Up</span>
+    <h2 class="slide-title">Key <em>Takeaways</em></h2>
+    <div class="grid cols-2">
+      <div class="card red"><div class="icon">🦠</div><h3>Know Your Enemies</h3><p>Malware &amp; social engineering — kenali taktik untuk menangkis.</p></div>
+      <div class="card green"><div class="icon">🔑</div><h3>Authenticate Strongly</h3><p>MFA + kata laluan kuat + biometrik = pertahanan identiti.</p></div>
+      <div class="card cyan"><div class="icon">🔒</div><h3>Encrypt Everything</h3><p>BitLocker/FileVault + TLS + VPN melindungi data rehat &amp; transit.</p></div>
+      <div class="card purple"><div class="icon">💾</div><h3>Backup Is Your Safety Net</h3><p>3-2-1 rule — menyelamatkan dari ransomware &amp; kegagalan.</p></div>
+    </div>
+  </section>
+
+</div>
+<div class="controls">
+  <span class="counter" id="counter">1 / 10</span>
+  <button id="prev" aria-label="Previous slide">←</button>
+  <button id="next" aria-label="Next slide">→</button>
+</div>
+<script src="js/deck.js"></script>
+</body>
+</html>
