@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMI Slides — IT Essentials 8.0 · Module 11: Windows Configuration</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<a class="back" href="index.html">◄ Modules</a>
+<div class="hint">← → or Space to navigate</div>
+<div class="deck" id="deck">
+
+  <section class="slide hero-slide">
+    <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
+    <h1 class="hero-title">Module 11<br><em>Windows</em> Configuration</h1>
+    <p class="hero-sub">Konfigurasi Windows: Control Panel, pengguna &amp; kebenaran, pengurusan cakera, alat sistem, backup dan troubleshooting.</p>
+    <div class="hero-meta">MODULE 11 · CONFIGURE WINDOWS · Let's begin →</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 11 · Interfaces</span>
+    <h2 class="slide-title">Control Panel &amp; <em>Settings</em></h2>
+    <p class="slide-sub">Dua antara muka utama untuk konfigurasi Windows.</p>
+    <div class="grid cols-2">
+      <div class="card cyan">
+        <div class="icon">🎛️</div>
+        <h3>Settings</h3>
+        <ul>
+          <li>Antara muka moden (Win+I)</li>
+          <li>Sistem, peranti, rangkaian</li>
+          <li>Akun, privasi, kemas kini</li>
+        </ul>
+      </div>
+      <div class="card cyan">
+        <div class="icon">🗂️</div>
+        <h3>Control Panel</h3>
+        <ul>
+          <li>Legacy — semua applet</li>
+          <li>System, Users, Programs</li>
+          <li>Administrative Tools</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 11 · Users</span>
+    <h2 class="slide-title">Users &amp; <em>Groups</em></h2>
+    <p class="slide-sub">Kawal siapa yang boleh menggunakan komputer dan bagaimana.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <div class="icon">👤</div>
+        <h3>User Accounts</h3>
+        <p>Admin (kawalan penuh) atau Standard (terhad). Tukar kata laluan &amp; jenis.</p>
+      </div>
+      <div class="card">
+        <div class="icon">👥</div>
+        <h3>Groups</h3>
+        <p>Administrators, Users, Guests — kebenaran diberikan kepada kumpulan.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🔑</div>
+        <h3>Passwords</h3>
+        <p>Kuat, unik &amp; kerap ditukar. Guna Windows Hello (PIN, biometric).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 11 · Permissions</span>
+    <h2 class="slide-title">Permissions &amp; <em>Sharing</em></h2>
+    <p class="slide-sub">Kawal akses kepada fail dan folder.</p>
+    <div class="grid cols-2">
+      <div class="card green">
+        <div class="icon">📄</div>
+        <h3>NTFS Permissions</h3>
+        <ul>
+          <li>Read, Write, Modify, Full Control</li>
+          <li>Ditetapkan pada fail/folder</li>
+          <li>Kekal walaupun fail dipindah dalam NTFS</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <div class="icon">🔗</div>
+        <h3>Share Permissions</h3>
+        <ul>
+          <li>Untuk akses rangkaian</li>
+          <li>Read / Change / Full Control</li>
+          <li>Kebenaran berkesan = gabungan paling ketat</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 11 · Disks</span>
+    <h2 class="slide-title">Disk <em>Management</em></h2>
+    <p class="slide-sub">Urus cakera dan partition dalam Windows.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <div class="icon">💽</div>
+        <h3>Partitions</h3>
+        <p>Cipta, padam, ubah saiz partition (C:, D:, dll).</p>
+      </div>
+      <div class="card">
+        <div class="icon">🧱</div>
+        <h3>Format</h3>
+        <p>NTFS, exFAT, FAT32. Label &amp; letter drive.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🩺</div>
+        <h3>Disk Status</h3>
+        <p>Healthy, Unallocated, Offline — semak kesihatan cakera.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 11 · Tools</span>
+    <h2 class="slide-title">System <em>Tools</em></h2>
+    <p class="slide-sub">Alat penting untuk memantau &amp; mengurus sistem.</p>
+    <div class="grid cols-2">
+      <div class="card amber">
+        <div class="icon">🔧</div>
+        <h3>Management</h3>
+        <ul>
+          <li>Device Manager — perkakasan &amp; driver</li>
+          <li>Task Manager — proses &amp; prestasi</li>
+          <li>Event Viewer — log sistem</li>
+        </ul>
+      </div>
+      <div class="card amber">
+        <div class="icon">⚙️</div>
+        <h3>Utilities</h3>
+        <ul>
+          <li>msconfig — startup &amp; boot</li>
+          <li>services.msc — perkhidmatan</li>
+          <li>regedit — registry (berhati-hati!)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 11 · Backup</span>
+    <h2 class="slide-title">Backup &amp; <em>Restore</em></h2>
+    <p class="slide-sub">Lindungi data dan pulihkan sistem bila perlu.</p>
+    <div class="grid cols-3">
+      <div class="card green">
+        <div class="icon">🕰️</div>
+        <h3>File History</h3>
+        <p>Backup fail pengguna secara automatik ke pemacu lain.</p>
+      </div>
+      <div class="card green">
+        <div class="icon">🔄</div>
+        <h3>System Restore</h3>
+        <p>Pulihkan Windows ke restore point — tanpa jejaskan fail.</p>
+      </div>
+      <div class="card green">
+        <div class="icon">💿</div>
+        <h3>System Image</h3>
+        <p>Imej penuh cakera — pulihkan keseluruhan sistem.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 11 · Troubleshoot</span>
+    <h2 class="slide-title">Troubleshooting <em>Windows</em></h2>
+    <p class="slide-sub">Isu biasa &amp; langkah penyelesaian.</p>
+    <table>
+      <tr><th>Masalah</th><th>Penyelesaian</th></tr>
+      <tr><td>Boot lambat</td><td>Semak startup apps, disk health</td></tr>
+      <tr><td>Blue Screen (BSOD)</td><td>Semak driver, RAM, minidump</td></tr>
+      <tr><td>App tidak berfungsi</td><td>Kemas kini, repair/reinstall</td></tr>
+      <tr><td>Kata laluan terlupa</td><td>Reset via akun MS / recovery</td></tr>
+      <tr><td>Sistem tidak responsif</td><td>Restart, Task Manager, safe mode</td></tr>
+      <tr><td>Update gagal</td><td>Windows Update troubleshooter</td></tr>
+    </table>
+  </section>
+
+  <section class="slide hero-slide">
+    <span class="kicker">Wrap Up</span>
+    <h2 class="slide-title">Key <em>Takeaways</em></h2>
+    <div class="grid cols-2">
+      <div class="card cyan"><div class="icon">🎛️</div><h3>Know Both UIs</h3><p>Settings moden + Control Panel — setiap tetapan ada tempatnya.</p></div>
+      <div class="card green"><div class="icon">👥</div><h3>Control Access</h3><p>Pengguna, kumpulan &amp; kebenaran NTFS/Share mengawal keselamatan.</p></div>
+      <div class="card amber"><div class="icon">💾</div><h3>Backup Always</h3><p>File History + System Restore + image — berlapis-lapis perlindungan.</p></div>
+      <div class="card red"><div class="icon">🩺</div><h3>Diagnose Systematically</h3><p>Device Manager → Event Viewer → safe mode → repair.</p></div>
+    </div>
+  </section>
+
+</div>
+<div class="controls">
+  <span class="counter" id="counter">1 / 9</span>
+  <button id="prev" aria-label="Previous slide">←</button>
+  <button id="next" aria-label="Next slide">→</button>
+</div>
+<script src="js/deck.js"></script>
+</body>
+</html>

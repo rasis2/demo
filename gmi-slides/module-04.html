@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMI Slides — IT Essentials 8.0 · Module 04: Preventive Maintenance and Troubleshooting</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<a class="back" href="index.html">◄ Modules</a>
+<div class="hint">← → or Space to navigate</div>
+<div class="deck" id="deck">
+
+  <section class="slide hero-slide">
+    <div class="hero-eyebrow">Cisco Networking Academy · IT Essentials 8.0</div>
+    <h1 class="hero-title">Module 04<br><em>Preventive Maintenance</em><br>&amp; Troubleshooting</h1>
+    <p class="hero-sub">Jaga PC sentiasa sihat dengan penyelenggaraan proaktif, dan selesaikan masalah secara berstruktur dengan proses troubleshooting 6 langkah.</p>
+    <div class="hero-meta">MODULE 04 · FIX &amp; PREVENT · Let's begin →</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · Overview</span>
+    <h2 class="slide-title">Two Sides of <em>Computer Care</em></h2>
+    <p class="slide-sub">Penyelenggaraan pencegahan = proaktif. Troubleshooting = reaktif.</p>
+    <table>
+      <tr><th>Preventive Maintenance</th><th>Troubleshooting</th></tr>
+      <tr><td>Proactive — mencegah masalah</td><td>Reactive — selesaikan masalah</td></tr>
+      <tr><td>Pemeriksaan berkala &amp; pelarasan</td><td>Diagnosa &amp; baiki isu</td></tr>
+      <tr><td>Memanjangkan hayat komponen</td><td>Mengembalikan operasi normal</td></tr>
+      <tr><td>Kurangkan downtime &amp; kos</td><td>Guna proses 6 langkah berstruktur</td></tr>
+    </table>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · 4.1</span>
+    <h2 class="slide-title">Benefits of <em>Preventive Maintenance</em></h2>
+    <p class="slide-sub">Pelaburan kecil yang menjimatkan besar pada masa hadapan.</p>
+    <div class="grid cols-3">
+      <div class="card green">
+        <div class="icon">⏱️</div>
+        <h3>Panjang Hayat</h3>
+        <p>Elak kehausan komponen yang tidak perlu — hardware tahan lebih lama.</p>
+      </div>
+      <div class="card green">
+        <div class="icon">🛡️</div>
+        <h3>Lindungi Data</h3>
+        <p>Backup berkala dan pemeriksaan mengurangkan risiko kehilangan data.</p>
+      </div>
+      <div class="card green">
+        <div class="icon">🔻</div>
+        <h3>Kurang Gagal</h3>
+        <p>Mengurangkan kegagalan peralatan, downtime dan kos pembaikan.</p>
+      </div>
+    </div>
+    <div class="quote">Tanpa pelan PM: <strong>downtime meningkat</strong> dan <strong>kos pembaikan meningkat</strong>.</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · 4.1</span>
+    <h2 class="slide-title">Building a <em>Maintenance Plan</em></h2>
+    <p class="slide-sub">Pelan dibina berdasarkan sekurang-kurangnya dua faktor: <strong>lokasi/persekitaran</strong> dan <strong>cara penggunaan</strong>.</p>
+    <div class="grid cols-2">
+      <div class="card cyan">
+        <div class="icon">📍</div>
+        <h3>Environment</h3>
+        <ul>
+          <li>Habuk, suhu, kelembapan</li>
+          <li>Kualiti kuasa (surges, spikes)</li>
+          <li>Bahaya fizikal (cth: tapak binaan)</li>
+        </ul>
+      </div>
+      <div class="card cyan">
+        <div class="icon">💼</div>
+        <h3>Usage</h3>
+        <ul>
+          <li>Beban kerja berat vs ringan</li>
+          <li>Mudah alih vs tetap</li>
+          <li>Peranan kritikal vs biasa</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · 4.1</span>
+    <h2 class="slide-title">Hardware <em>Maintenance Tasks</em></h2>
+    <p class="slide-sub">Penjagaan fizikal rutin memastikan komponen sejuk, bersih dan tersambung kemas.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <div class="icon">💨</div>
+        <h3>Buang Habuk</h3>
+        <ul>
+          <li>Fan intake &amp; power supply</li>
+          <li>Komponen dalam casing</li>
+          <li>Gunakan compressed air</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="icon">🔌</div>
+        <h3>Sambungan</h3>
+        <ul>
+          <li>Semak &amp; kemaskan kabel longgar</li>
+          <li>Kabel storan SATA</li>
+          <li>Kabel LED panel hadapan</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="icon">🖱️</div>
+        <h3>Peripherals</h3>
+        <ul>
+          <li>Bersihkan mouse &amp; keyboard</li>
+          <li>Periksa monitor &amp; kabel</li>
+          <li>Periksa kipas penyejuk</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · 4.1</span>
+    <h2 class="slide-title">Software <em>Maintenance Tasks</em></h2>
+    <p class="slide-sub">Sama penting — kemas kini OS dan aplikasi menjauhkan masalah perisian.</p>
+    <div class="grid cols-3">
+      <div class="card green">
+        <div class="icon">🛡️</div>
+        <h3>Security</h3>
+        <ul>
+          <li>Kemas kini keselamatan</li>
+          <li>Definisi virus terkini</li>
+          <li>Imbas spyware &amp; malware</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <div class="icon">💿</div>
+        <h3>System Health</h3>
+        <ul>
+          <li>Disk cleanup &amp; defrag</li>
+          <li>Imbas cakera untuk ralat</li>
+          <li>Sahkan backup berfungsi</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <div class="icon">🔄</div>
+        <h3>Updates</h3>
+        <ul>
+          <li>Patch OS Windows</li>
+          <li>Driver &amp; firmware</li>
+          <li>Versi aplikasi terkini</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · 4.1</span>
+    <h2 class="slide-title">Cleaning <em>Safety Tips</em></h2>
+    <p class="slide-sub">Membersih dengan salah lebih merosakkan daripada habuk itu sendiri.</p>
+    <div class="grid cols-3">
+      <div class="card red">
+        <div class="icon">🌀</div>
+        <h3>Pegang Fan Blades</h3>
+        <p>Pegang bilah kipas semasa guna compressed air — elak rotor berpusing lampau.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">👀</div>
+        <h3>Periksa Visual</h3>
+        <p>Cara terbaik periksa kipas CPU: lihat secara visual semasa kuasa ON — jangan pusing dengan tangan.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">🚫</div>
+        <h3>Tiada Cecair Dalaman</h3>
+        <p>Jangan guna kain lembap atau cecair terus pada komponen dalaman.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · 4.2</span>
+    <h2 class="slide-title">The <em>6-Step</em> Process</h2>
+    <p class="slide-sub">Pendekatan logik dan boleh diulang untuk mendiagnosa &amp; menyelesaikan masalah PC.</p>
+    <div class="flow">
+      <div class="step"><div class="num">01</div><h4>Identify</h4><p>Kumpul maklumat.</p></div>
+      <div class="step"><div class="num">02</div><h4>Theory</h4><p>Teori punca berkemungkinan.</p></div>
+      <div class="step"><div class="num">03</div><h4>Test</h4><p>Uji teori untuk sahkan.</p></div>
+      <div class="step"><div class="num">04</div><h4>Plan</h4><p>Pelan tindakan &amp; laksana.</p></div>
+      <div class="step"><div class="num">05</div><h4>Verify</h4><p>Sahkan fungsi penuh.</p></div>
+      <div class="step"><div class="num">06</div><h4>Document</h4><p>Rekod penemuan &amp; hasil.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · Step 1</span>
+    <h2 class="slide-title">Identify the <em>Problem</em></h2>
+    <p class="slide-sub">Fahami masalah — dan lindungi data pelanggan sebelum menyentuh apa-apa.</p>
+    <div class="grid cols-2">
+      <div class="card amber">
+        <div class="icon">🗣️</div>
+        <h3>Kumpul Maklumat</h3>
+        <ul>
+          <li>Tanya soalan terbuka &amp; tertutup</li>
+          <li>Hasilkan semula masalah jika boleh</li>
+          <li>Semak perubahan terkini</li>
+        </ul>
+      </div>
+      <div class="card amber">
+        <div class="icon">📝</div>
+        <h3>Dokumen &amp; Backup</h3>
+        <ul>
+          <li>Rekod dalam work order</li>
+          <li>Backup data pelanggan DAHULU</li>
+          <li>Teknisi boleh dipertanggungjawabkan</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote red">Sentiasa <strong>backup data dahulu</strong> sebelum troubleshooting — teknisi bertanggungjawab jika data hilang.</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · Step 1</span>
+    <h2 class="slide-title">Liability <em>Release Form</em></h2>
+    <p class="slide-sub">Jika backup tidak dapat dibuat, minta pelanggan menandatangani borang pelepasan liabiliti dengan tiga maklumat ini:</p>
+    <div class="grid cols-3">
+      <div class="card red">
+        <div class="icon">✅</div>
+        <h3>Permission</h3>
+        <p>Kebenaran bekerja tanpa backup semasa.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">🖊️</div>
+        <h3>Release</h3>
+        <p>Pelepasan liabiliti jika data hilang/rosak.</p>
+      </div>
+      <div class="card red">
+        <div class="icon">📋</div>
+        <h3>Description</h3>
+        <p>Perihalan kerja yang akan dilakukan.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · Steps 2–3</span>
+    <h2 class="slide-title">Establish &amp; Test a <em>Theory</em></h2>
+    <p class="slide-sub">Bentuk punca berkemungkinan, kemudian uji. Jika salah, bentuk teori baharu.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h3>Establish Theory</h3>
+        <ul>
+          <li>Mula dari punca paling jelas / tidak invasif</li>
+          <li>Guna pendekatan "divide and conquer"</li>
+          <li>Fikirkan masalah biasa dahulu</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="icon">🔬</div>
+        <h3>Test the Theory</h3>
+        <ul>
+          <li>Sahkan punca dengan ujian</li>
+          <li>Jika disahkan → rancang penyelesaian</li>
+          <li>Jika tidak → teori baharu atau eskalasi</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · Steps 4–5</span>
+    <h2 class="slide-title">Plan, Implement &amp; <em>Verify</em></h2>
+    <p class="slide-sub">Kaji penyelesaian, laksanakan, kemudian sahkan semuanya berfungsi semula.</p>
+    <div class="grid cols-2">
+      <div class="card green">
+        <div class="icon">🔎</div>
+        <h3>Plan &amp; Implement</h3>
+        <ul>
+          <li>Kaji penyelesaian (web, manual)</li>
+          <li>Eskalasi jika di luar pengetahuan</li>
+          <li>Laksanakan penyelesaian dipilih</li>
+        </ul>
+      </div>
+      <div class="card green">
+        <div class="icon">✔️</div>
+        <h3>Verify Functionality</h3>
+        <ul>
+          <li>Sahkan sistem berfungsi penuh</li>
+          <li>Laksana langkah pencegahan</li>
+          <li>Tunjukkan pelanggan penyelesaiannya</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · Step 6</span>
+    <h2 class="slide-title">Document <em>Everything</em></h2>
+    <p class="slide-sub">Kerja teknikal belum selesai sehingga dokumentasi lengkap.</p>
+    <div class="grid cols-3">
+      <div class="card amber">
+        <div class="icon">📄</div>
+        <h3>Percubaan Gagal</h3>
+        <p>Rekod apa yang tidak berkesan — teknisi masa depan tahu apa yang elak.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">✅</div>
+        <h3>Penyelesaian</h3>
+        <p>Rekod penyelesaian yang akhirnya berjaya.</p>
+      </div>
+      <div class="card amber">
+        <div class="icon">🔁</div>
+        <h3>Elak Ulangan</h3>
+        <p>Dokumentasi baik mencegah pembaikan berulang.</p>
+      </div>
+    </div>
+    <div class="quote">Sebelum eskalasi tiket: <strong>dokumen setiap ujian</strong> yang telah dilakukan.</div>
+  </section>
+
+  <section class="slide">
+    <span class="kicker">Module 04 · 4.2</span>
+    <h2 class="slide-title">Common Problems &amp; <em>Solutions</em></h2>
+    <p class="slide-sub">Kenal pasti simptom untuk sampai ke punca dengan lebih pantas.</p>
+    <table>
+      <tr><th>Symptom</th><th>Most Likely Cause</th></tr>
+      <tr><td>BIOS rediscovers hardware setiap boot</td><td>Ganti CMOS battery</td></tr>
+      <tr><td>Komputer tersekat selepas ~5 minit</td><td>CPU overheating</td></tr>
+      <tr><td>Bau elektronik terbakar</td><td>Power supply terbeban</td></tr>
+      <tr><td>LED HDD mati tetapi PC berfungsi</td><td>Kabel LED longgar dari motherboard</td></tr>
+      <tr><td>RAM gagal, berfungsi di PC lain</td><td>Modul tidak duduk kemas</td></tr>
+      <tr><td>App lambat + LED HDD berkelip</td><td>RAM tidak mencukupi (swapping)</td></tr>
+      <tr><td>Jam sistem selalu lari</td><td>CMOS battery lemah/gagal</td></tr>
+      <tr><td>PC kadang-kadang tak hidup</td><td>Power supply gagal</td></tr>
+    </table>
+  </section>
+
+  <section class="slide hero-slide">
+    <span class="kicker">Wrap Up</span>
+    <h2 class="slide-title">Key <em>Takeaways</em></h2>
+    <div class="grid cols-2">
+      <div class="card green"><div class="icon">🛡️</div><h3>Maintain Proactively</h3><p>Pembersihan &amp; kemas kini berkala memanjangkan hayat dan mencegah kos.</p></div>
+      <div class="card cyan"><div class="icon">🔧</div><h3>Follow the Process</h3><p>Guna kaedah 6 langkah setiap masa — jangan skip langkah.</p></div>
+      <div class="card amber"><div class="icon">💾</div><h3>Back Up First</h3><p>Backup data (atau borang pelepasan) sebelum sentuh PC pelanggan.</p></div>
+      <div class="card red"><div class="icon">📝</div><h3>Document Everything</h3><p>Rekod percubaan gagal &amp; penyelesaian akhir — kerja selesai bila didokumen.</p></div>
+    </div>
+  </section>
+
+</div>
+<div class="controls">
+  <span class="counter" id="counter">1 / 14</span>
+  <button id="prev" aria-label="Previous slide">←</button>
+  <button id="next" aria-label="Next slide">→</button>
+</div>
+<script src="js/deck.js"></script>
+</body>
+</html>
