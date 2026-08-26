@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-26T06:00:33.073Z",
+  "generated": "2026-08-26T07:00:34.464Z",
   "period": "26–31 Ogo 2026",
   "quota": {
     "monthly": {
@@ -18,19 +18,26 @@
   "consumers": [
     {
       "name": "CLI / build",
-      "cost": 0,
-      "calls": 2,
+      "cost": 0.01,
+      "calls": 4,
       "color": "#7c3aed",
-      "percent": null
+      "percent": 100
+    },
+    {
+      "name": "Subagents",
+      "cost": 0,
+      "calls": 1,
+      "color": "#4f46e5",
+      "percent": 0
     }
   ],
   "stats": {
-    "streams": 16690,
+    "streams": 16695,
     "models": 11,
-    "tools": 25906,
+    "tools": 25913,
     "toolKinds": 11,
-    "sessions": 335,
-    "loops": 17276
+    "sessions": 338,
+    "loops": 17283
   },
   "models": [
     {
@@ -65,7 +72,7 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 68,
+      "value": 73,
       "color": "#ef4444"
     },
     {
@@ -92,7 +99,7 @@
   "tools": [
     {
       "name": "bash",
-      "value": 16641,
+      "value": 16645,
       "color": "#ef4444"
     },
     {
@@ -117,7 +124,7 @@
     },
     {
       "name": "glob",
-      "value": 328,
+      "value": 330,
       "color": "#94a3b8"
     },
     {
@@ -127,7 +134,7 @@
     },
     {
       "name": "task",
-      "value": 202,
+      "value": 203,
       "color": "#6366f1"
     },
     {
