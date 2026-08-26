@@ -1,0 +1,23 @@
+# ═══════════════════════════════════════════════════════════
+# .gitignore untuk demo/chess/
+#   - .last-hash   : hash file untuk silent dedup
+#   - .update.log  : log file update skrip
+# ═══════════════════════════════════════════════════════════
+
+# Silent dedup state — jangan track
+.last-hash
+
+# Log update cron
+.update.log
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor junk
+.vscode/
+.idea/
+*.swp
+*.bak

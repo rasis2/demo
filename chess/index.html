@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejen Directory · OpenCode Memory Snapshot</title>
+    <meta name="description" content="Direktori 17 ejen dalam sistem OpenCode — kategori, tugasan, status dan workload ringkas.">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <a href="../index.html" class="back" aria-label="Portal Demo">←</a>
+        <div class="brand">
+            <h1>Ejen <span>Directory</span></h1>
+            <span class="stamp" id="stamp">memuat…</span>
+        </div>
+        <div class="lang">
+            <button class="lb active" data-lang="ms" onclick="setLang('ms')">BM</button>
+            <button class="lb" data-lang="en" onclick="setLang('en')">EN</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Summary cards -->
+        <section class="stats" id="stats"></section>
+
+        <!-- Filter & search bar -->
+        <section class="card filterbar">
+            <div class="filter-row">
+                <input type="search" id="searchInput" placeholder="Cari ejen… (nama / tugas / kategori)" />
+                <select id="filterKategori">
+                    <option value="">Semua Kategori</option>
+                    <option value="Ejen Komunikasi">Ejen Komunikasi</option>
+                    <option value="Ejen Operasional">Ejen Operasional</option>
+                    <option value="Ejen Teknikal">Ejen Teknikal</option>
+                    <option value="Ejen Projek Gremlin">Ejen Projek Gremlin</option>
+                </select>
+                <select id="filterStatus">
+                    <option value="">Semua Status</option>
+                    <option value="aktif">Aktif</option>
+                    <option value="ringan">Ringan</option>
+                    <option value="terbeban">Terbeban</option>
+                    <option value="tak_aktif">Sekat / Tak Aktif</option>
+                </select>
+                <select id="sortBy">
+                    <option value="kategori">Susun: Kategori</option>
+                    <option value="status">Susun: Status</option>
+                    <option value="workload-desc">Susun: Workload (tinggi)</option>
+                    <option value="workload-asc">Susun: Workload (rendah)</option>
+                    <option value="nama">Susun: Nama</option>
+                </select>
+            </div>
+            <div class="filter-meta">
+                <span id="resultCount">—</span>
+                <span class="dot">·</span>
+                <span id="hashState">memuat hash…</span>
+            </div>
+        </section>
+
+        <!-- Main grid: grouped by category -->
+        <section id="gridContainer" class="grid-stack"></section>
+
+        <p class="note" id="note"></p>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

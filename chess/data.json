@@ -1,0 +1,358 @@
+{
+    "meta": {
+        "title": "Ejen Directory",
+        "subtitle": "OpenCode Memory Snapshot",
+        "generated_at": "2026-08-26",
+        "total_ejen": 17,
+        "kategori_count": 4,
+        "source": ".opencode/memory/",
+        "note": "Snapshot ini dijana dari .opencode/memory/*.md — wakili status yang direkodkan oleh ejen masing-masing."
+    },
+    "ringkasan": {
+        "aktif": 8,
+        "ringan": 6,
+        "terbeban": 2,
+        "tak_aktif": 1,
+        "per_kategori": {
+            "Ejen Komunikasi": 1,
+            "Ejen Operasional": 5,
+            "Ejen Teknikal": 8,
+            "Ejen Projek Gremlin": 3
+        }
+    },
+    "kategori": {
+        "Ejen Komunikasi": [
+            "ejen-reporter"
+        ],
+        "Ejen Operasional": [
+            "ejen-operator",
+            "ejen-admin",
+            "ejen-monitor",
+            "ejen-doktor",
+            "ejen-memori"
+        ],
+        "Ejen Teknikal": [
+            "ejen-web",
+            "ejen-log",
+            "ejen-cron",
+            "ejen-skrip",
+            "ejen-github",
+            "ejen-gugel",
+            "ejen-playwright",
+            "ejen-emel"
+        ],
+        "Ejen Projek Gremlin": [
+            "ejen-gremlin",
+            "ejen-compiler",
+            "ejen-maestro"
+        ]
+    },
+    "ejen": [
+        {
+            "id": "ejen-reporter",
+            "nama": "Ejen Reporter",
+            "tugas": "Pusat kawalan pasukan ejen. Bot Telegram hermes berkomunikasi DENGAN EJEN INI SAHAJA. Menerima arahan, mengarah ejen lain, laporkan hasil.",
+            "kategori": "Ejen Komunikasi",
+            "status": "terbeban",
+            "workload": 8,
+            "meta": {
+                "model": "default",
+                "kaedah": "orchestrator",
+                "khas": "Hub pusat · delegasi · audit token"
+            },
+            "indikator": {
+                "warna_status": "#f97316",
+                "badge": "TERBEBAN",
+                "ikon": "📡"
+            }
+        },
+        {
+            "id": "ejen-operator",
+            "nama": "Ejen Operator",
+            "tugas": "Pakar operasi sistem: restart PC/opencode/hermes. Prosedur A/B/C/D disahkan, migrasi, autostart, rawatan gangguan.",
+            "kategori": "Ejen Operasional",
+            "status": "aktif",
+            "workload": 5,
+            "meta": {
+                "model": "default",
+                "kaedah": "procedural-restart",
+                "khas": "Prosedur A-D · autostart · seni bina"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "⚙️"
+            }
+        },
+        {
+            "id": "ejen-admin",
+            "nama": "Ejen Admin",
+            "tugas": "Pemegang akses ke semua fail & dokumen PC. Rekod setiap akses (access-ledger.json); akses kekal 24/7 melainkan direvoke dengan kod 1511.",
+            "kategori": "Ejen Operasional",
+            "status": "aktif",
+            "workload": 4,
+            "meta": {
+                "model": "default",
+                "kaedah": "access-control",
+                "khas": "Ledger · kod 1511=revoke"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "🔐"
+            }
+        },
+        {
+            "id": "ejen-monitor",
+            "nama": "Ejen Monitor",
+            "tugas": "Pemantauan kesihatan sistem & amaran awal: opencode 4096, hermes gateway, WhatsApp forwarder, email digest. LAPOR sahaja.",
+            "kategori": "Ejen Operasional",
+            "status": "aktif",
+            "workload": 4,
+            "meta": {
+                "model": "opencode/big-pickle",
+                "kaedah": "health-check",
+                "khas": "Read-only · 4 komponen dipantau"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "📊"
+            }
+        },
+        {
+            "id": "ejen-doktor",
+            "nama": "Ejen Doktor",
+            "tugas": "Pakar periksa kesihatan ejen lain: semak hallucination/kesilapan, diagnos ejen lambat/tersekat, fix ejen bermasalah.",
+            "kategori": "Ejen Operasional",
+            "status": "aktif",
+            "workload": 5,
+            "meta": {
+                "model": "default",
+                "kaedah": "diagnose-fix",
+                "khas": "Audit · kolab wajib dgn ejen-memori"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "🩺"
+            }
+        },
+        {
+            "id": "ejen-memori",
+            "nama": "Ejen Memori",
+            "tugas": "Pengurusan memori ejen: pastikan memori up to date, elak halusinasi/response lambat. Padatkan >7 hari ke arkib; sumber kebenaran tunggal per topik.",
+            "kategori": "Ejen Operasional",
+            "status": "terbeban",
+            "workload": 7,
+            "meta": {
+                "model": "default",
+                "kaedah": "memory-hygiene",
+                "khas": "Higiene · arkib >7 hari · audit"
+            },
+            "indikator": {
+                "warna_status": "#f97316",
+                "badge": "TERBEBAN",
+                "ikon": "🧠"
+            }
+        },
+        {
+            "id": "ejen-web",
+            "nama": "Ejen Web",
+            "tugas": "Pakar pembangunan web: HTML/CSS/JS/framework. WAJIB delegate domain log/cron kepada Ejen Log & Ejen Cron.",
+            "kategori": "Ejen Teknikal",
+            "status": "aktif",
+            "workload": 4,
+            "meta": {
+                "model": "default",
+                "kaedah": "web-development",
+                "khas": "Projek berdikari · kaplay/chess.js"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "🌐"
+            }
+        },
+        {
+            "id": "ejen-log",
+            "nama": "Ejen Log",
+            "tugas": "Analisis log & data penggunaan: opencode.log, opencode.db, hermes state.db. Jana data.json kuota, update dashboard. Probe model FREE.",
+            "kategori": "Ejen Teknikal",
+            "status": "aktif",
+            "workload": 4,
+            "meta": {
+                "model": "opencode/big-pickle",
+                "kaedah": "log-parse",
+                "khas": "SQLite · hermes state.db"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "📈"
+            }
+        },
+        {
+            "id": "ejen-cron",
+            "nama": "Ejen Cron",
+            "tugas": "Pakar cron & automasi berjadual: create/list/update/remove cron job hermes. no-agent mode = 0 token.",
+            "kategori": "Ejen Teknikal",
+            "status": "ringan",
+            "workload": 2,
+            "meta": {
+                "model": "default",
+                "kaedah": "scheduler",
+                "khas": "opencode-usage-hourly + playwright-daily"
+            },
+            "indikator": {
+                "warna_status": "#eab308",
+                "badge": "RINGAN",
+                "ikon": "⏰"
+            }
+        },
+        {
+            "id": "ejen-skrip",
+            "nama": "Ejen Skrip",
+            "tugas": "Skrip utiliti pusat di C:\\Users\\Rasis\\Documents\\GitHub\\skrip\\. Ejen lain MESTI tanya dahulu sebelum cipta skrip baru.",
+            "kategori": "Ejen Teknikal",
+            "status": "ringan",
+            "workload": 1,
+            "meta": {
+                "model": "default",
+                "kaedah": "script-curator",
+                "khas": "Folder rasmi · 1 flow maestro"
+            },
+            "indikator": {
+                "warna_status": "#eab308",
+                "badge": "RINGAN",
+                "ikon": "📜"
+            }
+        },
+        {
+            "id": "ejen-github",
+            "nama": "Ejen GitHub",
+            "tugas": "Pakar repositori GitHub & git: status, commit, push, pull, log, branch. 4 sub-repo aktif di folder GitHub.",
+            "kategori": "Ejen Teknikal",
+            "status": "ringan",
+            "workload": 1,
+            "meta": {
+                "model": "default",
+                "kaedah": "git-ops",
+                "khas": "demo · Mobile-Device-EduScanner · rasis2 · yahoo-web-automation"
+            },
+            "indikator": {
+                "warna_status": "#eab308",
+                "badge": "RINGAN",
+                "ikon": "🐙"
+            }
+        },
+        {
+            "id": "ejen-gugel",
+            "nama": "Ejen Gugel",
+            "tugas": "Carian maklumat: webfetch/web search, kumpul hasil, rumusan ringkas. Bash deny — webfetch sahaja.",
+            "kategori": "Ejen Teknikal",
+            "status": "ringan",
+            "workload": 1,
+            "meta": {
+                "model": "default",
+                "kaedah": "web-search",
+                "khas": "bash=deny · webfetch=allow"
+            },
+            "indikator": {
+                "warna_status": "#eab308",
+                "badge": "RINGAN",
+                "ikon": "🔎"
+            }
+        },
+        {
+            "id": "ejen-playwright",
+            "nama": "Ejen Playwright",
+            "tugas": "Jalankan skrip Playwright + jana report PDF ke reports\\. Cron harian ejen-playwright-daily (job 71346b0d97ad). Suite Yahoo Mail 44 test.",
+            "kategori": "Ejen Teknikal",
+            "status": "aktif",
+            "workload": 3,
+            "meta": {
+                "model": "default",
+                "kaedah": "browser-automation",
+                "khas": "skrip\\playwright\\ · reports\\"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "🎭"
+            }
+        },
+        {
+            "id": "ejen-emel",
+            "nama": "Ejen Emel",
+            "tugas": "Emel: hantar report dari rasistesnam@gmail.com ke rasis.razali@yahooinc.com. Semak kredensial .env dahulu.",
+            "kategori": "Ejen Teknikal",
+            "status": "ringan",
+            "workload": 1,
+            "meta": {
+                "model": "default",
+                "kaedah": "smtp-send",
+                "khas": "App Password di mybot\\.env"
+            },
+            "indikator": {
+                "warna_status": "#eab308",
+                "badge": "RINGAN",
+                "ikon": "📧"
+            }
+        },
+        {
+            "id": "ejen-gremlin",
+            "nama": "Ejen Gremlin",
+            "tugas": "Edit fail projek Gremlin v2 (GDevelop): scene, event, resource. Edit dalam folder Gremlin v2 sahaja; JANGAN compile APK.",
+            "kategori": "Ejen Projek Gremlin",
+            "status": "aktif",
+            "workload": 4,
+            "meta": {
+                "model": "default",
+                "kaedah": "gdevelop-edit",
+                "khas": "52124 baris · 6 scene · ikon selesai"
+            },
+            "indikator": {
+                "warna_status": "#10b981",
+                "badge": "AKTIF",
+                "ikon": "👾"
+            }
+        },
+        {
+            "id": "ejen-compiler",
+            "nama": "Ejen Compiler",
+            "tugas": "Compile projek Gremlin v2 jadi APK. Guna gdevelop-apk-builder. JIMAT TOKEN — command, lapor.",
+            "kategori": "Ejen Projek Gremlin",
+            "status": "ringan",
+            "workload": 2,
+            "meta": {
+                "model": "default",
+                "kaedah": "apk-build",
+                "khas": "Debug & release signed · 32MB"
+            },
+            "indikator": {
+                "warna_status": "#eab308",
+                "badge": "RINGAN",
+                "ikon": "🔨"
+            }
+        },
+        {
+            "id": "ejen-maestro",
+            "nama": "Ejen Maestro",
+            "tugas": "Automasi ujian mudah alih (Maestro): flow YAML, maestro test, emulator/device. SEKAT buat sementara — SVM OFF.",
+            "kategori": "Ejen Projek Gremlin",
+            "status": "tak_aktif",
+            "workload": 0,
+            "meta": {
+                "model": "default",
+                "kaedah": "mobile-automation",
+                "khas": "SVM OFF · tunggu BIOS enable"
+            },
+            "indikator": {
+                "warna_status": "#ef4444",
+                "badge": "SEKAT",
+                "ikon": "🎼"
+            }
+        }
+    ]
+}
