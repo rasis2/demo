@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-28T11:00:14.520Z",
+  "generated": "2026-08-28T12:00:15.653Z",
   "period": "28–31 Ogo 2026",
   "quota": {
     "monthly": {
@@ -20,24 +20,24 @@
       "name": "Subagents",
       "cost": 0.02,
       "calls": 2,
-      "color": "#7c3aed",
+      "color": "#4f46e5",
       "percent": 66.7
     },
     {
       "name": "CLI / build",
       "cost": 0.01,
-      "calls": 4,
-      "color": "#4f46e5",
+      "calls": 9,
+      "color": "#7c3aed",
       "percent": 33.3
     }
   ],
   "stats": {
-    "streams": 17327,
+    "streams": 17364,
     "models": 11,
-    "tools": 27907,
+    "tools": 27988,
     "toolKinds": 11,
-    "sessions": 369,
-    "loops": 17964
+    "sessions": 381,
+    "loops": 18007
   },
   "models": [
     {
@@ -72,7 +72,7 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 73,
+      "value": 110,
       "color": "#ef4444"
     },
     {
@@ -99,7 +99,7 @@
   "tools": [
     {
       "name": "bash",
-      "value": 17921,
+      "value": 17980,
       "color": "#ef4444"
     },
     {
@@ -114,7 +114,7 @@
     },
     {
       "name": "external_directory",
-      "value": 2535,
+      "value": 2537,
       "color": "#0ea5a4"
     },
     {
@@ -124,12 +124,12 @@
     },
     {
       "name": "glob",
-      "value": 337,
+      "value": 352,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 231,
+      "value": 236,
       "color": "#6366f1"
     },
     {
