@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-28T12:00:15.653Z",
+  "generated": "2026-08-28T13:00:16.707Z",
   "period": "28–31 Ogo 2026",
   "quota": {
     "monthly": {
@@ -26,18 +26,18 @@
     {
       "name": "CLI / build",
       "cost": 0.01,
-      "calls": 9,
+      "calls": 10,
       "color": "#7c3aed",
       "percent": 33.3
     }
   ],
   "stats": {
-    "streams": 17364,
+    "streams": 17371,
     "models": 11,
-    "tools": 27988,
+    "tools": 27996,
     "toolKinds": 11,
-    "sessions": 381,
-    "loops": 18007
+    "sessions": 384,
+    "loops": 18017
   },
   "models": [
     {
@@ -72,7 +72,7 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 110,
+      "value": 117,
       "color": "#ef4444"
     },
     {
@@ -99,7 +99,7 @@
   "tools": [
     {
       "name": "bash",
-      "value": 17980,
+      "value": 17987,
       "color": "#ef4444"
     },
     {
@@ -129,7 +129,7 @@
     },
     {
       "name": "task",
-      "value": 236,
+      "value": 237,
       "color": "#6366f1"
     },
     {
