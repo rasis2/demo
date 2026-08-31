@@ -7,6 +7,9 @@
 #   - Workflow ini (schedule */30, dijalankan server GitHub) semak umur
 #     heartbeat terakhir. Jika basi > 45 minit (STALE_MINUTES) -> alert
 #     Telegram ke chat pemilik. Jika fresh -> senyap (tiada alert).
+#   - PENTING: run SENTIASA berakhir success (exit 0), walaupun heartbeat
+#     stale/alert dihantar, supaya GitHub TIDAK hantar email notifikasi
+#     kegagalan. Status down kekal kelihatan dalam log step alert.
 #
 # Trigger:
 #   - schedule  : setiap 30 minit (cron UTC; GitHub hanya jalankan jika repo
@@ -106,4 +109,7 @@ jobs:
             --data-urlencode "text=${MSG}" \
             -o /dev/null || { echo "::error::Gagal hantar alert Telegram (curl exit $?)."; exit 1; }
           echo "Alert Telegram dihantar: ${MSG}"
-          exit 1
+          # PENTING: run MESTI berakhir success (exit 0) supaya GitHub tidak
+          # menghantar email notifikasi kegagalan. Status gateway-down tetap
+          # kelihatan dalam log step ini (mesej alert di atas).
+          exit 0
