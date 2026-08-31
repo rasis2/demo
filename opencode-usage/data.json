@@ -1,17 +1,17 @@
 {
-  "generated": "2026-08-31T14:00:50.714Z",
+  "generated": "2026-08-31T15:00:52.852Z",
   "period": "31–31 Ogo 2026",
   "quota": {
     "monthly": {
-      "used": 6.71,
+      "used": 6.78,
       "limit": 60,
-      "percent": 11.2,
+      "percent": 11.3,
       "unit": "USD"
     },
     "weekly": {
-      "used": 1.1,
+      "used": 1.18,
       "limit": 30,
-      "percent": 3.7,
+      "percent": 3.9,
       "unit": "USD"
     }
   },
@@ -32,17 +32,17 @@
     }
   ],
   "stats": {
-    "streams": 18034,
+    "streams": 18261,
     "models": 11,
-    "tools": 30088,
+    "tools": 31090,
     "toolKinds": 11,
-    "sessions": 423,
-    "loops": 18743
+    "sessions": 432,
+    "loops": 18980
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 12352,
+      "value": 12503,
       "color": "#7c3aed"
     },
     {
@@ -72,7 +72,7 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 134,
+      "value": 210,
       "color": "#ef4444"
     },
     {
@@ -99,47 +99,47 @@
   "tools": [
     {
       "name": "bash",
-      "value": 19417,
+      "value": 20277,
       "color": "#ef4444"
     },
     {
       "name": "edit",
-      "value": 3045,
+      "value": 3079,
       "color": "#f59e0b"
     },
     {
       "name": "read",
-      "value": 2924,
+      "value": 2978,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 2754,
+      "value": 2780,
       "color": "#0ea5a4"
     },
     {
       "name": "grep",
-      "value": 724,
+      "value": 736,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 435,
+      "value": 438,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 269,
+      "value": 277,
       "color": "#6366f1"
     },
     {
       "name": "todowrite",
-      "value": 218,
+      "value": 222,
       "color": "#ec4899"
     },
     {
       "name": "webfetch",
-      "value": 217,
+      "value": 218,
       "color": "#22c55e"
     },
     {
