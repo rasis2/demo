@@ -1,17 +1,17 @@
 {
-  "generated": "2026-08-31T20:00:58.709Z",
+  "generated": "2026-08-31T21:00:59.808Z",
   "period": "01–30 Sep 2026",
   "quota": {
     "monthly": {
-      "used": 7.22,
+      "used": 7.27,
       "limit": 60,
-      "percent": 12,
+      "percent": 12.1,
       "unit": "USD"
     },
     "weekly": {
-      "used": 1.61,
+      "used": 1.66,
       "limit": 30,
-      "percent": 5.4,
+      "percent": 5.5,
       "unit": "USD"
     }
   },
@@ -32,17 +32,17 @@
     }
   ],
   "stats": {
-    "streams": 18804,
+    "streams": 18847,
     "models": 11,
-    "tools": 33161,
+    "tools": 33463,
     "toolKinds": 11,
     "sessions": 452,
-    "loops": 19557
+    "loops": 19601
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 13046,
+      "value": 13089,
       "color": "#7c3aed"
     },
     {
@@ -99,7 +99,7 @@
   "tools": [
     {
       "name": "bash",
-      "value": 21934,
+      "value": 22236,
       "color": "#ef4444"
     },
     {
