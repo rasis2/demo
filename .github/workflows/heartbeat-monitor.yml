@@ -1,0 +1,109 @@
+# ══════════════════════════════════════════════════════════════════════════
+# Heartbeat Monitor — Dead Man's Switch untuk gateway hermes/Telegram
+#
+# Konsep:
+#   - PC pemilik (via heartbeat-push.py, setiap 30 minit) commit+push
+#     heartbeat.json ke branch 'monitor-heartbeat' repo ini.
+#   - Workflow ini (schedule */30, dijalankan server GitHub) semak umur
+#     heartbeat terakhir. Jika basi > 45 minit (STALE_MINUTES) -> alert
+#     Telegram ke chat pemilik. Jika fresh -> senyap (tiada alert).
+#
+# Trigger:
+#   - schedule  : setiap 30 minit (cron UTC; GitHub hanya jalankan jika repo
+#                 aktif dalam 60 hari)
+#   - workflow_dispatch : ujian manual; input force_stale=true menghantar
+#                 mesej [UJIAN] walaupun heartbeat fresh (untuk E2E test).
+#
+# Secret yang diperlukan (repo settings -> Secrets and variables -> Actions):
+#   TELEGRAM_BOT_TOKEN  (token bot Telegram hermes; JANGAN hardcode di repo)
+# ══════════════════════════════════════════════════════════════════════════
+name: Heartbeat Monitor (Dead Man's Switch)
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      force_stale:
+        description: 'Uji alert: hantar mesej TEST walaupun heartbeat fresh'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: heartbeat-monitor
+  cancel-in-progress: false
+
+env:
+  STALE_MINUTES: '45'
+  HEARTBEAT_BRANCH: monitor-heartbeat
+  HEARTBEAT_FILE: heartbeat.json
+  TELEGRAM_CHAT_ID: '226928225'
+
+jobs:
+  check-heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+
+      - name: Fetch heartbeat branch dan semak umur heartbeat
+        id: hb
+        run: |
+          set -euo pipefail
+          git fetch origin "${HEARTBEAT_BRANCH}" --depth=50 >/dev/null 2>&1 || echo "fetch_warn: branch tak dapat di-fetch"
+          LAST=$(git log -1 --format=%cI "origin/${HEARTBEAT_BRANCH}" -- "${HEARTBEAT_FILE}" 2>/dev/null || true)
+          if [ -z "$LAST" ]; then
+            echo "Tiada heartbeat langsung (fail/branch tak wujud) -> dianggap STALE"
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+            echo "last_hb=" >> "$GITHUB_OUTPUT"
+            echo "age_sec=999999" >> "$GITHUB_OUTPUT"
+          else
+            NOW=$(date -u +%s)
+            LAST_EPOCH=$(date -u -d "$LAST" +%s)
+            AGE_SEC=$(( NOW - LAST_EPOCH ))
+            LIMIT=$(( ${STALE_MINUTES} * 60 ))
+            if [ "$AGE_SEC" -ge "$LIMIT" ]; then
+              STALE="true"
+            else
+              STALE="false"
+            fi
+            echo "stale=$STALE" >> "$GITHUB_OUTPUT"
+            echo "last_hb=$LAST" >> "$GITHUB_OUTPUT"
+            echo "age_sec=$AGE_SEC" >> "$GITHUB_OUTPUT"
+          fi
+          echo "::notice::stale=${STALE:-true} last_hb=${LAST:-<tiada>}"
+
+      - name: Heartbeat fresh - tiada alert (senyap)
+        if: ${{ steps.hb.outputs.stale == 'false' && github.event.inputs.force_stale != 'true' }}
+        run: echo "Heartbeat fresh (${LAST_HB}) - tiada alert."
+        env:
+          LAST_HB: ${{ steps.hb.outputs.last_hb }}
+
+      - name: Heartbeat stale/ujian - hantar alert Telegram
+        if: ${{ steps.hb.outputs.stale == 'true' || github.event.inputs.force_stale == 'true' }}
+        env:
+          TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          LAST_HB: ${{ steps.hb.outputs.last_hb }}
+          AGE_SEC: ${{ steps.hb.outputs.age_sec }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Secret TELEGRAM_BOT_TOKEN belum diset di repo settings (Settings -> Secrets and variables -> Actions)."
+            exit 1
+          fi
+          if [ "${{ github.event.inputs.force_stale }}" = "true" ]; then
+            MSG="[UJIAN SETUP] Saluran alert dead-man's switch hermes berfungsi (force_stale)."
+          else
+            AGE_MIN=$(( ${AGE_SEC:-0} / 60 ))
+            MSG="⚠️ GATEWAY DOWN: tiada heartbeat sejak ${LAST_HB:-tidak diketahui} (umur ~${AGE_MIN} minit). PC mati/gateway down?"
+          fi
+          echo "Hantar alert Telegram ke chat ${TELEGRAM_CHAT_ID}..."
+          curl -sS -f -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${MSG}" \
+            -o /dev/null || { echo "::error::Gagal hantar alert Telegram (curl exit $?)."; exit 1; }
+          echo "Alert Telegram dihantar: ${MSG}"
+          exit 1
