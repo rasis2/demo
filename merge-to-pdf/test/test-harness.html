@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Ujian Browser — Merge-to-PDF</title>
+</head>
+<body>
+  <p>Harness ujian automatik. Hasil akan ditulis ke <code>#test-result</code>.</p>
+  <pre id="test-result">RUNNING</pre>
+
+  <script src="../vendor/pdf-lib.min.js"></script>
+  <script src="harness-data.js"></script>
+  <script src="../js/merge-core.js"></script>
+  <script>
+    // rasterize() — salinan dari js/app.js (kanvas → PNG)
+    function b64ToBytes(b64) {
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
+    }
+    function guessType(name) {
+      var m = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', bmp: 'image/bmp', gif: 'image/gif' };
+      var e = (name.split('.').pop() || '').toLowerCase();
+      return m[e] || 'application/octet-stream';
+    }
+    function rasterize(pdfDoc, file) {
+      return new Promise(function (resolve, reject) {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () {
+          try {
+            var c = document.createElement('canvas');
+            c.width = img.naturalWidth;
+            c.height = img.naturalHeight;
+            c.getContext('2d').drawImage(img, 0, 0);
+            var b64 = c.toDataURL('image/png').split(',')[1];
+            URL.revokeObjectURL(url);
+            pdfDoc.embedPng(b64ToBytes(b64)).then(resolve, reject);
+          } catch (e) { URL.revokeObjectURL(url); reject(e); }
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('gagal baca imej')); };
+        img.src = url;
+      });
+    }
+
+    async function run() {
+      var names = Object.keys(window.__ASSETS__);
+      var files = names.map(function (n) {
+        var bytes = b64ToBytes(window.__ASSETS__[n]);
+        var isPdf = /\.pdf$/i.test(n);
+        return new File([bytes], n, { type: isPdf ? 'application/pdf' : guessType(n) });
+      });
+
+      var res = await MergeToPdf.mergeFiles(files, { rasterize: rasterize });
+
+      // Sahkan output: muat semula dan kira halaman + semak dimensi A4
+      var reload = await PDFLib.PDFDocument.load(res.bytes);
+      var dims = reload.getPages().map(function (p) {
+        return Math.round(p.getWidth()) + 'x' + Math.round(p.getHeight());
+      });
+
+      var ok = (res.pageCount === 6) &&
+               (reload.getPageCount() === 6) &&
+               res.errors.length === 0 &&
+               dims.every(function (d) { return d === '595x842'; });
+
+      var info = {
+        PASS: ok,
+        fileCount: files.length,
+        pageCount: res.pageCount,
+        reloadPages: reload.getPageCount(),
+        size: res.size,
+        errors: res.errors,
+        dims: dims,
+        testFiles: names.join(', ')
+      };
+      document.getElementById('test-result').textContent = 'TEST_RESULT ' + JSON.stringify(info);
+    }
+
+    run().catch(function (e) {
+      document.getElementById('test-result').textContent = 'TEST_RESULT ' + JSON.stringify({ PASS: false, fatal: String(e && e.stack || e) });
+    });
+  </script>
+</body>
+</html>

@@ -1,17 +1,17 @@
 {
-  "generated": "2026-09-01T22:45:04.418Z",
+  "generated": "2026-09-01T23:00:38.615Z",
   "period": "02–30 Sep 2026",
   "quota": {
     "monthly": {
-      "used": 0.6,
+      "used": 0.62,
       "limit": 60,
       "percent": 1,
       "unit": "USD"
     },
     "weekly": {
-      "used": 2.08,
+      "used": 2.1,
       "limit": 30,
-      "percent": 6.9,
+      "percent": 7,
       "unit": "USD"
     }
   },
@@ -32,17 +32,17 @@
     }
   ],
   "stats": {
-    "streams": 19723,
+    "streams": 19785,
     "models": 11,
-    "tools": 38144,
+    "tools": 38268,
     "toolKinds": 11,
-    "sessions": 497,
-    "loops": 20538
+    "sessions": 501,
+    "loops": 20602
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 13884,
+      "value": 13918,
       "color": "#7c3aed"
     },
     {
@@ -72,7 +72,7 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 282,
+      "value": 310,
       "color": "#ef4444"
     },
     {
@@ -99,27 +99,27 @@
   "tools": [
     {
       "name": "bash",
-      "value": 26067,
+      "value": 26147,
       "color": "#ef4444"
     },
     {
       "name": "read",
-      "value": 3356,
+      "value": 3366,
       "color": "#3b82f6"
     },
     {
       "name": "edit",
-      "value": 3270,
+      "value": 3284,
       "color": "#f59e0b"
     },
     {
       "name": "external_directory",
-      "value": 3242,
+      "value": 3257,
       "color": "#0ea5a4"
     },
     {
       "name": "grep",
-      "value": 855,
+      "value": 858,
       "color": "#8b5cf6"
     },
     {
@@ -129,7 +129,7 @@
     },
     {
       "name": "task",
-      "value": 326,
+      "value": 328,
       "color": "#6366f1"
     },
     {

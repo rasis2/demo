@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gabung ke PDF — Gabung Imej & PDF menjadi Satu Fail</title>
+  <meta name="description" content="Gabungkan semua imej (PNG/JPG/GIF/WebP/BMP) dan fail PDF menjadi satu PDF. Berfungsi sepenuhnya dalam browser, tiada muat naik ke pelayan.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon" aria-hidden="true">&#128196;</span>
+        <div>
+          <h1>Gabung ke PDF</h1>
+          <p class="tagline">Gabungkan imej &amp; PDF menjadi satu fail — terus dalam browser anda</p>
+        </div>
+      </div>
+      <span id="count-badge" class="count-badge"></span>
+    </header>
+
+    <main>
+      <!-- Zon seret & lepas -->
+      <section id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Pilih atau seret fail di sini">
+        <div class="dz-icon" aria-hidden="true">&#128228;</div>
+        <p class="dz-title">Seret &amp; lepas fail di sini</p>
+        <p class="dz-sub">atau</p>
+        <button type="button" class="btn btn-primary dz-btn">Pilih Fail</button>
+        <p class="dz-hint">Sokongan: PNG, JPG/JPEG, GIF, WebP, BMP, SVG &amp; PDF (pelbagai fail)</p>
+        <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif,image/webp,image/bmp,image/svg+xml,application/pdf,.pdf" multiple hidden>
+      </section>
+
+      <!-- Senarai fail -->
+      <section class="list-section">
+        <div class="list-header">
+          <h2>Senarai Fail <span class="muted">(susunan = urutan dalam PDF)</span></h2>
+          <div class="list-actions">
+            <button type="button" id="clear-all-btn" class="btn btn-ghost">Buang Semua</button>
+          </div>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+          <p>Belum ada fail dipilih. Seret fail ke zon di atas atau klik <strong>Pilih Fail</strong>.</p>
+        </div>
+
+        <div id="file-list" class="file-list"></div>
+
+        <p class="list-tip">&#128260; Guna butang <strong>&#8593;</strong> / <strong>&#8595;</strong> atau seret baris untuk menyusun semula.</p>
+      </section>
+
+      <!-- Butang merge -->
+      <section class="merge-section">
+        <button type="button" id="merge-btn" class="btn btn-primary btn-merge" disabled>
+          <span class="merge-icon" aria-hidden="true">&#128206;</span> Gabung ke PDF
+        </button>
+      </section>
+
+      <!-- Progress -->
+      <section id="progress-wrap" class="progress-wrap" style="display:none">
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-bar" style="width:0%"></div>
+        </div>
+        <p id="progress-text" class="progress-text">Menyediakan…</p>
+      </section>
+
+      <!-- Hasil -->
+      <section id="result-panel" class="result-panel" style="display:none">
+        <div class="result-card">
+          <div class="result-icon" aria-hidden="true">&#9989;</div>
+          <div class="result-body">
+            <h2>PDF berjaya dihasilkan!</h2>
+            <p class="result-meta"><span id="result-pages">0 muka surat</span> &middot; <span id="result-size">0 B</span></p>
+            <div id="result-error" class="result-error" style="display:none"></div>
+            <div class="result-actions">
+              <a id="download-link" class="btn btn-success" href="#">&#11015; Muat Turun PDF</a>
+              <button type="button" id="merge-again-btn" class="btn btn-ghost">Gabung Lagi</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Data anda kekal pada peranti ini — tiada fail dimuat naik ke pelayan. &copy; 2026</p>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script src="js/merge-core.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
