@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-01T12:00:22.155Z",
+  "generated": "2026-09-01T13:00:23.667Z",
   "period": "01–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -17,18 +17,18 @@
   },
   "consumers": [
     {
+      "name": "CLI / build",
+      "cost": 0.02,
+      "calls": 17,
+      "color": "#7c3aed",
+      "percent": 50
+    },
+    {
       "name": "Subagents",
       "cost": 0.02,
       "calls": 2,
       "color": "#4f46e5",
-      "percent": 66.7
-    },
-    {
-      "name": "CLI / build",
-      "cost": 0.01,
-      "calls": 12,
-      "color": "#7c3aed",
-      "percent": 33.3
+      "percent": 50
     }
   ],
   "stats": {
@@ -36,8 +36,8 @@
     "models": 11,
     "tools": 35265,
     "toolKinds": 11,
-    "sessions": 475,
-    "loops": 20099
+    "sessions": 480,
+    "loops": 20104
   },
   "models": [
     {
