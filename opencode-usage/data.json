@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-02T22:00:16.342Z",
+  "generated": "2026-09-02T22:45:03.357Z",
   "period": "03–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -9,9 +9,9 @@
       "unit": "USD"
     },
     "weekly": {
-      "used": 2.07,
+      "used": 1.9,
       "limit": 30,
-      "percent": 6.9,
+      "percent": 6.3,
       "unit": "USD"
     }
   },
@@ -21,14 +21,7 @@
       "cost": 0.03,
       "calls": 21,
       "color": "#7c3aed",
-      "percent": 60
-    },
-    {
-      "name": "Subagents",
-      "cost": 0.02,
-      "calls": 1,
-      "color": "#4f46e5",
-      "percent": 40
+      "percent": 100
     }
   ],
   "stats": {
