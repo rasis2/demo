@@ -1,17 +1,17 @@
 {
-  "generated": "2026-09-03T07:00:31.982Z",
+  "generated": "2026-09-03T08:00:32.984Z",
   "period": "03–30 Sep 2026",
   "quota": {
     "monthly": {
-      "used": 0.84,
+      "used": 0.94,
       "limit": 60,
-      "percent": 1.4,
+      "percent": 1.6,
       "unit": "USD"
     },
     "weekly": {
-      "used": 2.05,
+      "used": 2.15,
       "limit": 30,
-      "percent": 6.8,
+      "percent": 7.2,
       "unit": "USD"
     }
   },
@@ -25,17 +25,17 @@
     }
   ],
   "stats": {
-    "streams": 19972,
+    "streams": 20031,
     "models": 11,
-    "tools": 39192,
+    "tools": 39310,
     "toolKinds": 11,
-    "sessions": 517,
-    "loops": 20810
+    "sessions": 520,
+    "loops": 20875
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 14105,
+      "value": 14164,
       "color": "#7c3aed"
     },
     {
@@ -92,42 +92,42 @@
   "tools": [
     {
       "name": "bash",
-      "value": 26861,
+      "value": 26902,
       "color": "#ef4444"
     },
     {
       "name": "read",
-      "value": 3424,
+      "value": 3443,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 3344,
+      "value": 3374,
       "color": "#0ea5a4"
     },
     {
       "name": "edit",
-      "value": 3306,
+      "value": 3317,
       "color": "#f59e0b"
     },
     {
       "name": "grep",
-      "value": 874,
+      "value": 882,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 499,
+      "value": 500,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 336,
+      "value": 339,
       "color": "#6366f1"
     },
     {
       "name": "todowrite",
-      "value": 237,
+      "value": 242,
       "color": "#ec4899"
     },
     {
