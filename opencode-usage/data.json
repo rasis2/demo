@@ -1,15 +1,15 @@
 {
-  "generated": "2026-09-04T23:00:53.059Z",
+  "generated": "2026-09-05T00:00:01.995Z",
   "period": "05–30 Sep 2026",
   "quota": {
     "monthly": {
-      "used": 1.1,
+      "used": 1.12,
       "limit": 60,
-      "percent": 1.8,
+      "percent": 1.9,
       "unit": "USD"
     },
     "weekly": {
-      "used": 2.31,
+      "used": 2.32,
       "limit": 30,
       "percent": 7.7,
       "unit": "USD"
@@ -18,24 +18,24 @@
   "consumers": [
     {
       "name": "CLI / build",
-      "cost": 0.03,
-      "calls": 14,
+      "cost": 0.04,
+      "calls": 15,
       "color": "#7c3aed",
       "percent": 100
     }
   ],
   "stats": {
-    "streams": 20170,
+    "streams": 20214,
     "models": 11,
-    "tools": 39674,
+    "tools": 39779,
     "toolKinds": 11,
-    "sessions": 532,
-    "loops": 21030
+    "sessions": 536,
+    "loops": 21066
   },
   "models": [
     {
       "name": "opencode-go · deepseek-v4-flash",
-      "value": 14303,
+      "value": 14334,
       "color": "#7c3aed"
     },
     {
@@ -65,7 +65,7 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 310,
+      "value": 323,
       "color": "#ef4444"
     },
     {
@@ -92,22 +92,22 @@
   "tools": [
     {
       "name": "bash",
-      "value": 27125,
+      "value": 27194,
       "color": "#ef4444"
     },
     {
       "name": "read",
-      "value": 3486,
+      "value": 3494,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 3411,
+      "value": 3434,
       "color": "#0ea5a4"
     },
     {
       "name": "edit",
-      "value": 3341,
+      "value": 3345,
       "color": "#f59e0b"
     },
     {
@@ -122,7 +122,7 @@
     },
     {
       "name": "task",
-      "value": 349,
+      "value": 350,
       "color": "#6366f1"
     },
     {
