@@ -1,6 +1,6 @@
 # ✅ Todo List
 
-Webapp **pengurusan tugas harian** — statik murni (HTML + CSS + JavaScript tulen, **zero-dependency**, tiada CDN/luar). Semua data disimpan automatik di **localStorage** pelayar anda; tiada pendaftaran, tiada muat naik.
+Webapp **pengurusan tugas harian** — statik (HTML + JavaScript tulen + **Tailwind CSS** via Play CDN untuk gaya). Semua data disimpan automatik di **localStorage** pelayar anda; tiada pendaftaran, tiada muat naik ke pelayan.
 
 ## Cara Guna
 
@@ -49,8 +49,8 @@ Beli hadiah hari jadi #Personal | jangan lupa bungkus
 
 ```
 todo-list/
-├── index.html            # Halaman utama (UI Bahasa Melayu)
-├── style.css             # Tema gelap (default) + terang, mobile-first
+├── index.html            # Halaman utama (UI Bahasa Melayu, Tailwind Play CDN + CSS variables tema)
+├── style.css             # Custom CSS untuk komponen dinamik (task item, modal, toast, dsb.)
 ├── js/
 │   ├── core.js           # Teras logik (UMD — berfungsi browser & Node)
 │   └── app.js            # Logik UI: modal, filter, drag & drop, import/eksport
@@ -63,7 +63,9 @@ todo-list/
 
 ## Cara Deploy
 
-Folder ini adalah **statik sepenuhnya** — tiada build diperlukan:
+Folder ini adalah **statik** — tiada build/pemampatan diperlukan:
+
+> **Nota:** Tailwind Play CDN (`cdn.tailwindcss.com`) dimuatkan terus oleh pelayar pada waktu jalan — sambungan internet diperlukan pada pertama muat (dan disimpan dalam cache). Semua fungsi aplikasi (CRUD, localStorage, import/eksport) tidak bergantung pada CDN dan terus berfungsi jika CDN tidak dapat dimuat.
 
 - **GitHub Pages** — push folder ini dan letak servis dari akar repo, atau gunakan folder `/docs`.
 - **Netlify / Vercel / Cloudflare Pages** — drag & drop folder `todo-list` atau sambungkan repo (publish directory: `todo-list`).
@@ -76,7 +78,7 @@ Data pengguna kekal dalam pelayar (localStorage) — hosting hanya menghidangkan
 | Tetapan | Hasil |
 |---|---|
 | **Node** (`node test/test-core.js`) | ✅ **36/36 lulus** — CRUD, filter, carian, import parse, round-trip eksport TXT, JSON, localStorage, overdue, susun semula, statistik |
-| **Browser penuh** (`node test/test-browser.js`) | ✅ **20/20 lulus** — smoke boot, tambah/edit/padam/togol via UI sebenar, filter, carian, import (tambah & ganti), eksport, persist selepas refresh, drag & drop, tema, responsif 375px, tiada error console |
+| **Browser penuh** (`node test/test-browser.js`) | ✅ **21/21 lulus** — smoke boot, tambah/edit/padam/togol via UI sebenar, filter, carian, import (tambah & ganti), eksport, persist selepas refresh, drag & drop, tema, responsif 375px & 768px, tiada error console |
 | **Harness browser** (`test/test-harness.html`) | ✅ **9/9 lulus** — logik teras dalam persekitaran pelayar sebenar |
 
 ## Nota / Batasan

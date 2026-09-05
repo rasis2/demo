@@ -62,10 +62,11 @@ function onWsMessage(raw) {
   }
   if (m.method === 'Runtime.consoleAPICalled') {
     const t = m.params.type;
-    if (t === 'error' || t === 'warning') {
-      browserConsoleErrors.push(
-        'console.' + t + ': ' + m.params.args.map((a) => a.value || a.description || '').join(' ')
-      );
+    // Notis bawaan Tailwind Play CDN ("semak semasa pembangunan sahaja") bukan ralat aplikasi:
+    // ia sentiasa dikeluarkan oleh CDN, jadi diabaikan di sini.
+    const text = m.params.args.map((a) => a.value || a.description || '').join(' ');
+    if (t === 'error' || (t === 'warning' && text.indexOf('cdn.tailwindcss.com should not be used') === -1)) {
+      browserConsoleErrors.push('console.' + t + ': ' + text);
     }
   }
   if (m.method === 'Runtime.exceptionThrown') {
