@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>List Anje — Urus Tugas Harian</title>
 <meta name="description" content="List Anje — webapp pengurusan tugas harian yang berjalan sepenuhnya dalam pelayar. Data tersimpan automatik di localStorage, tanpa pendaftaran.">
-<meta name="theme-color" content="#0f1218">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e8a13d'/%3E%3Cpath d='M16 32l10 10 22-22' stroke='%2312161c' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a1f17">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23059669'/%3E%3Cpath d='M20 32 C20 20 32 14 44 14 C44 26 32 38 20 38 Z' fill='%23d1fae5' opacity='0.85'/%3E%3Cpath d='M20 32 C20 44 32 50 44 50 C44 38 32 26 20 20 Z' fill='%23065f46' opacity='0.7'/%3E%3Cpath d='M18 33l8 8 16-16' stroke='%23ffffff' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 
 <!-- Tailwind Play CDN (runtime JIT — sesuai untuk static site tanpa build step) -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +17,7 @@
     theme: {
       extend: {
         colors: {
-          base: 'rgb(var(--c-bg) / <alpha-value>)',
+          deep: 'rgb(var(--c-bg) / <alpha-value>)',
           panel: 'rgb(var(--c-panel) / <alpha-value>)',
           'panel-2': 'rgb(var(--c-panel2) / <alpha-value>)',
           'panel-3': 'rgb(var(--c-panel3) / <alpha-value>)',
@@ -34,55 +34,68 @@
         },
         boxShadow: {
           soft: '0 10px 30px rgba(0,0,0,0.35)'
+        },
+        borderRadius: {
+          'organic': '1.25rem',
+          'organic-lg': '1.5rem',
+          'organic-xl': '2rem'
         }
       }
     }
   };
 </script>
 <style>
-  /* ===== Palet tema (R G B triplet — dimakan oleh tailwind.config + style.css) ===== */
+  /* ===== Palet tema HIJAU NATURE (R G B triplet) ===== */
+
+  /* --- DARK: Hutan Malam — bg gelap-hijau, aksen emerald --- */
   :root{
-    --c-bg:15 18 24;      /* #0f1218 */
-    --c-panel:22 28 35;   /* #161c23 */
-    --c-panel2:27 34 43;  /* #1b222b */
-    --c-panel3:32 41 51;  /* #202933 */
-    --c-line:42 50 61;    /* #2a323d */
-    --c-ink:234 230 218;  /* #eae6da */
-    --c-mute:152 162 176; /* #98a2b0 */
-    --c-amber:232 161 61; /* #e8a13d */
-    --c-teal:73 194 184;  /* #49c2b8 */
-    --c-green:76 195 138; /* #4cc38a */
-    --c-red:226 86 76;    /* #e2564c */
+    --c-bg:10 31 23;        /* #0a1f17 deep forest */
+    --c-panel:15 43 34;      /* #0f2b22 dark emerald */
+    --c-panel2:20 54 43;     /* #14362b */
+    --c-panel3:26 64 52;     /* #1a4034 */
+    --c-line:36 90 74;       /* #245a4a */
+    --c-ink:232 240 236;     /* #e8f0ec soft white-green */
+    --c-mute:138 166 152;    /* #8aa698 sage grey */
+    --c-amber:52 211 153;    /* #34d399 emerald-400 — warna utama interaktif */
+    --c-teal:110 231 183;    /* #6ee7b7 emerald-300 — aksen sekunder */
+    --c-green:16 185 129;    /* #10b981 emerald-500 — kejayaan */
+    --c-red:248 113 113;     /* #f87171 red-400 — bahaya/terlewat (lembut) */
   }
+
+  /* --- LIGHT: Krim Sage — bg krim lembut, aksen hijau gelap --- */
   html[data-theme="light"]{
-    --c-bg:243 244 247;      /* #f3f4f7 */
-    --c-panel:255 255 255;   /* #ffffff */
-    --c-panel2:247 248 250;  /* #f7f8fa */
-    --c-panel3:238 240 244;  /* #eef0f4 */
-    --c-line:221 225 232;    /* #dde1e8 */
-    --c-ink:28 34 48;        /* #1c2230 */
-    --c-mute:95 107 122;     /* #5f6b7a */
-    --c-amber:196 126 28;    /* #c47e1c */
-    --c-teal:22 133 126;     /* #16857e */
-    --c-green:31 157 99;     /* #1f9d63 */
-    --c-red:207 63 53;       /* #cf3f35 */
+    --c-bg:240 250 244;      /* #f0faf4 very light sage */
+    --c-panel:255 255 255;    /* #ffffff */
+    --c-panel2:245 253 248;   /* #f5fdf8 */
+    --c-panel3:230 245 236;   /* #e6f5ec sage-100 */
+    --c-line:196 222 206;     /* #c4dece sage-200 */
+    --c-ink:26 58 42;         /* #1a3a2a dark forest text */
+    --c-mute:95 138 115;      /* #5f8a73 sage medium */
+    --c-amber:5 150 105;      /* #059669 emerald-600 */
+    --c-teal:16 185 129;      /* #10b981 emerald-500 */
+    --c-green:5 150 105;      /* #059669 emerald-600 */
+    --c-red:220 38 38;        /* #dc2626 red-600 */
   }
 
   html{
     scroll-behavior:smooth;
-    color-scheme:dark;                    /* kawalan asli (date/time/select popup) ikut tema */
+    color-scheme:dark;
   }
   html[data-theme="light"]{ color-scheme:light; }
 
   body{
     min-height:100vh;
-    background:
-      radial-gradient(1000px 500px at 90% -10%, rgb(var(--c-amber) / 0.07), transparent 60%),
-      radial-gradient(800px 400px at 0% 10%, rgb(var(--c-teal) / 0.05), transparent 55%),
-      rgb(var(--c-bg));
     color:rgb(var(--c-ink));
     line-height:1.6;
     transition:background .25s ease, color .25s ease;
+    /* Gradient hijau nature + corak daun halus */
+    background:
+      /* Corak daun: ulangan SVG daun kecil, opacity sangat rendah */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M20 50 C20 35 35 25 50 25 C50 40 35 50 20 50Z' fill='none' stroke='%23ffffff' stroke-width='0.5' opacity='0.04'/%3E%3Cpath d='M55 20 C55 10 65 5 75 5 C75 15 65 25 55 25Z' fill='none' stroke='%23ffffff' stroke-width='0.4' opacity='0.03'/%3E%3C/svg%3E"),
+      /* Gradient hijau lembut di sudut */
+      radial-gradient(1000px 500px at 90% -10%, rgb(var(--c-amber) / 0.06), transparent 60%),
+      radial-gradient(800px 400px at 0% 10%, rgb(var(--c-teal) / 0.05), transparent 55%),
+      rgb(var(--c-bg));
   }
 
   input[type="search"]{ -webkit-appearance:none; appearance:none; }
@@ -92,15 +105,18 @@
 </head>
 <body class="font-sans">
 
-<header class="topbar sticky top-0 z-50 border-b border-line bg-base/85 backdrop-blur-md transition-colors">
+<header class="topbar sticky top-0 z-50 border-b border-line bg-deep/85 backdrop-blur-md transition-colors">
   <div class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 md:py-3.5">
     <div class="brand flex min-w-0 items-center gap-3">
-      <svg class="brand-icon h-9 w-9 shrink-0 rounded-xl text-amber shadow-soft sm:h-11 sm:w-11" viewBox="0 0 64 64" aria-hidden="true">
+      <!-- Ikon daun hijau dengan tanda semak -->
+      <svg class="brand-icon h-9 w-9 shrink-0 rounded-xl text-green shadow-soft sm:h-11 sm:w-11" viewBox="0 0 64 64" aria-hidden="true">
         <rect width="64" height="64" rx="14" fill="currentColor"/>
-        <path d="M16 32l10 10 22-22" stroke="#12161c" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M18 34 C18 20 32 12 46 12 C46 26 32 40 18 40 Z" fill="rgba(255,255,255,0.35)"/>
+        <path d="M18 34 C18 48 32 56 46 56 C46 42 32 28 18 22 Z" fill="rgba(0,0,0,0.15)"/>
+        <path d="M16 34l9 9 18-18" stroke="#fff" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <div class="min-w-0">
-        <h1 class="text-lg font-extrabold uppercase leading-tight tracking-wide text-ink sm:text-2xl">List Anje</h1>
+        <h1 class="text-lg font-extrabold uppercase leading-tight tracking-wide text-ink sm:text-2xl">List Anje 🌿</h1>
         <p class="tagline hidden truncate text-[11.5px] text-mute sm:block">Urus tugas harian Anje — disimpan terus dalam pelayar.</p>
       </div>
     </div>
@@ -164,7 +180,7 @@
   </section>
 
   <div class="add-zone mt-5 mb-2 text-center">
-    <button id="btnAdd" class="inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-amber px-6 text-base font-bold text-[#1a1200] shadow-soft transition hover:-translate-y-px hover:brightness-110 sm:w-auto">+ &nbsp;Tambah Task</button>
+    <button id="btnAdd" class="inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-xl bg-amber px-6 text-base font-bold text-[#022c22] shadow-soft transition hover:-translate-y-px hover:brightness-110 sm:w-auto">+ &nbsp;Tambah Task</button>
   </div>
 
 </main>
@@ -172,7 +188,7 @@
 <footer class="site-footer mt-8 border-t border-line bg-black/15">
   <div class="mx-auto max-w-3xl px-4 pb-6 pt-5">
     <p class="m-0 text-center text-xs leading-relaxed text-mute lg:text-[13px]">
-      List Anje — webapp statik, data anda tidak pernah meninggalkan pelayar.
+      🌿 List Anje — webapp statik, data anda tidak pernah meninggalkan pelayar.
       <button id="btnExportTxt2" class="linklike px-1 py-1 sm:px-0.5 sm:py-0.5">Eksport TXT</button> · <button id="btnExportJson2" class="linklike px-1 py-1 sm:px-0.5 sm:py-0.5">Eksport JSON</button>
     </p>
   </div>
@@ -230,7 +246,7 @@
       </div>
       <div class="modal-actions mt-4 flex justify-end gap-2.5">
         <button type="button" id="btnTaskCancel" class="inline-flex h-11 min-w-[92px] items-center justify-center rounded-lg border border-line bg-panel-2 px-4 text-sm font-semibold text-ink transition-colors hover:border-amber hover:bg-amber/10 hover:text-amber">Batal</button>
-        <button type="submit" id="btnTaskSave" class="inline-flex h-11 min-w-[130px] items-center justify-center rounded-lg bg-amber px-5 text-sm font-bold text-[#1a1200] transition hover:brightness-110">Simpan Task</button>
+        <button type="submit" id="btnTaskSave" class="inline-flex h-11 min-w-[130px] items-center justify-center rounded-lg bg-amber px-5 text-sm font-bold text-[#022c22] transition hover:brightness-110">Simpan Task</button>
       </div>
     </form>
   </div>
@@ -282,7 +298,7 @@ Beli hadiah hari jadi #Personal | jangan lupa bungkus</pre>
     <div id="impResult" class="imp-result"></div>
     <div class="modal-actions mt-4 flex justify-end gap-2.5">
       <button type="button" id="btnImportCancel" class="inline-flex h-11 min-w-[92px] items-center justify-center rounded-lg border border-line bg-panel-2 px-4 text-sm font-semibold text-ink transition-colors hover:border-amber hover:bg-amber/10 hover:text-amber">Batal</button>
-      <button type="button" id="btnImportGo" class="inline-flex h-11 min-w-[140px] items-center justify-center rounded-lg bg-amber px-5 text-sm font-bold text-[#1a1200] transition hover:brightness-110">Import Sekarang</button>
+      <button type="button" id="btnImportGo" class="inline-flex h-11 min-w-[140px] items-center justify-center rounded-lg bg-amber px-5 text-sm font-bold text-[#022c22] transition hover:brightness-110">Import Sekarang</button>
     </div>
   </div>
 </div>
