@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-05T00:00:01.995Z",
+  "generated": "2026-09-05T01:00:03.435Z",
   "period": "05–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 20214,
-    "models": 11,
-    "tools": 39779,
+    "streams": 20287,
+    "models": 12,
+    "tools": 39903,
     "toolKinds": 11,
-    "sessions": 536,
-    "loops": 21066
+    "sessions": 542,
+    "loops": 21138
   },
   "models": [
     {
@@ -65,74 +65,79 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 323,
+      "value": 326,
       "color": "#ef4444"
+    },
+    {
+      "name": "opencode-zen · big-pickle",
+      "value": 70,
+      "color": "#ec4899"
     },
     {
       "name": "groq · llama-3.3-70b-versatile",
       "value": 4,
-      "color": "#ec4899"
+      "color": "#14b8a6"
     },
     {
       "name": "afiqstore · glm-5.3",
       "value": 3,
-      "color": "#14b8a6"
+      "color": "#8b5cf6"
     },
     {
       "name": "afiqstore · kimi-k3",
       "value": 2,
-      "color": "#8b5cf6"
+      "color": "#22c55e"
     },
     {
       "name": "afiqstore · deepseek-v4-flash",
       "value": 1,
-      "color": "#22c55e"
+      "color": "#64748b"
     }
   ],
   "tools": [
     {
       "name": "bash",
-      "value": 27194,
+      "value": 27265,
       "color": "#ef4444"
     },
     {
       "name": "read",
-      "value": 3494,
+      "value": 3501,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 3434,
+      "value": 3437,
       "color": "#0ea5a4"
     },
     {
       "name": "edit",
-      "value": 3345,
+      "value": 3380,
       "color": "#f59e0b"
     },
     {
       "name": "grep",
-      "value": 897,
+      "value": 898,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 503,
+      "value": 504,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 350,
+      "value": 352,
       "color": "#6366f1"
     },
     {
       "name": "todowrite",
-      "value": 245,
+      "value": 247,
       "color": "#ec4899"
     },
     {
       "name": "webfetch",
-      "value": 225,
+      "value": 227,
       "color": "#22c55e"
     },
     {
