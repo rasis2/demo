@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-05T04:00:07.734Z",
+  "generated": "2026-09-05T05:00:09.187Z",
   "period": "05–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 20344,
+    "streams": 20372,
     "models": 12,
-    "tools": 40216,
+    "tools": 40263,
     "toolKinds": 11,
-    "sessions": 544,
-    "loops": 21198
+    "sessions": 547,
+    "loops": 21227
   },
   "models": [
     {
@@ -70,7 +70,7 @@
     },
     {
       "name": "opencode-zen · big-pickle",
-      "value": 70,
+      "value": 98,
       "color": "#ec4899"
     },
     {
@@ -97,12 +97,12 @@
   "tools": [
     {
       "name": "bash",
-      "value": 27490,
+      "value": 27511,
       "color": "#ef4444"
     },
     {
       "name": "read",
-      "value": 3520,
+      "value": 3534,
       "color": "#3b82f6"
     },
     {
@@ -112,7 +112,7 @@
     },
     {
       "name": "edit",
-      "value": 3389,
+      "value": 3398,
       "color": "#f59e0b"
     },
     {
@@ -122,12 +122,12 @@
     },
     {
       "name": "glob",
-      "value": 519,
+      "value": 520,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 354,
+      "value": 356,
       "color": "#6366f1"
     },
     {
