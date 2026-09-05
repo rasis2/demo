@@ -449,15 +449,82 @@ async function main() {
       assert.deepStrictEqual(state, after, 'state tidak sepadan dengan paparan');
     });
 
-    await test('Responsif: tiada limpahan mendatar pada skrin 375px', async () => {
+    async function setViewport(w, h) {
       await send('Emulation.setDeviceMetricsOverride', {
-        width: 375, height: 667, deviceScaleFactor: 1, mobile: true
+        width: w, height: h, deviceScaleFactor: 1, mobile: true
       });
-      await sleep(120);
+      await sleep(150);
+    }
+
+    await test('Responsif 375px: tiada overflow & komponen kemas', async () => {
+      await setViewport(375, 667);
       const overflow = await evaluate("document.documentElement.scrollWidth - window.innerWidth");
       assert.ok(overflow <= 1, 'limpahan mendatar ' + overflow + 'px');
-      const searchOk = await evaluate("document.getElementById('searchInput').offsetWidth > 250");
-      assert.ok(searchOk, 'kotak carian terlalu sempit');
+      const audit = await evaluate(
+        '(function(){' +
+        'var iw = window.innerWidth;' +
+        'var r = {};' +
+        'r.taskItemsOverflow = [...document.querySelectorAll(".task-item")].filter(function(el){var b=el.getBoundingClientRect();return b.right>iw+1 || b.left < -1;}).length;' +
+        'var tb = document.querySelector(".toolbar").getBoundingClientRect();' +
+        'var sr = document.querySelector(".select-row").getBoundingClientRect();' +
+        'var tabs = document.querySelector(".tabs").getBoundingClientRect();' +
+        'r.toolbarInside = sr.right <= tb.right + 1 && sr.left >= tb.left - 1;' +
+        'r.tabsInside = tabs.right <= tb.right + 1 && tabs.left >= tb.left - 1;' +
+        'var stats = document.querySelector(".stats");' +
+        'r.statsOverflow = stats.scrollWidth - stats.clientWidth;' +
+        'r.tabsOverflow = document.querySelector(".tabs").scrollWidth - document.querySelector(".tabs").clientWidth;' +
+        'r.addHeight = document.getElementById("btnAdd").getBoundingClientRect().height;' +
+        'r.searchHeight = document.getElementById("searchInput").getBoundingClientRect().height;' +
+        'var ta = document.querySelector(".top-actions").getBoundingClientRect();' +
+        'var topbar = document.querySelector(".topbar").getBoundingClientRect();' +
+        'r.topActionsInside = ta.right <= topbar.right + 1 && ta.left >= topbar.left - 1;' +
+        'return r;})()'
+      );
+      assert.strictEqual(audit.taskItemsOverflow, 0, 'task item terkeluar: ' + audit.taskItemsOverflow);
+      assert.ok(audit.toolbarInside, 'select-row keluar dari toolbar');
+      assert.ok(audit.tabsInside, 'tabs keluar dari toolbar');
+      assert.ok(audit.statsOverflow <= 1, 'stats overflow ' + audit.statsOverflow + 'px');
+      assert.ok(audit.tabsOverflow <= 1, 'tabs overflow dalam ' + audit.tabsOverflow + 'px');
+      assert.ok(audit.addHeight >= 44, 'butang Tambah di bawah 44px: ' + Math.round(audit.addHeight) + 'px');
+      assert.ok(audit.searchHeight >= 44, 'input carian di bawah 44px: ' + Math.round(audit.searchHeight) + 'px');
+      assert.ok(audit.topActionsInside, 'top-actions keluar dari topbar');
+      const searchW = await evaluate("document.getElementById('searchInput').offsetWidth");
+      assert.ok(searchW > 250, 'kotak carian terlalu sempit: ' + searchW);
+      // Modal task mesti muat dalam viewport 375px
+      await click('#btnAdd');
+      await waitFor("!document.getElementById('modalTask').classList.contains('hidden')");
+      const modalLog = await evaluate(
+        '(function(){var mb=document.querySelector("#modalTask .modal-box").getBoundingClientRect();' +
+        'return {left:mb.left, right:mb.right, iw:window.innerWidth, ok: mb.left >= -1 && mb.right <= window.innerWidth + 1};})()'
+      );
+      assert.ok(modalLog.ok, 'modal-box overflow pada 375px: ' + JSON.stringify(modalLog));
+      await click('#btnTaskCancel');
+      await waitFor("document.getElementById('modalTask').classList.contains('hidden')");
+      await send('Emulation.clearDeviceMetricsOverride');
+    });
+
+    await test('Responsif 768px: tiada overflow & filter bersusun mendatar', async () => {
+      await setViewport(768, 1024);
+      const overflow = await evaluate("document.documentElement.scrollWidth - window.innerWidth");
+      assert.ok(overflow <= 1, 'limpahan mendatar ' + overflow + 'px');
+      const audit = await evaluate(
+        '(function(){' +
+        'var iw = window.innerWidth;' +
+        'var r = {};' +
+        'r.taskItemsOverflow = [...document.querySelectorAll(".task-item")].filter(function(el){var b=el.getBoundingClientRect();return b.right>iw+1 || b.left < -1;}).length;' +
+        'var tb = document.querySelector(".toolbar").getBoundingClientRect();' +
+        'var tabs = document.querySelector(".tabs").getBoundingClientRect();' +
+        'var sr = document.querySelector(".select-row").getBoundingClientRect();' +
+        'r.tabsInside = tabs.right <= tb.right + 1 && tabs.left >= tb.left - 1;' +
+        'r.selectsInside = sr.right <= tb.right + 1 && sr.left >= tb.left - 1;' +
+        'r.filtersSideBySide = Math.abs(tabs.top - sr.top) < 8;' +      // selari mendatar
+        'r.tabsOverflow = document.querySelector(".tabs").scrollWidth - document.querySelector(".tabs").clientWidth;' +
+        'return r;})()'
+      );
+      assert.ok(audit.filtersSideBySide, 'filter tidak selari mendatar pada 768px');
+      assert.strictEqual(audit.taskItemsOverflow, 0, 'task item terkeluar: ' + audit.taskItemsOverflow);
+      assert.ok(audit.tabsInside && audit.selectsInside, 'filter keluar dari toolbar');
+      assert.ok(audit.tabsOverflow <= 1, 'tabs overflow dalam ' + audit.tabsOverflow + 'px');
       await send('Emulation.clearDeviceMetricsOverride');
     });
 

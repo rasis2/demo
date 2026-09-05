@@ -128,15 +128,17 @@ html[data-theme="light"] .topbar{ background:rgba(243,244,247,0.9); }
 .search-box:focus-within{ border-color:var(--amber); }
 .search-icon{ padding:0 4px 0 12px; color:var(--muted); font-size:14px; }
 .search-box input{
-  width:100%; background:none; border:none; outline:none;
+  width:100%; background:none; border:none; outline:none; -webkit-appearance:none;
   color:var(--text); font:inherit; font-size:14.5px; padding:11px 12px 11px 8px;
 }
 .search-box input::placeholder{ color:var(--muted); }
 .filters-row{ display:flex; flex-direction:column; gap:10px; }
 .tabs{
   display:flex; gap:6px; background:var(--panel); border:1px solid var(--line);
-  padding:5px; border-radius:11px; overflow-x:auto;
+  padding:5px; border-radius:11px; overflow-x:auto; flex-wrap:wrap;
+  scrollbar-width:none;
 }
+.tabs::-webkit-scrollbar{ display:none; }
 .tab{
   flex:1; min-width:0; background:none; border:none; cursor:pointer;
   color:var(--muted); font:inherit; font-size:12.5px; font-weight:600;
@@ -255,8 +257,8 @@ html[data-theme="light"] .topbar{ background:rgba(243,244,247,0.9); }
 .check input:focus-visible + .checkmark{ outline:2px solid var(--amber); outline-offset:2px; }
 
 .task-body{ flex:1; min-width:0; }
-.task-title{ font-size:14.5px; font-weight:600; word-break:break-word; }
-.task-note{ font-size:12.5px; color:var(--muted); margin-top:2px; word-break:break-word; }
+.task-title{ font-size:14.5px; font-weight:600; word-break:break-word; overflow-wrap:anywhere; }
+.task-note{ font-size:12.5px; color:var(--muted); margin-top:2px; word-break:break-word; overflow-wrap:anywhere; }
 .task-meta{
   display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; align-items:center;
   font-size:11px;
@@ -280,10 +282,16 @@ html[data-theme="light"] .topbar{ background:rgba(243,244,247,0.9); }
 .task-actions{ display:flex; gap:4px; flex:none; opacity:0.35; transition:opacity .15s ease; }
 .task-item:hover .task-actions{ opacity:1; }
 .icon-btn{
+  position:relative;
   background:none; border:none; cursor:pointer; color:var(--muted);
   font-size:15px; width:30px; height:30px; border-radius:7px;
   display:inline-flex; align-items:center; justify-content:center;
   transition:background .15s ease, color .15s ease;
+}
+/* Kawasan sentuh diperluas ke ~44px tanpa mengubah saiz visual */
+.icon-btn::before{
+  content:''; position:absolute; left:50%; top:50%;
+  width:44px; height:44px; transform:translate(-50%,-50%);
 }
 .icon-btn:hover{ color:var(--amber); background:var(--amber-dim); }
 .btn-del:hover{ color:var(--red); background:var(--red-dim); }
@@ -412,9 +420,52 @@ body.modal-open{ overflow:hidden; }
   .add-zone{ margin:28px 0 12px; }
 }
 
-@media (max-width:420px){
+@media (max-width:599px){
+  /* --- Topbar: susun dua baris kemas (brand + baris tindakan) --- */
+  .topbar-inner{ flex-direction:column; align-items:stretch; gap:8px; padding-top:8px; padding-bottom:8px; }
+  .brand{ gap:10px; }
+  .brand-icon{ width:36px; height:36px; }
+  .brand h1{ font-size:18px; }
   .brand .tagline{ display:none; }
-  .top-actions .btn.sm{ padding:7px 9px; font-size:11.5px; }
+  .top-actions{ width:100%; justify-content:space-between; gap:6px; }
+
+  /* --- Saiz sentuh minimum (~44px) --- */
+  .btn{ min-height:44px; }
+  .btn.sm{ min-height:42px; padding:8px 10px; font-size:12px; }
+  .btn.big{ width:100%; min-height:50px; font-size:16px; }
+  .btn.icon-only{ width:42px; min-height:44px; }
+  .icon-btn{ width:38px; height:38px; font-size:17px; }
+  .tab{ min-height:40px; font-size:13px; }
+  .check{ width:26px; height:26px; margin-top:1px; }
+  .clear-cat{ min-height:34px; padding:4px 10px; }
+
+  /* --- Input & select mudah disentuh (16px = elak auto-zoom iOS) --- */
+  .search-box input{ min-height:44px; font-size:16px; }
+  .select-row select{ min-height:44px; font-size:16px; }
+  .field input[type="text"],
+  .field input[type="date"],
+  .field input[type="time"],
+  .field textarea,
+  .field select{ font-size:16px; }
+  .field input[type="text"],
+  .field input[type="date"],
+  .field input[type="time"],
+  .field select{ min-height:44px; }
+  .field textarea{ min-height:84px; }
+
+  /* --- Susun elemen kemas pada skrin kecil --- */
+  .task-actions{ opacity:1; }                 /* tanpa hover pada skrin sentuh */
+  .task-item{ gap:8px; padding:12px 10px; }
+  .drag-handle{ width:22px; padding-top:0; }
+  .field-row .field{ min-width:120px; }
+  .modal{ padding:10px; }
+  .modal-box{ padding:14px 14px 12px; max-height:calc(100vh - 20px); border-radius:14px; }
+}
+
+@media (max-width:520px){
+  /* Dua select (kategori & susunan) disusun menegak supaya teks tidak terpotong */
+  .select-row{ flex-direction:column; gap:6px; }
+  .mode-row{ gap:10px; }
 }
 
 @media (prefers-reduced-motion: reduce){
