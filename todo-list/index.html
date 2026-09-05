@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ms" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo List — Urus Tugas Harian</title>
+<meta name="description" content="Todo List — webapp pengurusan tugas harian yang berjalan sepenuhnya dalam pelayar. Data tersimpan automatik di localStorage, tanpa pendaftaran.">
+<meta name="theme-color" content="#0f1218">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e8a13d'/%3E%3Cpath d='M16 32l10 10 22-22' stroke='%2312161c' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <svg class="brand-icon" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="var(--amber)"/>
+        <path d="M16 32l10 10 22-22" stroke="#12161c" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <h1>Todo List</h1>
+        <p class="tagline">Urus tugas harian anda — disimpan terus dalam pelayar.</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="export-group" role="group" aria-label="Eksport">
+        <button id="btnExportTxt" class="btn ghost sm" title="Muat turun semua task sebagai fail .txt">&#x2913; TXT</button>
+        <button id="btnExportJson" class="btn ghost sm" title="Muat turun semua task sebagai fail .json">&#x2913; JSON</button>
+      </div>
+      <button id="btnImport" class="btn ghost sm" title="Import task dari teks / copy-paste">&#x2912; Import</button>
+      <button id="btnTheme" class="btn ghost sm icon-only" title="Tukar tema gelap / terang" aria-label="Tukar tema">&#x263e;</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- Bar alat: carian + filter -->
+  <section class="toolbar" aria-label="Alat carian dan penapis">
+    <div class="search-row">
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">&#x1f50d;</span>
+        <input id="searchInput" type="search" placeholder="Cari task..." autocomplete="off" aria-label="Cari task">
+      </div>
+    </div>
+    <div class="filters-row">
+      <div id="filterTabs" class="tabs" role="tablist" aria-label="Tapisan status">
+        <button id="tab-semua" class="tab active" data-filter="semua" role="tab">Semua (0)</button>
+        <button id="tab-aktif" class="tab" data-filter="aktif" role="tab">Aktif (0)</button>
+        <button id="tab-selesai" class="tab" data-filter="selesai" role="tab">Selesai (0)</button>
+      </div>
+      <div class="select-row">
+        <select id="catFilter" aria-label="Tapis mengikut kategori"></select>
+        <select id="sortSel" aria-label="Kaedah susunan">
+          <option value="manual">Susun: Manual (seret)</option>
+          <option value="priority">Susun: Ikut Prioriti</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistik -->
+  <section class="stats" aria-label="Rumusan kemajuan">
+    <div class="stat-main">
+      <div class="progress-track" role="progressbar" aria-labelledby="pctText" aria-valuemin="0" aria-valuemax="100">
+        <div id="pctBar" class="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="stat-line">
+        <span id="pctText">Tiada task. Tekan "Tambah Task" untuk bermula.</span>
+        <button id="clearCatBtn" class="clear-cat hidden">&#x2715; Kosongkan kategori</button>
+        <span id="overdueText" class="overdue-line"></span>
+      </div>
+    </div>
+    <div id="catChips" class="cat-chips" aria-label="Kemajuan mengikut kategori"></div>
+  </section>
+
+  <!-- Senarai task -->
+  <section class="list-wrap" aria-label="Senarai task">
+    <ul id="taskList" class="task-list"></ul>
+    <div id="emptyState" class="empty-state"></div>
+  </section>
+
+  <div class="add-zone">
+    <button id="btnAdd" class="btn primary big">+ &nbsp;Tambah Task</button>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>Todo List — webapp statik, data anda tidak pernah meninggalkan pelayar. <button id="btnExportTxt2" class="linklike">Eksport TXT</button> · <button id="btnExportJson2" class="linklike">Eksport JSON</button></p>
+  </div>
+</footer>
+
+<!-- ================= Modal: Tambah / Edit Task ================= -->
+<div id="modalTask" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="taskModalTitle">Tambah Task Baharu</h2>
+      <button type="button" class="icon-btn modal-x" data-close="modalTask" aria-label="Tutup">&#x2715;</button>
+    </div>
+    <form id="taskForm" data-mode="add" novalidate>
+      <input type="hidden" id="formTaskId" name="taskId">
+      <label class="field">
+        <span class="field-label">Tajuk Task <em>*</em></span>
+        <input id="fTitle" name="title" type="text" maxlength="300" placeholder="cth: Beli barang dapur" required autocomplete="off">
+      </label>
+      <label class="field">
+        <span class="field-label">Nota <small>(pilihan)</small></span>
+        <textarea id="fNote" name="note" rows="2" maxlength="2000" placeholder="Butiran tambahan..."></textarea>
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span class="field-label">Keutamaan</span>
+          <select id="fPriority" name="priority">
+            <option value="rendah">Rendah</option>
+            <option value="sederhana">Sederhana</option>
+            <option value="tinggi">Tinggi</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Kategori</span>
+          <input id="fCategory" name="category" type="text" maxlength="50" list="catList" placeholder="cth: Kerja / Rumah / Personal" autocomplete="off">
+        </label>
+      </div>
+      <datalist id="catList"></datalist>
+      <div id="catQuick" class="cat-quick"></div>
+      <div class="field-row">
+        <label class="field">
+          <span class="field-label">Tarikh Akhir</span>
+          <input id="fDate" name="deadlineDate" type="date">
+        </label>
+        <label class="field" id="fTimeWrap">
+          <span class="field-label">Masa <small>(pilihan)</small></span>
+          <input id="fTime" name="deadlineTime" type="time">
+        </label>
+        <button type="button" id="dlClear" class="btn ghost sm self-end hidden" title="Kosongkan tarikh akhir">&#x2715; Kosongkan</button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="btnTaskCancel" class="btn ghost">Batal</button>
+        <button type="submit" id="btnTaskSave" class="btn primary">Simpan Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= Modal: Confirm ================= -->
+<div id="modalConfirm" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="modal-box small">
+    <div class="modal-head">
+      <h2 id="cfTitle">Sahkan tindakan</h2>
+      <button type="button" class="icon-btn modal-x" data-close="modalConfirm" aria-label="Tutup">&#x2715;</button>
+    </div>
+    <p id="cfMsg" class="confirm-msg"></p>
+    <div class="modal-actions">
+      <button type="button" id="btnConfirmNo" class="btn ghost">Batal</button>
+      <button type="button" id="btnConfirmYes" class="btn danger solid">Padam</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Modal: Import ================= -->
+<div id="modalImport" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+  <div class="modal-box wide">
+    <div class="modal-head">
+      <h2 id="importTitle">Import Task dari Teks</h2>
+      <button type="button" class="icon-btn modal-x" data-close="modalImport" aria-label="Tutup">&#x2715;</button>
+    </div>
+    <p class="import-hint">Satu baris = satu task. Contoh format yang disokong:</p>
+    <pre class="import-example">[Tinggi] Siapkan laporan bulanan #Kerja @2026-09-10
+[x] [Rendah] Beli susu #Rumah @2026-09-12T14:30 | susu rendah lemak
+Beli hadiah hari jadi #Personal | jangan lupa bungkus</pre>
+    <ul class="import-legend">
+      <li><code>[x]</code> / <code>[ ]</code> — status siap / belum</li>
+      <li><code>[Tinggi]</code> / <code>[Sedang]</code> / <code>[Rendah]</code> — keutamaan</li>
+      <li><code>#kategori</code> — kategori task</li>
+      <li><code>@2026-09-10</code> — tarikh akhir (atau <code>@2026-09-10T14:30</code> termasuk masa)</li>
+      <li><code>| nota</code> — nota task (pilihan)</li>
+    </ul>
+    <div class="mode-row">
+      <label class="radio"><input type="radio" name="impMode" id="impModeAdd" checked> <span>Tambah kepada senarai sedia ada</span></label>
+      <label class="radio"><input type="radio" name="impMode" id="impModeReplace"> <span>Ganti semua task sedia ada</span></label>
+    </div>
+    <label class="field">
+      <span class="field-label">Teks Import</span>
+      <textarea id="impText" rows="8" placeholder="Tampal teks anda di sini..."></textarea>
+    </label>
+    <div id="impResult" class="imp-result"></div>
+    <div class="modal-actions">
+      <button type="button" id="btnImportCancel" class="btn ghost">Batal</button>
+      <button type="button" id="btnImportGo" class="btn primary">Import Sekarang</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<pre id="smoke" hidden></pre>
+
+<script src="js/core.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

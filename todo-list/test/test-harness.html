@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Ujian Browser — Todo List</title>
+</head>
+<body>
+  <p>Harness ujian automatik (browser sebenar). Hasil ditulis ke <code>#test-result</code>.</p>
+  <p>Boleh dibuka terus dalam pelayar, atau diuji headless:</p>
+  <pre>
+    msedge --headless=new --disable-gpu --dump-dom test/test-harness.html | grep TEST_RESULT
+  </pre>
+  <pre id="test-result">RUNNING</pre>
+
+  <script src="../js/core.js"></script>
+  <script>
+    /* Bateri ringkas ujian teras dalam persekitaran browser sebenar
+       (localStorage sebenar, Date sebenar, dsb.). Logik penuh diuji
+       dalam Node (test/test-core.js) — harness ini fokus integrasi browser. */
+    (function () {
+      var results = { pass: 0, fail: 0, failures: [] };
+
+      function test(name, fn) {
+        try {
+          fn();
+          results.pass++;
+        } catch (e) {
+          results.fail++;
+          results.failures.push(name + ': ' + (e && e.message));
+        }
+      }
+
+      function fresh() { return TodoCore.buildInitialState(); }
+
+      var KEY = 'todoListData:v1';
+
+      test('bootstrap: TodoCore tersedia', function () {
+        if (!TodoCore) throw new Error('TodoCore tidak wujud');
+        if (typeof TodoCore.addTask !== 'function') throw new Error('API asas hilang');
+      });
+
+      test('tambah/toggle/filter dalam browser', function () {
+        var s = fresh();
+        var a = TodoCore.addTask(s, { title: 'Belajar JS', category: 'Kerja' });
+        TodoCore.addTask(s, { title: 'Beli susu', category: 'Rumah' });
+        TodoCore.toggleTask(s, a.id);
+        if (TodoCore.getFilteredTasks(s, { filter: 'aktif' }).length !== 1) throw new Error('filter aktif');
+        if (TodoCore.getFilteredTasks(s, { filter: 'selesai' }).length !== 1) throw new Error('filter selesai');
+        if (TodoCore.computeStats(s).pct !== 50) throw new Error('peratus');
+      });
+
+      test('parse baris import penuh (browser)', function () {
+        var t = TodoCore.parseTaskLine('[x] [Tinggi] Beli susu #Rumah @2026-09-10 | nota');
+        if (t.title !== 'Beli susu') throw new Error('tajuk');
+        if (t.priority !== 'tinggi') throw new Error('priority');
+        if (t.category !== 'Rumah') throw new Error('kategori');
+        if (!t.done) throw new Error('done');
+      });
+
+      test('import → eksport TXT → import semula (round-trip) di browser', function () {
+        var s = fresh();
+        TodoCore.addTask(s, { title: 'X', priority: 'sederhana', category: 'Kerja', deadline: '2026-09-15T09:30', note: 'n1' });
+        var txt = TodoCore.exportTxt(s);
+        var s2 = fresh();
+        var r = TodoCore.importTasks(s2, txt, 'add');
+        if (r.added !== 1) throw new Error('bilangan import');
+        var t = s2.tasks[0];
+        if (t.title !== 'X' || t.priority !== 'sederhana' || t.deadline !== '2026-09-15T09:30') throw new Error('round-trip tidak tepat');
+      });
+
+      test('localStorage asli: save → reload state', function () {
+        localStorage.clear();
+        var s = fresh();
+        TodoCore.addTask(s, { title: 'Kekal', priority: 'tinggi', category: 'Rumah' });
+        if (!TodoCore.saveState(s, localStorage)) throw new Error('gagal simpan');
+        var loaded = TodoCore.loadState(localStorage);
+        if (!loaded.ok || loaded.state.tasks.length !== 1 || loaded.state.tasks[0].title !== 'Kekal') {
+          throw new Error('muat semula gagal');
+        }
+        localStorage.clear();
+      });
+
+      test('overdue menggunakan Date sebenar', function () {
+        var d = new Date(Date.now() - 48 * 3600 * 1000); // 2 hari lepas
+        function iso(dt) {
+          return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+        }
+        var t = { done: false, deadline: iso(d) };
+        if (!TodoCore.isOverdue(t)) throw new Error('sepatutnya terlewat');
+        var masaDepan = { done: false, deadline: iso(new Date(Date.now() + 7 * 86400000)) };
+        if (TodoCore.isOverdue(masaDepan)) throw new Error('tidak sepatutnya terlewat');
+      });
+
+      test('deserialize menyaring data rosak tanpa crash', function () {
+        var r1 = TodoCore.deserialize('{bukan json');
+        if (r1.ok) throw new Error('sepatutnya ditolak');
+        var r2 = TodoCore.deserialize(JSON.stringify({ tasks: [{ title: 'A' }, { title: ' ' }] }));
+        if (!r2.ok || r2.state.tasks.length !== 1) throw new Error('saringan gagal');
+      });
+
+      test('susun semula (moveTask & applyVisibleReorder)', function () {
+        var s = fresh();
+        var a = TodoCore.addTask(s, { title: 'A' });
+        var b = TodoCore.addTask(s, { title: 'B' });
+        var c = TodoCore.addTask(s, { title: 'C' });
+        TodoCore.moveTask(s, c.id, 0);
+        if (s.tasks[0].title !== 'C') throw new Error('moveTask');
+        // [C,A,B] — gerakkan item kelihatan terakhir (B) ke hadapan → [B,C,A]
+        var vis = TodoCore.getFilteredTasks(s).map(function (t) { return t.id; });
+        TodoCore.applyVisibleReorder(s, vis, 2, 0);
+        if (s.tasks[0].title !== 'B') throw new Error('applyVisibleReorder — jangka B di hadapan');
+        if (s.tasks[2].title !== 'A') throw new Error('applyVisibleReorder — jangka A di hujung');
+      });
+
+      test('eksport JSON sah', function () {
+        var s = fresh();
+        TodoCore.addTask(s, { title: 'J' });
+        var obj = JSON.parse(TodoCore.exportJson(s));
+        if (!Array.isArray(obj.tasks)) throw new Error('struktur');
+        TodoCore.deserialize(TodoCore.exportJson(s)); // tiada throw = sah
+      });
+
+      var info = {
+        PASS: results.fail === 0,
+        pass: results.pass,
+        fail: results.fail,
+        failures: results.failures
+      };
+      document.getElementById('test-result').textContent = 'TEST_RESULT ' + JSON.stringify(info);
+    })();
+  </script>
+</body>
+</html>
