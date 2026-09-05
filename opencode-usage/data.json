@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-05T07:00:12.216Z",
+  "generated": "2026-09-05T08:00:13.897Z",
   "period": "05–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 20457,
+    "streams": 20529,
     "models": 12,
-    "tools": 40425,
+    "tools": 40606,
     "toolKinds": 11,
-    "sessions": 553,
-    "loops": 21314
+    "sessions": 556,
+    "loops": 21387
   },
   "models": [
     {
@@ -70,7 +70,7 @@
     },
     {
       "name": "opencode-zen · big-pickle",
-      "value": 183,
+      "value": 255,
       "color": "#ec4899"
     },
     {
@@ -97,47 +97,47 @@
   "tools": [
     {
       "name": "bash",
-      "value": 27593,
+      "value": 27713,
       "color": "#ef4444"
     },
     {
       "name": "read",
-      "value": 3564,
+      "value": 3583,
       "color": "#3b82f6"
     },
     {
       "name": "external_directory",
-      "value": 3479,
+      "value": 3497,
       "color": "#0ea5a4"
     },
     {
       "name": "edit",
-      "value": 3426,
+      "value": 3441,
       "color": "#f59e0b"
     },
     {
       "name": "grep",
-      "value": 905,
+      "value": 906,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 522,
+      "value": 523,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 360,
+      "value": 362,
       "color": "#6366f1"
     },
     {
       "name": "todowrite",
-      "value": 252,
+      "value": 256,
       "color": "#ec4899"
     },
     {
       "name": "webfetch",
-      "value": 228,
+      "value": 229,
       "color": "#22c55e"
     },
     {
