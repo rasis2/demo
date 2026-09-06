@@ -397,8 +397,8 @@
     addLog('🧑 ' + p.name + ': pilih 2 wau untuk diterbangkan.');
     renderPlayers();
     setControls(
-      '<div class="ctrl-hint">Klik 2 wau dalam tangan anda.</div>' +
-      '<button class="btn" id="btn-confirm" disabled>Lepas Wau!</button>',
+      '<div class="ctrl-hint mb-1 text-sm font-bold text-white [text-shadow:2px_2px_0_#2c1e12]">Klik 2 wau dalam tangan anda.</div>' +
+      '<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-40" id="btn-confirm" disabled>Lepas Wau!</button>',
       function (c) {
         var btn = c.querySelector('#btn-confirm');
         btn.addEventListener('click', function () {
@@ -446,11 +446,11 @@
     var ov = $('#overlay');
     ov.classList.add('show');
     ov.innerHTML =
-      '<div class="ov-box">' +
-        '<div class="ov-title">🧑 ' + esc(p.name) + ' — pilih 2 wau</div>' +
-        '<div class="ov-sub">Pilih 2 wau secara rahsia. Pemain lain jangan lihat!</div>' +
-        '<div class="ov-hand" id="ov-hand"></div>' +
-        '<button class="btn" id="btn-ov-confirm" disabled>Lepas Wau!</button>' +
+      '<div class="ov-box w-full max-w-xl rounded-2xl border-4 border-ink bg-panel p-4 text-center shadow-chunkylg">' +
+        '<div class="ov-title text-xl font-extrabold uppercase tracking-wide">🧑 ' + esc(p.name) + ' — pilih 2 wau</div>' +
+        '<div class="ov-sub mt-1 mb-3 text-sm text-[#6a4f2e]">Pilih 2 wau secara rahsia. Pemain lain jangan lihat!</div>' +
+        '<div class="ov-hand flex flex-wrap justify-center gap-2.5" id="ov-hand"></div>' +
+        '<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-40" id="btn-ov-confirm" disabled>Lepas Wau!</button>' +
       '</div>';
 
     var handWrap = ov.querySelector('#ov-hand');
@@ -475,10 +475,10 @@
       }
       if (nextHuman !== null) {
         ov.innerHTML =
-          '<div class="ov-box">' +
-            '<div class="ov-title">🔒 Serahkan Skrin</div>' +
-            '<div class="ov-sub">Sembunyikan pilihan anda. Serahkan skrin kepada <b>' + esc(g.players[nextHuman].name) + '</b>.</div>' +
-            '<button class="btn" id="btn-ov-pass">Saya ' + esc(g.players[nextHuman].name) + ' — Teruskan ▶</button>' +
+          '<div class="ov-box w-full max-w-xl rounded-2xl border-4 border-ink bg-panel p-4 text-center shadow-chunkylg">' +
+            '<div class="ov-title text-xl font-extrabold uppercase tracking-wide">🔒 Serahkan Skrin</div>' +
+            '<div class="ov-sub mt-1 mb-3 text-sm text-[#6a4f2e]">Sembunyikan pilihan anda. Serahkan skrin kepada <b>' + esc(g.players[nextHuman].name) + '</b>.</div>' +
+            '<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-5 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-ov-pass">Saya ' + esc(g.players[nextHuman].name) + ' — Teruskan ▶</button>' +
           '</div>';
         ov.querySelector('#btn-ov-pass').addEventListener('click', function () {
           ov.classList.remove('show');
@@ -496,7 +496,7 @@
   /* ---------------- FASA REVEAL + ROUND ---------------- */
   function revealPhase() {
     var g = app.engine;
-    setControls('<button class="btn" id="btn-reveal">🌬️ Tiup Angin!</button>', function (c) {
+    setControls('<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-reveal">🌬️ Tiup Angin!</button>', function (c) {
       c.querySelector('#btn-reveal').addEventListener('click', function () {
         g.revealWind();
         addLog('🌬️ Angin semasa: ' + LEVEL[g.currentWind.level].label + ' ' + LEVEL[g.currentWind.level].icon);
@@ -517,7 +517,7 @@
         addLog(res === 'auto' ? '⭐ Pemenang automatik!' : 'Kad angin tidak dituntut.');
         finishRound();
       } else {
-        setControls('<div class="ctrl-hint">Gulung dadu untuk wau hidup…</div><button class="btn" id="btn-roll">🎲 Gulung Dadu!</button>', function (c) {
+        setControls('<div class="ctrl-hint mb-1 text-sm font-bold text-white [text-shadow:2px_2px_0_#2c1e12]">Gulung dadu untuk wau hidup…</div><button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-roll">🎲 Gulung Dadu!</button>', function (c) {
           c.querySelector('#btn-roll').addEventListener('click', function () {
             setControls('');
             runDicePhase();
@@ -584,7 +584,7 @@
     g.updateScores();
     renderAll();
 
-    setControls('<button class="btn" id="btn-next">Seterusnya ▶</button>', function (c) {
+    setControls('<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-next">Seterusnya ▶</button>', function (c) {
       c.querySelector('#btn-next').addEventListener('click', function () {
         setControls('');
         if (g.isGameOver()) {
@@ -646,9 +646,9 @@
     var ov = $('#overlay');
     ov.classList.add('show');
     ov.innerHTML =
-      '<div class="ov-box rules">' +
-        '<div class="ov-title">📖 Cara Main — Rentak Wau v2</div>' +
-        '<div class="rules-scroll">' +
+      '<div class="ov-box rules w-full max-w-xl rounded-2xl border-4 border-ink bg-panel p-4 text-center shadow-chunkylg">' +
+        '<div class="ov-title text-xl font-extrabold uppercase tracking-wide">📖 Cara Main — Rentak Wau v2</div>' +
+        '<div class="rules-scroll mt-2 mb-3 text-left text-[13px] leading-relaxed text-[#3a2a18]">' +
           '<p><b>Komponen:</b> 12 kad wau (4 paras tinggi, 4 sederhana, 4 rendah — setiap satu saiz berbeza), 6 kad angin (2 tinggi, 2 sederhana, 2 rendah), 4 dadu D6.</p>' +
           '<p><b>Setup:</b> Kocok kad wau. Setiap pemain draft 3 wau (1 setiap paras angin). Kocok kad angin sebagai dek. Sediakan longgokan.</p>' +
           '<p><b>Setiap pusingan:</b></p>' +
@@ -668,7 +668,7 @@
           '<p><b>Skor:</b> Setiap kad angin = 1 mata. Setiap <b>pasangan</b> kad angin paras sama = +1 bonus (cth: 2 Tinggi = 3 mata).</p>' +
           '<p><b>Menang:</b> Skor tertinggi. Jika seri, pemain dengan saiz wau terkecil dalam tangan menang.</p>' +
         '</div>' +
-        '<button class="btn" id="btn-ov-close">Tutup</button>' +
+        '<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-ov-close">Tutup</button>' +
       '</div>';
     ov.querySelector('#btn-ov-close').addEventListener('click', function () {
       ov.classList.remove('show');

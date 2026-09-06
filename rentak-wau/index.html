@@ -2,91 +2,137 @@
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Rentak Wau v2 — The Wau Flying Card Game</title>
 <meta name="description" content="Rentak Wau v2: The Wau Flying Card Game — permainan kad & dadu 2–4 pemain. Terbangkan wau mengikut rentak angin!">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='48' font-size='44'%3E%F0%9F%AA%81%3C/text%3E%3C/svg%3E">
+
+<!-- Tailwind Play CDN (runtime JIT — tanpa build step) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  /* Tema langit senja — padan palet pixel-art (rujuk style.css) */
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          sky1: '#3b2f63',
+          sky2: '#6c4a9e',
+          sky3: '#d97a5a',
+          sky4: '#f3c37a',
+          land: '#2e4a2a',
+          land2: '#3d5c35',
+          panel: '#fff7e8',
+          panel2: '#f1e3c0',
+          line: '#4a3420',
+          ink: '#2c1e12',
+          gold: '#ffd23f',
+          goldsoft: '#ffe9a8',
+          red: '#e2593b',
+          blue: '#3f7fd0',
+          green: '#4f9e57',
+          btn: '#e2593b',
+          btnhi: '#ff7a55',
+          cream: '#ffe9c9',
+          cream2: '#ffd9a0'
+        },
+        fontFamily: {
+          pixel: ['"Courier New"', 'Consolas', 'monospace']
+        },
+        boxShadow: {
+          chunky: '4px 4px 0 rgba(0,0,0,0.35)',
+          chunkysm: '3px 3px 0 rgba(0,0,0,0.35)',
+          chunkylg: '8px 8px 0 rgba(0,0,0,0.35)'
+        }
+      }
+    }
+  };
+</script>
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<div id="app">
+<body class="h-dvh overflow-hidden font-pixel text-ink antialiased [image-rendering:pixelated]">
+
+<div id="app" class="relative z-10 h-dvh">
 
   <!-- ================= SKRIN SETUP ================= -->
-  <section id="screen-setup" class="screen active">
-    <div class="setup-wrap">
-      <div class="logo-zone">
-        <div class="logo-kites" id="logo-kites"></div>
-        <h1 class="logo-title">RENTAK <span>WAU</span></h1>
-        <p class="logo-sub">v2 · The Wau Flying Card Game</p>
-        <p class="logo-sub2">Kad &amp; Dadu · 2–4 Pemain · 15–30 minit · Umur 8+</p>
+  <section id="screen-setup" class="screen h-full overflow-y-auto">
+    <div class="m-auto flex min-h-full w-full max-w-xl flex-col items-center justify-center gap-3 px-4 py-4 text-center">
+      <div>
+        <div id="logo-kites" class="mb-1 flex items-end justify-center gap-3"></div>
+        <h1 class="text-4xl font-extrabold uppercase tracking-[3px] text-white [text-shadow:4px_4px_0_#2c1e12,8px_8px_0_rgba(0,0,0,0.25)] sm:text-5xl">RENTAK <span class="text-gold">WAU</span></h1>
+        <p class="mt-1 text-sm tracking-[2px] text-cream [text-shadow:2px_2px_0_#2c1e12]">v2 · The Wau Flying Card Game</p>
+        <p class="mt-1.5 text-xs text-cream2 [text-shadow:1px_1px_0_#2c1e12]">Kad &amp; Dadu · 2–4 Pemain · 15–30 minit · Umur 8+</p>
       </div>
 
-      <div class="setup-box">
-        <h2>Mula Permainan</h2>
-        <div class="setup-bar">
-          <span class="setup-label">Pemain: <b id="setup-count">2</b></span>
-          <button class="btn small" id="btn-add-player">＋ Tambah</button>
-          <button class="btn small" id="btn-remove-player">－ Kurang</button>
+      <div class="w-full rounded-2xl border-4 border-ink bg-panel p-4 shadow-chunkylg">
+        <h2 class="mb-3 text-xl font-extrabold uppercase tracking-wide">Mula Permainan</h2>
+        <div class="mb-3 flex flex-wrap items-center justify-center gap-2">
+          <span class="text-sm font-bold">Pemain: <b id="setup-count">2</b></span>
+          <button id="btn-add-player" class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-panel2 px-3 text-xs font-bold uppercase tracking-wide text-ink shadow-chunkysm transition hover:bg-goldsoft active:translate-x-[2px] active:translate-y-[2px] active:shadow-none sm:min-h-9">＋ Tambah</button>
+          <button id="btn-remove-player" class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-panel2 px-3 text-xs font-bold uppercase tracking-wide text-ink shadow-chunkysm transition hover:bg-goldsoft active:translate-x-[2px] active:translate-y-[2px] active:shadow-none sm:min-h-9">－ Kurang</button>
         </div>
-        <div id="setup-players" class="setup-players"></div>
-        <p class="hint">Tukar 🧑 Manusia ⇄ 🤖 AI. Lebih dari 1 manusia = mod <b>Hotseat</b> (serahkan skrin).</p>
-        <button class="btn big" id="btn-start">▶ Mula Permainan</button>
-        <button class="btn ghost" id="btn-rules">📖 Cara Main</button>
+        <div id="setup-players" class="flex flex-col gap-2"></div>
+        <p class="mx-auto mt-2 mb-3 max-w-sm text-[11px] leading-snug text-[#6a4f2e]">Tukar 🧑 Manusia ⇄ 🤖 AI. Lebih dari 1 manusia = mod <b>Hotseat</b> (serahkan skrin).</p>
+        <div class="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+          <button id="btn-start" class="inline-flex min-h-12 w-full items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-7 text-base font-bold uppercase tracking-wide text-white shadow-chunky transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none sm:w-auto">▶ Mula Permainan</button>
+          <button id="btn-rules" class="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-panel px-5 text-sm font-bold uppercase tracking-wide text-ink shadow-chunkysm transition hover:bg-white active:translate-x-[3px] active:translate-y-[3px] active:shadow-none sm:w-auto">📖 Cara Main</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ================= SKRIN GAME ================= -->
-  <section id="screen-game" class="screen">
-    <header class="topbar">
-      <div class="tb-left">
-        <button class="btn small" id="btn-restart" title="Menu">☰ Menu</button>
-        <span class="tb-title">🪁 Rentak Wau</span>
+  <section id="screen-game" class="screen h-full overflow-hidden">
+    <header class="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b-4 border-ink bg-[#1e1428]/75 px-3 py-1.5 backdrop-blur-sm">
+      <div class="flex items-center gap-2">
+        <button id="btn-restart" class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-panel px-3 text-xs font-bold uppercase tracking-wide text-ink shadow-chunkysm transition hover:bg-white active:translate-x-[2px] active:translate-y-[2px] active:shadow-none sm:min-h-9" title="Menu">☰ Menu</button>
+        <span class="text-base font-extrabold tracking-wide text-white [text-shadow:2px_2px_0_#2c1e12] sm:text-lg">🪁 Rentak Wau</span>
       </div>
-      <div class="tb-right">
-        <span class="pill" id="round-label">Pusingan 1 / 6</span>
-        <span class="pill">🌬️ Dek: <b id="wind-deck-count">6</b></span>
-        <span class="pill">🗂️ Longgokan: <b id="discard-count">0</b></span>
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <span id="round-label" class="rounded-full border-[3px] border-ink bg-panel px-2.5 py-1 text-[11px] font-bold shadow-chunkysm">Pusingan 1 / 6</span>
+        <span class="rounded-full border-[3px] border-ink bg-panel px-2.5 py-1 text-[11px] font-bold shadow-chunkysm">🌬️ Dek: <b id="wind-deck-count">6</b></span>
+        <span class="rounded-full border-[3px] border-ink bg-panel px-2.5 py-1 text-[11px] font-bold shadow-chunkysm">🗂️ Longgokan: <b id="discard-count">0</b></span>
       </div>
     </header>
 
-    <div class="game-layout">
-      <div class="col-wind" id="wind-zone"></div>
-      <div class="col-main">
-        <div class="field-title">🎯 PADANG WAU</div>
-        <div class="field" id="field"></div>
-      </div>
-      <div class="col-log">
-        <div class="log-title">📜 Log Round</div>
-        <div class="log" id="log"></div>
+    <div class="min-h-0 flex-1 overflow-y-auto">
+      <div class="flex min-h-full flex-col gap-3 p-3 lg:flex-row lg:items-stretch">
+        <div id="wind-zone" class="flex flex-wrap items-start justify-center gap-3 lg:w-[200px] lg:shrink-0 lg:flex-col lg:justify-start"></div>
+        <div class="flex min-w-0 flex-1 flex-col">
+          <div class="mb-1.5 text-center text-xs font-extrabold uppercase tracking-[2px] text-white [text-shadow:2px_2px_0_#2c1e12] lg:text-left">🎯 PADANG WAU</div>
+          <div id="field" class="flex min-h-[160px] flex-1 flex-wrap items-center justify-center gap-3 rounded-2xl border-4 border-ink bg-land/70 p-3 shadow-chunky"></div>
+        </div>
+        <div class="flex min-h-0 flex-col lg:w-[260px] lg:shrink-0">
+          <div class="mb-1 text-[11px] font-bold uppercase tracking-wider text-[#6a4f2e]">📜 Log Round</div>
+          <div id="log" class="log max-h-40 min-h-0 flex-1 overflow-y-auto rounded-lg border-2 border-line bg-panel/90 p-2 shadow-chunkysm lg:max-h-none"></div>
+        </div>
       </div>
     </div>
 
-    <div class="players" id="players"></div>
+    <div id="players" class="flex shrink-0 flex-wrap items-start justify-center gap-2 px-3 pb-1.5 pt-1"></div>
 
-    <div class="controls" id="controls"></div>
+    <div id="controls" class="flex shrink-0 flex-col items-center gap-1.5 px-3 pb-2 pt-0.5 text-center"></div>
   </section>
 
   <!-- ================= SKRIN TAMAT ================= -->
-  <section id="screen-end" class="screen">
-    <div class="end-wrap">
-      <h1 class="end-title">🏁 Permainan Tamat!</h1>
-      <p class="end-sub" id="end-rounds"></p>
-      <div class="end-msg" id="end-msg"></div>
-      <div class="final-list" id="final-list"></div>
-      <div class="end-log-box">
-        <div class="log-title">📜 Log Permainan</div>
-        <div class="log" id="end-log"></div>
+  <section id="screen-end" class="screen h-full overflow-y-auto">
+    <div class="m-auto flex min-h-full w-full max-w-xl flex-col items-center justify-center gap-2.5 px-4 py-4 text-center">
+      <h1 class="text-4xl font-extrabold tracking-[2px] text-white [text-shadow:4px_4px_0_#2c1e12] sm:text-5xl">🏁 Permainan Tamat!</h1>
+      <p id="end-rounds" class="text-sm text-cream2 [text-shadow:1px_1px_0_#2c1e12]"></p>
+      <div id="end-msg" class="inline-block rounded-2xl border-4 border-ink bg-gold px-5 py-2.5 text-lg font-extrabold shadow-chunky"></div>
+      <div id="final-list" class="flex w-full flex-col gap-2"></div>
+      <div class="w-full rounded-xl border-[3px] border-ink bg-panel p-2.5 text-left shadow-chunkysm">
+        <div class="mb-1 text-[11px] font-bold uppercase tracking-wider text-[#6a4f2e]">📜 Log Permainan</div>
+        <div id="end-log" class="log max-h-48 overflow-y-auto p-1 leading-relaxed"></div>
       </div>
-      <div class="end-actions">
-        <button class="btn big" id="btn-replay">🔄 Main Semula</button>
-        <button class="btn ghost" id="btn-restart2">☰ Menu</button>
+      <div class="flex flex-col items-center gap-2 sm:flex-row">
+        <button id="btn-replay" class="inline-flex min-h-12 w-full items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-7 text-base font-bold uppercase tracking-wide text-white shadow-chunky transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none sm:w-auto">🔄 Main Semula</button>
+        <button id="btn-restart2" class="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-panel px-5 text-sm font-bold uppercase tracking-wide text-ink shadow-chunkysm transition hover:bg-white active:translate-x-[3px] active:translate-y-[3px] active:shadow-none sm:w-auto">☰ Menu</button>
       </div>
     </div>
   </section>
 
   <!-- ================= OVERLAY ================= -->
-  <div id="overlay" class="overlay"></div>
+  <div id="overlay" class="overlay hidden fixed inset-0 z-50 items-center justify-center bg-[#140c1e]/85 p-3"></div>
 
 </div>
 

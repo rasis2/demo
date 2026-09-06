@@ -1,27 +1,18 @@
 # Memori Projek — rentak-wau
 
-## Last session (7/9/2026)
+## Last session (7/9/2026) — Beautify Tailwind + fit-to-screen
 
-Projek baru: **Rentak Wau v2** — game kad & dadu layang-layang (rulebook v1.3.6), di `demo\rentak-wau\`. SELESAI & DIUJI.
-
-**Fail dibuat:**
-- `index.html`, `style.css`, `README.md`
-- `js/cards.js` (12 wau, 6 angin, LEVEL meta, shuffle), `js/pixel.js` (seni pixel canvas — wau/wind/dadu), `js/engine.js` (enjin tulen, boleh Node), `js/ai.js` (AI kebarangkalian angin), `js/app.js` (UI + aliran fasa)
-- `test/engine-test.js` (Node), `test/harness.html`, `test/ui-human-test.html`, `test/ui-hotseat-test.html`
-- Portal `demo\index.html`: kad "Rentak Wau" di atas grid + butang "Cuba Rentak Wau" (keutamaan paling atas).
-
-**Keputusan reka bentuk:**
-- Zero dependency; seni pixel-art canvas (`image-rendering: pixelated`); UI Bahasa Melayu; responsif 390px–1280px.
-- Mod: vs AI (1 manusia + 1–3 AI), hotseat (2–4 manusia, overlay "Serahkan Skrin"), campuran manusia+AI (2+ manusia → auto hotseat).
-- Draft: auto-deal 1 setiap paras angin (ikuti cadangan rulebook); lebihan wau ke longgokan.
-- isGameOver = `windDeck.length === 0` (6 kad angin digunakan) — BUKAN `round > 6` (bug round 7 ditemui & diperbaiki).
-- Tiada pemenang round (tiada wau padan) → kad angin ke `windDiscard` ("Angin Terpakai"), tetap dikira satu pusingan.
-- AI heuristik: kebarangkalian paras angin baki + gemar saiz kecil (tiebreak) + bonus simpan wau.
-- Tiebreak: dadu sama → wau kecil menang; skor = kad + pasangan paras sama (+1); tie akhir → saiz wau terkecil dalam tangan.
+**Kerja:**
+- `index.html` ditulis semula penuh guna **Tailwind Play CDN** (cdn.tailwindcss.com + `tailwind.config` tema langit senja: sky1-4/land/panel/line/ink/gold/btn dll, font pixel, box-shadow chunky). Layout fit-to-screen: `body h-dvh overflow-hidden`, `.screen.active { display:flex; height:100% }`; desktop 3 kolum (wind 200px / field flex-1 / log 260px) via `lg:flex-row`, mobile stack; log & kawasan main scroll dalaman sahaja — TIADA scroll halaman. Butang ≥44px (min-h-11), font ≥16px.
+- `style.css` dikurangkan 639 → ~230 baris: hanya kelas komponen yang `js/app.js` jana/toggle (setup-player/sp-*, pile-*, wind-card/wau-card/die, player-panel/pp-*, log-line, final-row/fr-*, ov-hand, animations, media padat). Gaya visual utama = Tailwind.
+- `js/app.js` diubah MINIMAL: hanya template string `class="btn"` (7 butang) + `.ctrl-hint` (2) + `.ov-box/.ov-title/.ov-sub/.rules-scroll` (3 overlay) → Tailwind. Logik enjin/UI tidak disentuh. SEMUA ID & kelas toggle kekal.
+- `README.md`: seksyen Teknologi dikemas kini (Tailwind CDN + CSS komponen minimal + fit-to-screen).
 
 **Pengujian (semua PASS):**
-- Node `test/engine-test.js`: 221 lulus, 0 gagal (komponen, skor rulebook, aliran round, simulasi penuh 2–4 pemain ×30, tiebreak dadu, auto-menang, tie-break akhir).
-- Headless Edge (file:// & http://localhost): harness PASS, ui-human PASS, ui-hotseat PASS, `index.html?uitest=1` → SELFTEST PASS (0 runtime error), `?audit=1` → PASS (tiada h-scroll 390px & 1280px).
-- `node --check` semua JS OK.
+- Node `test/engine-test.js`: 221 lulus, 0 gagal.
+- Headless Edge `--dump-dom --virtual-time-budget=90000`: harness PASS, `?uitest=1` → SELFTEST PASS (1280 & 390), `?audit=1` → AUDIT PASS (1280 & 390, tiada h-scroll, 0 runtime error).
+- CDP emulasi viewport SEBENAR: audit PASS di 390×844 & 1280×800 (scrollW = vw, 0 error); selftest PASS masa-nyata di 1280×800 & 390×844 (mobile:false) — game main penuh 6 pusingan.
+- Pengukuran kedudukan: setup noScroll, game body scrollY=0, players+controls nampak penuh dalam viewport di kedua-dua saiz.
+- Nota: emulasi CDP `mobile:true` di headless sangat perlahan → `?uitest=1` masa-nyata tak sempat (45s); gunakan virtual-time atau `mobile:false` untuk ujian penuh.
 
-**Nota:** ujian headless guna `--dump-dom --virtual-time-budget`; untuk error tulen guna HTTP server (file:// sembunyikan detail error sebagai "Script error."). Skrin tamat tidak boleh capai `?uitest=1` jika masa virtual terlalu pendek (90s selamat).
+**Nota ujian:** `test/ui-human-test.html` & `test/ui-hotseat-test.html` ialah harness JS berdiri sendiri TANPA DOM index.html → `startWith()` lempar (null #screen-game) — PRA-SEDIA ADA, bukan regresi; ujian berwibawa ialah harness/uitest/audit + engine-test.

@@ -30,8 +30,11 @@ Terbangkan wau mengikut rentak angin, tuntut kad angin, dan kumpul mata tertingg
 
 ## Teknologi
 
-Zero dependency — HTML/CSS/JS tulen, seni **pixel-art** (canvas), tiada CDN.
-Buka terus `index.html` dalam pelayar. Responsif 375px ke atas.
+- **HTML/CSS/JS tulen** — seni **pixel-art** (canvas), logik enjin tulen (boleh diuji Node).
+- **Tailwind Play CDN** (runtime JIT) — tema langit senja via `tailwind.config` dalam `index.html`;
+  `style.css` hanya memegang kelas komponen yang `js/app.js` jana/toggle.
+- Layout **fit-to-screen**: `h-dvh` + flex/grid, tiada scroll halaman (log & kawasan main
+  scroll dalaman). Responsif desktop 1280×800 & mobile 390×844 (butang ≥44px, font ≥16px).
 
 ## Lokasi Fail
 
