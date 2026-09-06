@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Rentak Wau — Harness Ujian Browser</title>
+</head>
+<body>
+<div id="harness"></div>
+<script>
+window.__ERR = [];
+window.onerror = function (msg, src, line) {
+  window.__ERR.push(msg + ' @' + line);
+};
+</script>
+<script src="../js/cards.js"></script>
+<script src="../js/pixel.js"></script>
+<script src="../js/engine.js"></script>
+<script src="../js/ai.js"></script>
+<script src="../js/app.js"></script>
+<script>
+/* Ujian browser: simulasi penuh menggunakan enjin + AI, serta
+   smoke-test fungsi render app.js (tanpa klik). */
+var out = document.getElementById('harness');
+var failures = 0;
+function check(cond, msg) {
+  var line = (cond ? 'PASS' : 'FAIL') + ': ' + msg;
+  var div = document.createElement('div');
+  div.textContent = line;
+  out.appendChild(div);
+  if (!cond) failures++;
+}
+
+try {
+  // --- 1. simulasi enjin penuh (2-4 pemain) ---
+  for (var n = 2; n <= 4; n++) {
+    for (var s = 0; s < 20; s++) {
+      var cfg = [];
+      for (var i = 0; i < n; i++) cfg.push({ name: 'P' + i, isAI: true });
+      var e = new RentakEngine.GameEngine();
+      e.newGame(cfg);
+      var r = 0;
+      while (!e.isGameOver() && r < 8) {
+        e.players.forEach(function (p) { e.chooseWau(p.id, RentakAI.choose(e, p)); });
+        e.revealWind();
+        e.checkCompatibility();
+        var res = e.prepareDice();
+        if (res === 'roll') { e.rollDice(); e.determineWinner(); }
+        e.claimWind();
+        e.discardLosers();
+        e.refillHands();
+        e.nextRound();
+        r++;
+      }
+      check(e.isGameOver(), 'enjin selesai ' + n + ' pemain');
+    }
+  }
+
+  // --- 2. smoke-test UI: canvas pixel art ---
+  var cv = RentakPixel.wauCanvas({ id: 't', name: 'Test', level: 'high', size: 12, shade: 0 }, 2);
+  check(cv && cv.width > 0, 'pixel wau canvas dijana');
+  var cv2 = RentakPixel.windCanvas('mid', 2);
+  check(cv2 && cv2.width > 0, 'pixel wind canvas dijana');
+  var cv3 = RentakPixel.dieCanvas(5, 2);
+  check(cv3 && cv3.width > 0, 'pixel dadu canvas dijana');
+
+  // --- 3. ujian fungsi app.js (startGame + render, all-AI auto-flow) ---
+  check(typeof RentakApp.startGame === 'function', 'app.js dimuat (RentakApp ada)');
+} catch (err) {
+  failures++;
+  var ediv = document.createElement('div');
+  ediv.textContent = 'FAIL: exception ' + err.message;
+  out.appendChild(ediv);
+}
+
+check(window.__ERR.length === 0, 'tiada runtime error (' + window.__ERR.length + ' error)');
+if (window.__ERR.length) {
+  window.__ERR.forEach(function (er) {
+    var d = document.createElement('div');
+    d.textContent = 'ERROR: ' + er;
+    out.appendChild(d);
+  });
+}
+
+var result = document.createElement('div');
+result.id = 'result';
+result.textContent = failures === 0 ? 'HARNESS RESULT: PASS' : 'HARNESS RESULT: FAIL';
+out.appendChild(result);
+</script>
+</body>
+</html>

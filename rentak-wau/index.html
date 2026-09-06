@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rentak Wau v2 — The Wau Flying Card Game</title>
+<meta name="description" content="Rentak Wau v2: The Wau Flying Card Game — permainan kad & dadu 2–4 pemain. Terbangkan wau mengikut rentak angin!">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='48' font-size='44'%3E%F0%9F%AA%81%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= SKRIN SETUP ================= -->
+  <section id="screen-setup" class="screen active">
+    <div class="setup-wrap">
+      <div class="logo-zone">
+        <div class="logo-kites" id="logo-kites"></div>
+        <h1 class="logo-title">RENTAK <span>WAU</span></h1>
+        <p class="logo-sub">v2 · The Wau Flying Card Game</p>
+        <p class="logo-sub2">Kad &amp; Dadu · 2–4 Pemain · 15–30 minit · Umur 8+</p>
+      </div>
+
+      <div class="setup-box">
+        <h2>Mula Permainan</h2>
+        <div class="setup-bar">
+          <span class="setup-label">Pemain: <b id="setup-count">2</b></span>
+          <button class="btn small" id="btn-add-player">＋ Tambah</button>
+          <button class="btn small" id="btn-remove-player">－ Kurang</button>
+        </div>
+        <div id="setup-players" class="setup-players"></div>
+        <p class="hint">Tukar 🧑 Manusia ⇄ 🤖 AI. Lebih dari 1 manusia = mod <b>Hotseat</b> (serahkan skrin).</p>
+        <button class="btn big" id="btn-start">▶ Mula Permainan</button>
+        <button class="btn ghost" id="btn-rules">📖 Cara Main</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SKRIN GAME ================= -->
+  <section id="screen-game" class="screen">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="btn small" id="btn-restart" title="Menu">☰ Menu</button>
+        <span class="tb-title">🪁 Rentak Wau</span>
+      </div>
+      <div class="tb-right">
+        <span class="pill" id="round-label">Pusingan 1 / 6</span>
+        <span class="pill">🌬️ Dek: <b id="wind-deck-count">6</b></span>
+        <span class="pill">🗂️ Longgokan: <b id="discard-count">0</b></span>
+      </div>
+    </header>
+
+    <div class="game-layout">
+      <div class="col-wind" id="wind-zone"></div>
+      <div class="col-main">
+        <div class="field-title">🎯 PADANG WAU</div>
+        <div class="field" id="field"></div>
+      </div>
+      <div class="col-log">
+        <div class="log-title">📜 Log Round</div>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+
+    <div class="players" id="players"></div>
+
+    <div class="controls" id="controls"></div>
+  </section>
+
+  <!-- ================= SKRIN TAMAT ================= -->
+  <section id="screen-end" class="screen">
+    <div class="end-wrap">
+      <h1 class="end-title">🏁 Permainan Tamat!</h1>
+      <p class="end-sub" id="end-rounds"></p>
+      <div class="end-msg" id="end-msg"></div>
+      <div class="final-list" id="final-list"></div>
+      <div class="end-log-box">
+        <div class="log-title">📜 Log Permainan</div>
+        <div class="log" id="end-log"></div>
+      </div>
+      <div class="end-actions">
+        <button class="btn big" id="btn-replay">🔄 Main Semula</button>
+        <button class="btn ghost" id="btn-restart2">☰ Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= OVERLAY ================= -->
+  <div id="overlay" class="overlay"></div>
+
+</div>
+
+<script src="js/cards.js"></script>
+<script src="js/pixel.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/app.js"></script>
+<script>
+/* Tangkap error masa jalan untuk ujian automatik */
+window.__RENTAK_ERR = [];
+window.addEventListener('error', function (e) {
+  window.__RENTAK_ERR.push(e.message + ' @' + e.lineno);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Rentak Wau — Ujian Hotseat</title>
+</head>
+<body>
+<div id="hot"></div>
+<script>
+window.__ERR = [];
+window.onerror = function (msg, src, line) { window.__ERR.push(msg + ' @' + line); };
+</script>
+<script src="../js/cards.js"></script>
+<script src="../js/pixel.js"></script>
+<script src="../js/engine.js"></script>
+<script src="../js/ai.js"></script>
+<script src="../js/app.js"></script>
+<script>
+/* Hotseat: 2 manusia + 1 AI. Fasa pilih guna overlay + skrin serah.
+   Test: pastikan overlay muncul, klik kad, confirm, pass, dan game tamat. */
+var out = document.getElementById('hot');
+var failures = 0;
+function check(cond, msg) {
+  var div = document.createElement('div');
+  div.textContent = (cond ? 'PASS' : 'FAIL') + ': ' + msg;
+  out.appendChild(div);
+  if (!cond) failures++;
+}
+function clickBtn(sel) { var b = document.querySelector(sel); if (b) { b.click(); return true; } return false; }
+
+var engine = RentakApp.startWith([
+  { name: 'Ali', isAI: false },
+  { name: 'Baba', isAI: false },
+  { name: 'Ribut', isAI: true }
+]);
+check(!!engine && engine.players.length === 3, 'hotseat 3 pemain bermula');
+
+var overlaySeen = 0;
+var passSeen = 0;
+var ticks = 0;
+var iv = setInterval(function () {
+  ticks++;
+  var endActive = document.getElementById('screen-end').classList.contains('active');
+  var ov = document.getElementById('overlay');
+
+  // fasa pilih hotseat: overlay dengan kad
+  var ovCards = ov.querySelectorAll('.ov-hand .wau-card');
+  if (ov.classList.contains('show') && ovCards.length >= 2) {
+    overlaySeen++;
+    // klik 2 kad pertama
+    var sel = ov.querySelectorAll('.ov-hand .wau-card.selected');
+    if (sel.length < 2) {
+      ovCards[0].click();
+      ovCards[1].click();
+    }
+    // jika butang confirm wujud & enable, klik
+    var oc = ov.querySelector('#btn-ov-confirm');
+    if (oc && !oc.disabled) { oc.click(); return; }
+    // jika skrin serah
+    var op = ov.querySelector('#btn-ov-pass');
+    if (op) { passSeen++; op.click(); return; }
+    return;
+  }
+
+  // bukan hotseat pick → klik butang fasa biasa
+  ['#btn-reveal', '#btn-roll', '#btn-next'].forEach(function (sel) { clickBtn(sel); });
+
+  if (ticks > 500) { clearInterval(iv); check(false, 'timeout 50s'); finish(); return; }
+  if (endActive) { clearInterval(iv); finish(); }
+}, 100);
+
+function finish() {
+  check(overlaySeen >= 2, 'overlay pemilihan muncul (' + overlaySeen + 'x)');
+  check(passSeen >= 1, 'skrin serahkan muncul (' + passSeen + 'x)');
+  check(document.getElementById('screen-end').classList.contains('active'), 'skrin tamat aktif');
+  var rows = document.querySelectorAll('#final-list .final-row');
+  check(rows.length === 3, '3 baris keputusan akhir');
+  check(window.__ERR.length === 0, 'tiada runtime error (' + window.__ERR.length + ')');
+  if (window.__ERR.length) {
+    window.__ERR.slice(0, 5).forEach(function (er) {
+      var d = document.createElement('div');
+      d.textContent = 'ERROR: ' + er;
+      out.appendChild(d);
+    });
+  }
+  var r = document.createElement('div');
+  r.id = 'result';
+  r.textContent = failures === 0 ? 'HOTSEAT RESULT: PASS' : 'HOTSEAT RESULT: FAIL';
+  out.appendChild(r);
+}
+</script>
+</body>
+</html>

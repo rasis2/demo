@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Rentak Wau — Ujian Manusia vs AI</title>
+</head>
+<body>
+<div id="hvai"></div>
+<script>
+window.__ERR = [];
+window.onerror = function (msg, src, line) { window.__ERR.push(msg + ' @' + line); };
+</script>
+<script src="../js/cards.js"></script>
+<script src="../js/pixel.js"></script>
+<script src="../js/engine.js"></script>
+<script src="../js/ai.js"></script>
+<script src="../js/app.js"></script>
+<script>
+/* Simulasi pemain manusia: klik 2 kad tangan + butang fasa sehingga tamat. */
+var out = document.getElementById('hvai');
+var failures = 0;
+function check(cond, msg) {
+  var div = document.createElement('div');
+  div.textContent = (cond ? 'PASS' : 'FAIL') + ': ' + msg;
+  out.appendChild(div);
+  if (!cond) failures++;
+}
+function clickBtn(sel) { var b = document.querySelector(sel); if (b) { b.click(); return true; } return false; }
+
+var engine = RentakApp.startWith([
+  { name: 'Anda', isAI: false },
+  { name: 'Ribut', isAI: true }
+]);
+check(!!engine && engine.players.length === 2, 'permainan manusia vs AI bermula');
+
+var ticks = 0;
+var iv = setInterval(function () {
+  ticks++;
+  var endActive = document.getElementById('screen-end').classList.contains('active');
+  // fasa pilih: klik kad tangan pemain 0 jika ada
+  var hand = document.querySelectorAll('#players [data-pid="0"] .pp-hand .wau-card.selectable');
+  var confirmBtn = document.getElementById('btn-confirm');
+  if (confirmBtn && confirmBtn.disabled && hand.length >= 2) {
+    hand[0].click();
+    hand[1].click();
+  }
+  ['#btn-confirm', '#btn-reveal', '#btn-roll', '#btn-next'].forEach(function (sel) { clickBtn(sel); });
+  if (ticks > 400) { clearInterval(iv); check(false, 'timeout 40s'); finish(); return; }
+  if (endActive) { clearInterval(iv); finish(); }
+}, 100);
+
+function finish() {
+  check(document.getElementById('screen-end').classList.contains('active'), 'skrin tamat aktif');
+  var rows = document.querySelectorAll('#final-list .final-row');
+  check(rows.length === 2, '2 baris keputusan');
+  check(window.__ERR.length === 0, 'tiada runtime error (' + window.__ERR.length + ')');
+  if (window.__ERR.length) {
+    window.__ERR.slice(0, 5).forEach(function (er) {
+      var d = document.createElement('div');
+      d.textContent = 'ERROR: ' + er;
+      out.appendChild(d);
+    });
+  }
+  var r = document.createElement('div');
+  r.id = 'result';
+  r.textContent = failures === 0 ? 'HVS RESULT: PASS' : 'HVS RESULT: FAIL';
+  out.appendChild(r);
+}
+</script>
+</body>
+</html>
