@@ -32,7 +32,8 @@
     humanIds: [],
     selected: [],          // kad terpilih semasa fasa choose
     flow: null,            // aliran fasa
-    gameOver: false
+    gameOver: false,
+    collapsed: {}          // { pid: true } → panel pemain dikecilkan (kad disembunyikan)
   };
 
   /* ---------------- Skrin ---------------- */
@@ -268,6 +269,7 @@
 
       // header
       var score = g.computeScore(p.windCards);
+      var collapsed = !!app.collapsed[p.id];
       var head = document.createElement('div');
       head.className = 'pp-head';
       head.innerHTML =
@@ -275,8 +277,25 @@
         '<div class="pp-info">' +
           '<div class="pp-name">' + esc(p.name) + (p.isAI ? ' <span class="pp-tag">AI</span>' : '') + '</div>' +
           '<div class="pp-score">Mata: <b>' + score + '</b></div>' +
-        '</div>';
+        '</div>' +
+        '<button class="pp-collapse" type="button" title="' + (collapsed ? 'Kembangkan kad' : 'Kecilkan kad') + '" aria-label="' + (collapsed ? 'Kembangkan kad' : 'Kecilkan kad') + '">' + (collapsed ? '＋' : '－') + '</button>';
       panel.appendChild(head);
+
+      // butang kecilkan/embangkan kad pemain (jadikan bar nipis supaya padang lebih luas)
+      var collapseBtn = head.querySelector('.pp-collapse');
+      collapseBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var nowCollapsed = !panel.classList.contains('collapsed');
+        panel.classList.toggle('collapsed', nowCollapsed);
+        app.collapsed[p.id] = nowCollapsed;
+        collapseBtn.textContent = nowCollapsed ? '＋' : '－';
+        collapseBtn.title = nowCollapsed ? 'Kembangkan kad' : 'Kecilkan kad';
+        collapseBtn.setAttribute('aria-label', collapseBtn.title);
+      });
+
+      if (collapsed) {
+        panel.classList.add('collapsed');
+      }
 
       // kad angin dimenangi
       var won = document.createElement('div');
@@ -966,6 +985,19 @@
       check(document.getElementById('screen-game').classList.contains('active'), 'skrin game aktif');
       check(document.getElementById('round-label').textContent.indexOf('Pusingan') === 0, 'label pusingan dipaparkan');
       check(document.querySelectorAll('#players .pp-hand .wau-card').length >= 2, 'kad tangan dirender');
+      // butang kecilkan/expand kad (mobile: kad jadi bar nipis supaya padang luas)
+      var collapseBtns = document.querySelectorAll('#players .pp-collapse');
+      check(collapseBtns.length >= 2, 'butang kecilkan kad dirender untuk setiap panel');
+      if (collapseBtns.length) {
+        var firstBtn = collapseBtns[0];
+        var firstPanel = firstBtn.closest('.player-panel');
+        firstBtn.click();
+        check(firstPanel.classList.contains('collapsed'), 'butang kecilkan: panel menjadi bar nipis (collapsed)');
+        var vw2 = window.innerWidth;
+        check(document.documentElement.scrollWidth <= vw2 + 2, 'skrin game collapsed: tiada horizontal scroll (' + document.documentElement.scrollWidth + ' <= ' + vw2 + ')');
+        firstBtn.click();
+        check(!firstPanel.classList.contains('collapsed'), 'butang kecilkan: panel boleh expand semula');
+      }
       check(window.__RENTAK_ERR.length === 0, 'tiada runtime error (' + window.__RENTAK_ERR.length + ')');
       if (window.__RENTAK_ERR.length) {
         window.__RENTAK_ERR.slice(0, 3).forEach(function (er) { results.push('  ERROR: ' + er); failures++; });

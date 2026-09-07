@@ -1,6 +1,26 @@
 # Memori Projek — rentak-wau
 
-## Last session (7/9/2026) — Pacing Step-by-Step (mesin langkah + animasi perlahan)
+## Last session (7/9/2026) — Mobile view: butang kecilkan kad (collapse) supaya padang lebih luas
+
+**Kerja:**
+- `js/app.js`:
+  - State baru `app.collapsed = {}` (pid → true) — kekal lintas re-render.
+  - `renderPlayers()`: setiap panel pemain diberi butang kecilkan/expand `.pp-collapse` (－/＋) di header `.pp-head`. Klik toggles kelas `.collapsed` + simpan dalam `app.collapsed[pid]`. Tiada ID/selector sedia ada diubah; logik core enjin/UI tidak disentuh.
+  - `runAudit()`: tambah semakan baru — butang kecilkan dirender utk setiap panel, klik menjadikan panel collapsed, tiada h-scroll semasa collapsed, boleh expand semula.
+- `style.css`:
+  - `.pp-collapse` (44×44px, flex:none) + `.pp-info{flex:1;min-width:0}` (elak overflow).
+  - `.player-panel.collapsed` menyembunyikan `.pp-hand/.pp-played/.pp-living-tag/.pp-won` → panel jadi bar header nipis.
+  - Mobile (≤760px): zon angin `width:100px` tetap (label dikecilkan, elak wrap baris ke-2 — sebelum ini 3 pile-zone 100+113+128+gaps=365px hampir overflow; sekarang satu baris), `#log{max-height:96px}`, `#field{min-height:220px;flex-grow:1}`, dan **`#screen-game > .min-h-0 > div{height:100%}`** — kritikal: kolum utama perlu ketinggian pasti supaya `flex:1` padang benar-benar mengisi ruang selepas collapse (dulu auto-height → tiada ruang bebas → padang kekal 200px).
+- `README.md`: nota ringkas ciri kecilkan kad.
+
+**Pengujian (semua PASS):**
+- Node `test/engine-test.js`: 221 lulus, 0 gagal (bilangan 221–224 — berubah sebab Ujian 3 ada cabang rawak roll/auto/none; pra-sedia, bukan regresi).
+- `node --check` semua js/*.js: OK.
+- Headless Edge CLI: harness PASS, `?uitest=1` SELFTEST PASS, `?audit=1` AUDIT PASS.
+- CDP emulasi SEBENAR 390×844 & 1280×800 (`cdp-test.js` di temp): AUDIT PASS kedua-dua (0 h-scroll, butang wujud/collapse/expand OK); COLLAPSE MEASURE 390: butang 44×44px, players 331→70px selepas collapse, field 200→254px selepas collapse, 0 h-scroll; SELFTEST 390 PASS (3 AI, 6 kad angin, 0 error).
+- Penting: untuk ujian CDP guna page target `/json/new` (Emulation hanya page-scoped); jangan guna virtual-time sebelum navigate (Tailwind CDN network fetch buat policy hang) — guna `metal-time` + polling.
+
+## Session sebelumnya (7/9/2026) — Pacing Step-by-Step (mesin langkah + animasi perlahan)
 
 **Kerja:**
 - `js/app.js` — aliran round direka semula kepada **mesin langkah turn-based**. Selepas pemilihan wau selesai & angin dibuka, permainan berhenti pada setiap fasa dan menunggu klik butang **"Next ▶"** (`#btn-next`) / **"⏩ Auto"** (`#btn-auto`). Langkah round: buang tak padan → sediakan dadu → (gulung dadu → tentukan pemenang | hasil auto/none) → tuntut kad angin → bersih & isi semula → endRound (pusingan seterusnya / lihat keputusan).

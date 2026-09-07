@@ -53,6 +53,10 @@ menghormati `prefers-reduced-motion`.
   `style.css` hanya memegang kelas komponen yang `js/app.js` jana/toggle.
 - Layout **fit-to-screen**: `h-dvh` + flex/grid, tiada scroll halaman (log & kawasan main
   scroll dalaman). Responsif desktop 1280×800 & mobile 390×844 (butang ≥44px, font ≥16px).
+- **Kecilkan kad (mobile)**: setiap panel pemain ada butang `－`/`＋` di header untuk
+  mengecilkan kad menjadi bar nipis (nama + mata sahaja) supaya padang lebih luas nampak —
+  boleh di-expand semula bila perlu. Pada mobile, zon angin & log juga dipadatkan supaya
+  padang jadi kawasan dominan. Butang kecilkan 44×44px (boleh sentuh).
 
 ## Lokasi Fail
 

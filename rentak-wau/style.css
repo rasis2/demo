@@ -112,10 +112,27 @@ body::before {
 .pp-avatar { width: 36px; height: 36px; flex: none; border: 3px solid var(--ink); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 .pp-avatar.hum { background: #ffe9a8; }
 .pp-avatar.ai { background: #c9dcf7; }
+.pp-info { flex: 1; min-width: 0; }
 .pp-name { font-size: 14px; font-weight: 700; }
 .pp-tag { font-size: 10px; background: var(--blue); color: #fff; padding: 1px 5px; border-radius: 4px; margin-left: 4px; }
 .pp-score { font-size: 11px; color: #6a4f2e; margin-top: 2px; }
 .pp-won { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; min-height: 20px; font-size: 11px; color: #6a4f2e; margin-bottom: 5px; }
+/* Butang kecilkan/embangkan kad pemain (jadikan bar nipis supaya padang lebih luas) */
+.pp-collapse {
+  flex: none; width: 44px; height: 44px; margin: -2px;
+  border: 3px solid var(--ink); border-radius: 8px;
+  background: var(--panel2); color: var(--ink);
+  font-size: 18px; font-weight: 700; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.3); touch-action: manipulation;
+}
+.pp-collapse:active { transform: translate(2px, 2px); box-shadow: none; }
+/* Panel dikecilkan → hanya bar header (nama + mata) nampak, kad disembunyikan */
+.player-panel.collapsed .pp-hand,
+.player-panel.collapsed .pp-played,
+.player-panel.collapsed .pp-living-tag,
+.player-panel.collapsed .pp-won { display: none; }
+.player-panel.collapsed { padding-bottom: 6px; }
 .won-mini { width: 20px; height: 20px; border: 2px solid var(--ink); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; background: #fff; }
 .won-mini.wl-high { border-color: var(--red); }
 .won-mini.wl-mid { border-color: var(--blue); }
@@ -193,12 +210,23 @@ body::before {
 
 /* ------- Responsif padat (komponen) ------- */
 @media (max-width: 760px) {
-  .pile-zone { min-width: 120px; }
-  .wind-card { width: 80px; }
+  .pile-zone { width: 100px; min-width: 0; padding: 6px; }
+  .pile-label { font-size: 9px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wind-card { width: 72px; }
   .player-panel { min-width: 150px; flex: 1 1 170px; }
   .pp-hand .wau-card, .pp-played .wau-card { width: 62px; }
   .pp-hand .card-back { height: 66px; font-size: 20px; }
   .card-name { font-size: 10px; }
+  /* pada mobile, padang jadi kawasan dominan & lebih tinggi */
+  #field { min-height: 220px; flex-grow: 1; }
+  #field .field-empty { padding: 10px; text-align: center; }
+  /* log dipendekkan supaya padang dapat ruang lebih */
+  #log { max-height: 96px; }
+  /* panel dikecilkan = bar tipis ringkas */
+  .player-panel.collapsed .pp-head { margin-bottom: 0; }
+  /* kolum utama perlu ketinggian pasti supaya flex-grow padang berfungsi
+     (tanpa ini, flex:1 pada padang tiada ruang bebas untuk diisi) */
+  #screen-game > .min-h-0 > div { height: 100%; }
 }
 @media (max-width: 420px) {
   .player-panel { min-width: 130px; flex: 1 1 46%; padding: 6px; }
@@ -208,4 +236,5 @@ body::before {
   .pp-hand .card-back { height: 58px; font-size: 16px; }
   .wau-card { width: 78px; }
   .ov-hand .wau-card { width: 84px; }
+  #field { min-height: 200px; }
 }
