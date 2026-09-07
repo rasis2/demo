@@ -28,6 +28,24 @@ Terbangkan wau mengikut rentak angin, tuntut kad angin, dan kumpul mata tertingg
   dengan skrin "Serahkan Skrin".
 - Campuran manusia & AI juga disokong (cth: 2 manusia + 1 AI).
 
+## Pacing Step-by-Step
+
+Selepas pemilihan wau selesai, permainan bergerak **satu langkah pada satu masa**
+(dipacu butang **"Next ▶"**) supaya setiap fasa round dapat dilihat dengan jelas:
+
+1. 🌬️ Tiup angin → buka kad angin.
+2. ❌ Buang wau tak padan (animasi kad keluar dari padang).
+3. 🎲 Sediakan dadu (auto / tiada padan / baling dadu).
+4. 🎲 Gulung dadu — dadu bergoyang ~1 saat sebelum nilai muktamad.
+5. 🏆 Tentukan pemenang — pemenang diserlahkan.
+6. 💨 Tuntut kad angin — panel pemenang berkelip (skor naik).
+7. 🗑️🔄 Buang wau kalah + isi semula tangan.
+
+Butang **"⏩ Auto"** di sebelah Next menjalankan baki langkah round dengan cepat
+untuk pemain yang sudah faham. Setiap langkah menambah satu entri log berjujukan
+(tidak diclear antara langkah). Animasi semua dalam julat ~0.6–1.5 saat dan
+menghormati `prefers-reduced-motion`.
+
 ## Teknologi
 
 - **HTML/CSS/JS tulen** — seni **pixel-art** (canvas), logik enjin tulen (boleh diuji Node).

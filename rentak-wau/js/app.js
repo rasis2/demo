@@ -493,108 +493,307 @@
     });
   }
 
+  /* ============================================================
+     MESIN LANGKAH (Pacing Step-by-Step)
+     Setiap fasa round dipacu SATU LANGKAH pada satu masa.
+     Selepas setiap langkah: animasi + log + butang "Next ▶".
+     Butang "⏩ Auto" menjalankan baki langkah dengan cepat.
+     ============================================================ */
+  var TEST = /[?&](uitest|audit)=/.test(location.search || '');
+  function dur(ms) { return TEST ? 20 : ms; }   // dalam mod test: animasi pantas
+
+  var BTN_COMMON =
+    'inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-40';
+
+  app.steps = [];
+  app.stepIdx = 0;
+  app.autoRun = false;
+  app.diceResult = null;
+
+  /* Butang kawalan langkah: Next + Auto */
+  function nextControls(label, onNext, hint) {
+    var h = hint
+      ? '<div class="ctrl-hint mb-1 text-sm font-bold text-white [text-shadow:2px_2px_0_#2c1e12]">' + hint + '</div>'
+      : '';
+    setControls(h +
+      '<div class="flex flex-wrap items-center justify-center gap-2">' +
+        '<button class="' + BTN_COMMON + '" id="btn-next">' + (label || 'Next ▶') + '</button>' +
+        '<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-panel px-4 text-xs font-bold uppercase tracking-wide text-ink shadow-chunkysm transition hover:bg-goldsoft active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" id="btn-auto" title="Jalankan baki round dengan cepat">⏩ Auto</button>' +
+      '</div>',
+      function (c) {
+        c.querySelector('#btn-next').addEventListener('click', function () {
+          setControls('');
+          onNext();
+        });
+        c.querySelector('#btn-auto').addEventListener('click', function () {
+          app.autoRun = true;
+          setControls('');
+          onNext();
+        });
+      });
+  }
+
+  /* Jalankan senarai langkah satu persatu. */
+  function runStepMachine(steps) {
+    app.steps = steps;
+    app.stepIdx = 0;
+    app.autoRun = false;
+    app.diceResult = null;
+    advanceStep();
+  }
+
+  function advanceStep() {
+    while (app.stepIdx < app.steps.length) {
+      var s = app.steps[app.stepIdx];
+      app.stepIdx++;
+      if (s.should && !s.should()) continue; // langkah tak diperlukan → skip
+      var auto = app.autoRun;
+      s.run(function () {
+        if (auto) {
+          setTimeout(advanceStep, dur(150)); // auto: teruskan pantas
+        } else {
+          nextControls(s.nextLabel || 'Teruskan ▶', advanceStep, s.hint);
+        }
+      });
+      return;
+    }
+    // semua langkah selesai → tutup round
+    app.autoRun = false;
+    endRound();
+  }
+
+  /* Animasi: kad dibuang keluar dari padang (fade + geser ke bawah). */
+  function animateDiscard(card) {
+    var field = $('#field');
+    if (!field) return;
+    var ghost = wauCardEl(card, { living: true, dim: true });
+    ghost.classList.add('discard-ghost');
+    field.appendChild(ghost);
+    setTimeout(function () {
+      if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+    }, dur(900));
+  }
+
+  /* Serlahkan panel pemain sebagai pemenang. */
+  function highlightWinner(pid) {
+    var panel = document.querySelector('.player-panel[data-pid="' + pid + '"]');
+    if (panel) panel.classList.add('round-win');
+  }
+
+  /* Animasi: kad angin dituntut → panel pemain berkelip. */
+  function claimAnimation(pid) {
+    var panel = document.querySelector('.player-panel[data-pid="' + pid + '"]');
+    if (!panel) return;
+    panel.classList.add('claim-glow');
+    var minis = panel.querySelectorAll('.won-mini');
+    if (minis.length) minis[minis.length - 1].classList.add('claim-pop');
+  }
+
   /* ---------------- FASA REVEAL + ROUND ---------------- */
   function revealPhase() {
     var g = app.engine;
-    setControls('<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-reveal">🌬️ Tiup Angin!</button>', function (c) {
+    setControls('<button class="' + BTN_COMMON + '" id="btn-reveal">🌬️ Tiup Angin!</button>', function (c) {
       c.querySelector('#btn-reveal').addEventListener('click', function () {
         g.revealWind();
         addLog('🌬️ Angin semasa: ' + LEVEL[g.currentWind.level].label + ' ' + LEVEL[g.currentWind.level].icon);
         renderAll();
         setControls('');
-        runCompatibility();
+        runStepMachine(buildRoundSteps());
       });
     });
   }
 
-  function runCompatibility() {
-    var g = app.engine;
-    g.checkCompatibility();
-    renderAll();
-    setTimeout(function () {
-      var res = g.prepareDice();
-      if (res === 'none' || res === 'auto') {
-        addLog(res === 'auto' ? '⭐ Pemenang automatik!' : 'Kad angin tidak dituntut.');
-        finishRound();
-      } else {
-        setControls('<div class="ctrl-hint mb-1 text-sm font-bold text-white [text-shadow:2px_2px_0_#2c1e12]">Gulung dadu untuk wau hidup…</div><button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-roll">🎲 Gulung Dadu!</button>', function (c) {
-          c.querySelector('#btn-roll').addEventListener('click', function () {
-            setControls('');
-            runDicePhase();
-          });
-        });
-      }
-    }, 600);
+  /* Susun langkah round berdasarkan situasi. */
+  function buildRoundSteps() {
+    var steps = [];
+    steps.push({ nextLabel: 'Buang Tak Padan ▶', run: function (d) { doDiscardMismatch(d); } });
+    steps.push({ nextLabel: 'Sediakan Dadu ▶', run: function (d) { doPrepareDice(d); } });
+    steps.push({
+      should: function () { return app.diceResult === 'roll'; },
+      nextLabel: 'Gulung Dadu ▶',
+      run: function (d) { doRollDice(d); }
+    });
+    steps.push({
+      should: function () { return app.diceResult === 'roll'; },
+      nextLabel: 'Tentukan Pemenang ▶',
+      run: function (d) { doDetermineWinner(d); }
+    });
+    steps.push({
+      should: function () { return app.diceResult === 'auto' || app.diceResult === 'none'; },
+      nextLabel: 'Hasil Round ▶',
+      run: function (d) { doAnnounceResult(d); }
+    });
+    steps.push({ nextLabel: 'Tuntut Kad Angin ▶', run: function (d) { doClaimWind(d); } });
+    steps.push({ nextLabel: 'Bersih & Isi Semula ▶', run: function (d) { doCleanup(d); } });
+    return steps;
   }
 
-  function runDicePhase() {
+  /* Langkah: buang wau tak padan (animasi keluar + log). */
+  function doDiscardMismatch(done) {
+    var g = app.engine;
+    var toDiscard = [];
+    g.players.forEach(function (p) {
+      p.played.forEach(function (c) {
+        if (c.level !== g.currentWind.level) toDiscard.push({ p: p, c: c });
+      });
+    });
+    g.checkCompatibility();
+    renderAll();
+    toDiscard.forEach(function (it, i) {
+      addLog('❌ ' + it.p.name + ': ' + it.c.name + ' (Saiz ' + it.c.size + ') tidak padan — dibuang.');
+      setTimeout(function () { animateDiscard(it.c); }, i * dur(150));
+    });
+    if (toDiscard.length === 0) {
+      addLog('✅ Semua wau padan dengan angin — tiada yang dibuang.');
+    }
+    setTimeout(done, toDiscard.length ? dur(700) + toDiscard.length * dur(150) : dur(300));
+  }
+
+  /* Langkah: sediakan dadu — tentukan auto / none / roll. */
+  function doPrepareDice(done) {
+    var g = app.engine;
+    app.diceResult = g.prepareDice();
+    renderAll();
+    if (app.diceResult === 'auto') {
+      addLog('⭐ Auto-menang: hanya ' + g.players[g.roundWinnerId].name + ' ada wau padan.');
+    } else if (app.diceResult === 'none') {
+      addLog('🌫️ Tiada wau padan dengan angin — tiada pemenang round.');
+    } else {
+      addLog('🎲 ' + g.getRollOrder().length + ' wau hidup — sediakan 1 dadu untuk setiap wau.');
+    }
+    setTimeout(done, dur(500));
+  }
+
+  /* Langkah: gulung dadu dengan animasi nampak (0.8–1.5s setiap). */
+  function doRollDice(done) {
     var g = app.engine;
     g.rollDice();
-    var order = g.getRollOrder(); // saiz terbesar dulu
-    var field = $('#field');
+    var order = g.getRollOrder();
     renderField();
-    // animasi gulung dadu satu-satu ikut urutan
+    var field = $('#field');
     var idx = 0;
     function rollNext() {
-      if (idx >= order.length) {
-        // tentukan pemenang
-        g.determineWinner();
-        addLog('🏆 Pemenang round: ' + g.players[g.roundWinnerId].name);
-        renderAll();
-        finishRound();
-        return;
-      }
+      if (idx >= order.length) { setTimeout(done, dur(300)); return; }
       var item = order[idx];
       var cardEl = field.querySelector('[data-wau-id="' + item.card.id + '"]');
-      if (!cardEl) { idx++; rollNext(); return; }
-      var dieBox = cardEl.querySelector('.die');
-      if (!dieBox) { idx++; rollNext(); return; }
-      animateDie(dieBox, item.card.die, function () {
-        idx++;
-        rollNext();
-      });
+      var dieBox = cardEl ? cardEl.querySelector('.die') : null;
+      if (!cardEl || !dieBox) { idx++; rollNext(); return; }
+      dieBox.classList.add('rolling');
+      var start = Date.now();
+      var total = dur(1000);
+      var iv = setInterval(function () {
+        dieBox.innerHTML = '';
+        dieBox.appendChild(Pixel.dieCanvas(1 + Math.floor(Math.random() * 6), 2));
+        if (Date.now() - start > total) {
+          clearInterval(iv);
+          dieBox.innerHTML = '';
+          dieBox.appendChild(Pixel.dieCanvas(item.card.die, 2));
+          dieBox.classList.remove('rolling');
+          dieBox.classList.add('settled');
+          idx++;
+          rollNext();
+        }
+      }, dur(90));
     }
     rollNext();
   }
 
-  function animateDie(dieBox, finalValue, done) {
-    var frames = 0;
-    dieBox.classList.add('rolling');
-    var iv = setInterval(function () {
-      frames++;
-      if (frames >= 8) {
-        clearInterval(iv);
-        dieBox.innerHTML = '';
-        dieBox.appendChild(Pixel.dieCanvas(finalValue, 2));
-        dieBox.classList.remove('rolling');
-        dieBox.classList.add('settled');
-        done();
-      } else {
-        dieBox.innerHTML = '';
-        dieBox.appendChild(Pixel.dieCanvas(1 + Math.floor(Math.random() * 6), 2));
-      }
-    }, 70);
+  /* Langkah: tentukan pemenang & serlahkan. */
+  function doDetermineWinner(done) {
+    var g = app.engine;
+    var winner = g.determineWinner();
+    renderAll();
+    if (winner) {
+      addLog('🏆 Pemenang: ' + g.players[winner.playerId].name + ' — ' + winner.card.name + ' (dadu ' + winner.card.die + ').');
+      highlightWinner(winner.playerId);
+    }
+    setTimeout(done, dur(800));
   }
 
-  function finishRound() {
+  /* Langkah: umumkan hasil auto / none. */
+  function doAnnounceResult(done) {
     var g = app.engine;
+    if (app.diceResult === 'auto') {
+      addLog('🏆 Auto-menang: ' + g.players[g.roundWinnerId].name + ' menang tanpa baling dadu.');
+      highlightWinner(g.roundWinnerId);
+    } else {
+      addLog('🌫️ Tiada pemenang — kad angin akan dibuang.');
+    }
+    renderAll();
+    setTimeout(done, dur(700));
+  }
+
+  /* Langkah: tuntut kad angin (animasi ke skor pemain). */
+  function doClaimWind(done) {
+    var g = app.engine;
+    var hadWinner = g.roundWinnerId !== null;
+    var winnerId = g.roundWinnerId;
     g.claimWind();
+    renderAll();
+    if (hadWinner) {
+      addLog('💨 ' + g.players[winnerId].name + ' menuntut kad angin (+1 mata).');
+      claimAnimation(winnerId);
+    } else {
+      addLog('🗂️ Kad angin tidak dituntut — ke longgokan.');
+    }
+    setTimeout(done, dur(800));
+  }
+
+  /* Langkah: buang wau kalah + isi semula tangan (animasi keluar). */
+  function doCleanup(done) {
+    var g = app.engine;
+    var losers = [];
+    g.players.forEach(function (p) {
+      p.living.forEach(function (c) {
+        var isWin;
+        if (g.autoWin) isWin = (p.id === g.roundWinnerId);
+        else isWin = (p.id === g.roundWinnerId && c.id === g.roundWinnerWauId);
+        if (!isWin) losers.push({ p: p, c: c });
+      });
+    });
+    losers.forEach(function (it, i) {
+      addLog('🗑️ ' + it.p.name + ': ' + it.c.name + ' kalah — dibuang.');
+      setTimeout(function () { animateDiscard(it.c); }, i * dur(150));
+    });
     g.discardLosers();
     g.refillHands();
     g.updateScores();
     renderAll();
+    addLog('🔄 Tangan diisi semula ke 2 wau.');
+    setTimeout(done, losers.length ? dur(700) + losers.length * dur(150) : dur(300));
+  }
 
-    setControls('<button class="inline-flex min-h-11 items-center justify-center gap-1 rounded-lg border-[3px] border-ink bg-btn px-6 text-sm font-bold uppercase tracking-wide text-white shadow-chunkysm transition hover:bg-btnhi active:translate-x-[3px] active:translate-y-[3px] active:shadow-none" id="btn-next">Seterusnya ▶</button>', function (c) {
+  /* ---------------- TAMAT ROUND ---------------- */
+  function endRound() {
+    var g = app.engine;
+    g.updateScores();
+    renderAll();
+    if (g.isGameOver()) {
+      if (app.autoRun) { setTimeout(showGameOver, dur(200)); return; }
+      setControls('<button class="' + BTN_COMMON + '" id="btn-next">Lihat Keputusan 🏁</button>', function (c) {
+        c.querySelector('#btn-next').addEventListener('click', function () {
+          setControls('');
+          showGameOver();
+        });
+      });
+      return;
+    }
+    if (app.autoRun) {
+      setTimeout(function () {
+        g.nextRound();
+        renderAll();
+        addLog('Pusingan ' + g.round + ' bermula.');
+        runRoundFlow();
+      }, dur(200));
+      return;
+    }
+    setControls('<button class="' + BTN_COMMON + '" id="btn-next">Pusingan Seterusnya ▶</button>', function (c) {
       c.querySelector('#btn-next').addEventListener('click', function () {
         setControls('');
-        if (g.isGameOver()) {
-          showGameOver();
-        } else {
-          g.nextRound();
-          renderAll();
-          addLog('Pusingan ' + g.round + ' bermula.');
-          runRoundFlow();
-        }
+        g.nextRound();
+        renderAll();
+        addLog('Pusingan ' + g.round + ' bermula.');
+        runRoundFlow();
       });
     });
   }

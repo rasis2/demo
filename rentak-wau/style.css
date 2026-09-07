@@ -154,6 +154,43 @@ body::before {
 }
 @keyframes die-shake { 0% { transform: rotate(-8deg); } 100% { transform: rotate(8deg); } }
 
+/* ------- Pacing step-by-step: animasi kad dibuang (keluar padang) ------- */
+#field { position: relative; }
+.discard-ghost {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  pointer-events: none;
+  animation: discard-out 0.8s ease-in forwards;
+}
+@keyframes discard-out {
+  0%   { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.95; }
+  60%  { transform: translate(30%, -50%) scale(0.9) rotate(8deg); opacity: 0.7; }
+  100% { transform: translate(120%, 90%) scale(0.6) rotate(14deg); opacity: 0; }
+}
+
+/* ------- Animasi tuntut kad angin (panel pemain berkelip) ------- */
+.player-panel.claim-glow { animation: claim-glow 0.7s ease 2; }
+@keyframes claim-glow {
+  0%, 100% { box-shadow: 6px 6px 0 rgba(0,0,0,0.3); }
+  50% { box-shadow: 0 0 0 6px var(--gold), 6px 6px 0 rgba(0,0,0,0.3); }
+}
+.won-mini.claim-pop { animation: claim-pop 0.7s ease 2; }
+@keyframes claim-pop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.5); }
+}
+
+/* ------- Hormati prefer-reduced-motion (pengguna meminta gerak kurang) ------- */
+@media (prefers-reduced-motion: reduce) {
+  .discard-ghost { animation: none; }
+  .player-panel.claim-glow { animation: none; }
+  .won-mini.claim-pop { animation: none; }
+  .wau-card, .wind-card { animation: none; transition: none; }
+}
+
 /* ------- Responsif padat (komponen) ------- */
 @media (max-width: 760px) {
   .pile-zone { min-width: 120px; }
