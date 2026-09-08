@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T12:00:30.149Z",
+  "generated": "2026-09-08T13:00:31.742Z",
   "period": "08–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -18,19 +18,19 @@
   "consumers": [
     {
       "name": "CLI / build",
-      "cost": 0.04,
-      "calls": 17,
+      "cost": 0.03,
+      "calls": 12,
       "color": "#7c3aed",
       "percent": 100
     }
   ],
   "stats": {
-    "streams": 22421,
+    "streams": 22429,
     "models": 12,
-    "tools": 46272,
+    "tools": 46277,
     "toolKinds": 11,
-    "sessions": 644,
-    "loops": 23427
+    "sessions": 646,
+    "loops": 23435
   },
   "models": [
     {
@@ -60,7 +60,7 @@
     },
     {
       "name": "opencode-zen · big-pickle",
-      "value": 485,
+      "value": 493,
       "color": "#f59e0b"
     },
     {
@@ -107,12 +107,12 @@
     },
     {
       "name": "read",
-      "value": 4143,
+      "value": 4146,
       "color": "#3b82f6"
     },
     {
       "name": "edit",
-      "value": 3774,
+      "value": 3775,
       "color": "#f59e0b"
     },
     {
@@ -132,7 +132,7 @@
     },
     {
       "name": "task",
-      "value": 445,
+      "value": 446,
       "color": "#6366f1"
     },
     {
