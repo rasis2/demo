@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-09T09:00:10.291Z",
+  "generated": "2026-09-09T10:00:12.050Z",
   "period": "09–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -18,8 +18,8 @@
   "consumers": [
     {
       "name": "CLI / build",
-      "cost": 0.03,
-      "calls": 12,
+      "cost": 0.01,
+      "calls": 4,
       "color": "#7c3aed",
       "percent": 100
     }
