@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-11T23:00:14.570Z",
+  "generated": "2026-09-12T00:00:16.007Z",
   "period": "12–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -9,7 +9,7 @@
       "unit": "USD"
     },
     "weekly": {
-      "used": 2.61,
+      "used": 2.6,
       "limit": 30,
       "percent": 8.7,
       "unit": "USD"
@@ -19,7 +19,7 @@
     {
       "name": "CLI / build",
       "cost": 0.01,
-      "calls": 4,
+      "calls": 3,
       "color": "#7c3aed",
       "percent": 100
     }
