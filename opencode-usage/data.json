@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-12T18:00:44.022Z",
+  "generated": "2026-09-12T19:00:56.881Z",
   "period": "13–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -18,19 +18,19 @@
   "consumers": [
     {
       "name": "CLI / build",
-      "cost": 0.01,
-      "calls": 3,
+      "cost": 0.02,
+      "calls": 4,
       "color": "#7c3aed",
       "percent": 100
     }
   ],
   "stats": {
-    "streams": 22925,
+    "streams": 23024,
     "models": 12,
-    "tools": 48217,
+    "tools": 48925,
     "toolKinds": 11,
-    "sessions": 667,
-    "loops": 23965
+    "sessions": 671,
+    "loops": 24070
   },
   "models": [
     {
@@ -45,7 +45,7 @@
     },
     {
       "name": "opencode · big-pickle",
-      "value": 1062,
+      "value": 1161,
       "color": "#3b82f6"
     },
     {
@@ -97,32 +97,32 @@
   "tools": [
     {
       "name": "bash",
-      "value": 32186,
+      "value": 32724,
       "color": "#ef4444"
     },
     {
       "name": "external_directory",
-      "value": 4707,
+      "value": 4783,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 4295,
+      "value": 4335,
       "color": "#3b82f6"
     },
     {
       "name": "edit",
-      "value": 3874,
+      "value": 3916,
       "color": "#f59e0b"
     },
     {
       "name": "grep",
-      "value": 1167,
+      "value": 1170,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 602,
+      "value": 605,
       "color": "#94a3b8"
     },
     {
@@ -132,7 +132,7 @@
     },
     {
       "name": "task",
-      "value": 464,
+      "value": 468,
       "color": "#6366f1"
     },
     {
@@ -142,12 +142,12 @@
     },
     {
       "name": "websearch",
-      "value": 124,
+      "value": 125,
       "color": "#14b8a6"
     },
     {
       "name": "skill",
-      "value": 25,
+      "value": 26,
       "color": "#f97316"
     }
   ],
