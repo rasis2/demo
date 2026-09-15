@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-15T21:00:55.936Z",
+  "generated": "2026-09-15T22:00:57.596Z",
   "period": "16–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -9,9 +9,9 @@
       "unit": "USD"
     },
     "weekly": {
-      "used": 0.33,
+      "used": 0.26,
       "limit": 30,
-      "percent": 1.1,
+      "percent": 0.9,
       "unit": "USD"
     }
   },
