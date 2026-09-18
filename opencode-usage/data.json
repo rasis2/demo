@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18T16:00:39.221Z",
+  "generated": "2026-09-18T17:00:40.629Z",
   "period": "19–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -19,18 +19,18 @@
     {
       "name": "CLI / build",
       "cost": 0.01,
-      "calls": 1,
+      "calls": 3,
       "color": "#7c3aed",
       "percent": 100
     }
   ],
   "stats": {
-    "streams": 23040,
+    "streams": 23046,
     "models": 12,
-    "tools": 48956,
+    "tools": 48966,
     "toolKinds": 11,
-    "sessions": 671,
-    "loops": 24088
+    "sessions": 675,
+    "loops": 24094
   },
   "models": [
     {
@@ -45,7 +45,7 @@
     },
     {
       "name": "opencode · big-pickle",
-      "value": 1177,
+      "value": 1181,
       "color": "#3b82f6"
     },
     {
@@ -70,7 +70,7 @@
     },
     {
       "name": "afiqstore · minimax-m3",
-      "value": 326,
+      "value": 328,
       "color": "#ec4899"
     },
     {
@@ -97,12 +97,12 @@
   "tools": [
     {
       "name": "bash",
-      "value": 32745,
+      "value": 32747,
       "color": "#ef4444"
     },
     {
       "name": "external_directory",
-      "value": 4788,
+      "value": 4790,
       "color": "#0ea5a4"
     },
     {
@@ -122,7 +122,7 @@
     },
     {
       "name": "glob",
-      "value": 605,
+      "value": 610,
       "color": "#94a3b8"
     },
     {
@@ -132,7 +132,7 @@
     },
     {
       "name": "task",
-      "value": 468,
+      "value": 469,
       "color": "#6366f1"
     },
     {
