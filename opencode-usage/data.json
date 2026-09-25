@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-25T16:00:57.277Z",
+  "generated": "2026-09-25T17:00:02.343Z",
   "period": "26–30 Sep 2026",
   "quota": {
     "monthly": {
@@ -17,11 +17,11 @@
   },
   "consumers": [
     {
-      "name": "CLI / build",
+      "name": "OpenCode Go",
       "cost": 0,
-      "calls": 2,
-      "color": "#7c3aed",
-      "percent": null
+      "percent": 0,
+      "calls": 0,
+      "color": "#7c3aed"
     }
   ],
   "stats": {
