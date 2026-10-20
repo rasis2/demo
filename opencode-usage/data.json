@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-20T20:00:29.545Z",
+  "generated": "2026-10-20T21:00:30.941Z",
   "period": "21–31 Okt 2026",
   "quota": {
     "monthly": {
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 23329,
+    "streams": 23465,
     "models": 12,
-    "tools": 49801,
+    "tools": 50237,
     "toolKinds": 11,
-    "sessions": 700,
-    "loops": 24398
+    "sessions": 708,
+    "loops": 24552
   },
   "models": [
     {
@@ -45,7 +45,7 @@
     },
     {
       "name": "opencode · big-pickle",
-      "value": 1460,
+      "value": 1519,
       "color": "#3b82f6"
     },
     {
@@ -54,18 +54,18 @@
       "color": "#0ea5a4"
     },
     {
+      "name": "afiqstore · deepseek-v4-pro",
+      "value": 523,
+      "color": "#10b981"
+    },
+    {
       "name": "opencode-go · ox-alpha-free",
       "value": 494,
-      "color": "#10b981"
+      "color": "#f59e0b"
     },
     {
       "name": "opencode-zen · big-pickle",
       "value": 493,
-      "color": "#f59e0b"
-    },
-    {
-      "name": "afiqstore · deepseek-v4-pro",
-      "value": 446,
       "color": "#ef4444"
     },
     {
@@ -97,37 +97,37 @@
   "tools": [
     {
       "name": "bash",
-      "value": 33276,
+      "value": 33578,
       "color": "#ef4444"
     },
     {
       "name": "external_directory",
-      "value": 4929,
+      "value": 4971,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 4391,
+      "value": 4437,
       "color": "#3b82f6"
     },
     {
       "name": "edit",
-      "value": 3991,
+      "value": 4007,
       "color": "#f59e0b"
     },
     {
       "name": "grep",
-      "value": 1178,
+      "value": 1188,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 614,
+      "value": 627,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 489,
+      "value": 496,
       "color": "#6366f1"
     },
     {
