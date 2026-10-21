@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-21T05:00:15.186Z",
+  "generated": "2026-10-21T06:00:21.294Z",
   "period": "21–31 Okt 2026",
   "quota": {
     "monthly": {
@@ -17,20 +17,20 @@
   },
   "consumers": [
     {
-      "name": "OpenCode Go",
+      "name": "CLI / build",
       "cost": 0,
-      "percent": 0,
-      "calls": 0,
-      "color": "#7c3aed"
+      "calls": 1,
+      "color": "#7c3aed",
+      "percent": null
     }
   ],
   "stats": {
-    "streams": 23761,
+    "streams": 23884,
     "models": 12,
-    "tools": 51196,
+    "tools": 51753,
     "toolKinds": 11,
-    "sessions": 740,
-    "loops": 24859
+    "sessions": 745,
+    "loops": 24990
   },
   "models": [
     {
@@ -50,7 +50,7 @@
     },
     {
       "name": "afiqstore · deepseek-v4-pro",
-      "value": 819,
+      "value": 942,
       "color": "#0ea5a4"
     },
     {
@@ -97,27 +97,27 @@
   "tools": [
     {
       "name": "bash",
-      "value": 34284,
+      "value": 34712,
       "color": "#ef4444"
     },
     {
       "name": "external_directory",
-      "value": 5074,
+      "value": 5151,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 4525,
+      "value": 4552,
       "color": "#3b82f6"
     },
     {
       "name": "edit",
-      "value": 4038,
+      "value": 4047,
       "color": "#f59e0b"
     },
     {
       "name": "grep",
-      "value": 1198,
+      "value": 1209,
       "color": "#8b5cf6"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "name": "task",
-      "value": 508,
+      "value": 512,
       "color": "#6366f1"
     },
     {
@@ -147,7 +147,7 @@
     },
     {
       "name": "skill",
-      "value": 26,
+      "value": 27,
       "color": "#f97316"
     }
   ],
