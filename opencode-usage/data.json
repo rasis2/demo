@@ -1,6 +1,6 @@
 {
-  "generated": "2026-10-22T22:45:06.004Z",
-  "period": "23–31 Okt 2026",
+  "generated": "2026-10-23T22:45:04.997Z",
+  "period": "24–31 Okt 2026",
   "quota": {
     "monthly": {
       "used": 0,
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 24705,
+    "streams": 25281,
     "models": 12,
-    "tools": 54175,
+    "tools": 55418,
     "toolKinds": 11,
-    "sessions": 780,
-    "loops": 25869
+    "sessions": 802,
+    "loops": 26480
   },
   "models": [
     {
@@ -45,12 +45,12 @@
     },
     {
       "name": "afiqstore · deepseek-v4-pro",
-      "value": 1763,
+      "value": 2236,
       "color": "#3b82f6"
     },
     {
       "name": "opencode · big-pickle",
-      "value": 1519,
+      "value": 1542,
       "color": "#0ea5a4"
     },
     {
@@ -74,60 +74,60 @@
       "color": "#ec4899"
     },
     {
+      "name": "afiqstore · deepseek-v4-flash",
+      "value": 81,
+      "color": "#14b8a6"
+    },
+    {
       "name": "groq · llama-3.3-70b-versatile",
       "value": 4,
-      "color": "#14b8a6"
+      "color": "#8b5cf6"
     },
     {
       "name": "afiqstore · glm-5.3",
       "value": 3,
-      "color": "#8b5cf6"
+      "color": "#22c55e"
     },
     {
       "name": "afiqstore · kimi-k3",
       "value": 2,
-      "color": "#22c55e"
-    },
-    {
-      "name": "afiqstore · deepseek-v4-flash",
-      "value": 1,
       "color": "#64748b"
     }
   ],
   "tools": [
     {
       "name": "bash",
-      "value": 35749,
+      "value": 36093,
       "color": "#ef4444"
     },
     {
       "name": "external_directory",
-      "value": 5782,
+      "value": 6201,
       "color": "#0ea5a4"
     },
     {
       "name": "read",
-      "value": 4879,
+      "value": 5063,
       "color": "#3b82f6"
     },
     {
       "name": "edit",
-      "value": 4376,
+      "value": 4608,
       "color": "#f59e0b"
     },
     {
       "name": "grep",
-      "value": 1225,
+      "value": 1241,
       "color": "#8b5cf6"
     },
     {
       "name": "glob",
-      "value": 641,
+      "value": 646,
       "color": "#94a3b8"
     },
     {
       "name": "task",
-      "value": 545,
+      "value": 565,
       "color": "#6366f1"
     },
     {
@@ -137,7 +137,7 @@
     },
     {
       "name": "todowrite",
-      "value": 340,
+      "value": 363,
       "color": "#ec4899"
     },
     {
