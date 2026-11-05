@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-05T11:00:26.815Z",
+  "generated": "2026-11-05T12:00:28.303Z",
   "period": "05–30 Nov 2026",
   "quota": {
     "monthly": {
@@ -25,12 +25,12 @@
     }
   ],
   "stats": {
-    "streams": 25607,
+    "streams": 25653,
     "models": 12,
-    "tools": 56290,
+    "tools": 56400,
     "toolKinds": 11,
-    "sessions": 830,
-    "loops": 26834
+    "sessions": 834,
+    "loops": 26883
   },
   "models": [
     {
@@ -45,7 +45,7 @@
     },
     {
       "name": "afiqstore · deepseek-v4-pro",
-      "value": 2494,
+      "value": 2531,
       "color": "#3b82f6"
     },
     {
@@ -60,7 +60,7 @@
     },
     {
       "name": "opencode-zen · big-pickle",
-      "value": 512,
+      "value": 521,
       "color": "#f59e0b"
     },
     {
@@ -97,7 +97,7 @@
   "tools": [
     {
       "name": "bash",
-      "value": 36502,
+      "value": 36528,
       "color": "#ef4444"
     },
     {
@@ -107,12 +107,12 @@
     },
     {
       "name": "read",
-      "value": 5145,
+      "value": 5147,
       "color": "#3b82f6"
     },
     {
       "name": "edit",
-      "value": 4701,
+      "value": 4705,
       "color": "#f59e0b"
     },
     {
@@ -121,18 +121,18 @@
       "color": "#8b5cf6"
     },
     {
+      "name": "webfetch",
+      "value": 674,
+      "color": "#22c55e"
+    },
+    {
       "name": "glob",
       "value": 648,
       "color": "#94a3b8"
     },
     {
-      "name": "webfetch",
-      "value": 599,
-      "color": "#22c55e"
-    },
-    {
       "name": "task",
-      "value": 586,
+      "value": 589,
       "color": "#6366f1"
     },
     {
